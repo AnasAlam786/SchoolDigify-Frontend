@@ -1,0 +1,119 @@
+<div class="id-card-container">
+  <div class="page">
+
+    <!-- School name curve -->
+    <div style="position: absolute; top: 18%; left: 50%; transform: translate(-50%, -50%); z-index: 7;">
+      <svg width="340" height="180" viewBox="0 0 160 60">
+        <path id="curve" d="M40,40 A45,28 0 0 1 120,40" fill="transparent"/>
+
+        <text font-family="League Spartan" font-size="9.3"
+              stroke="#fff" stroke-width="0.5" fill="#fff"
+              textLength="88">
+
+          <textPath href="#curve"
+                    startOffset="50%"
+                    text-anchor="middle"
+                    data-bind="schoolName">
+            School Name
+          </textPath>
+
+        </text>
+      </svg>
+    </div>
+
+    <!-- UDISE -->
+    <div style="position: absolute; top: 5.6%; left: 50%; transform: translate(-50%, -50%); z-index: 7;">
+      <p data-bind="schoolUDISE"
+         style="font-size: 8px; font-weight: bolder; color: #000; font-family: 'League Spartan';">
+        UDISE: 123456
+      </p>
+    </div>
+
+    <!-- School logo -->
+    <div style="position: absolute; top: 3%; left: 9.5%; z-index: 7; width: 30px; height: 30px; border-radius: 50%; overflow: hidden;">
+      <img data-bind="schoolLogo" style="width:100%;height:100%;object-fit:cover;" />
+    </div>
+
+    <!-- Session -->
+    <div style="position: absolute; top: 3%; left: 76.5%; z-index: 7;">
+      <svg viewBox="0 0 400 400">
+        <circle cx="200" cy="200" r="190" fill="#f8f7f2" stroke="black" stroke-width="8"/>
+
+        <text x="50%" y="270"
+              text-anchor="middle"
+              font-size="70"
+              font-weight="900"
+              data-bind="sessionYear"
+              font-family="Arial Black">
+          2025-26
+        </text>
+      </svg>
+    </div>
+
+    <!-- Student image -->
+    <div style="position:absolute; top:33%; left:50%; transform:translate(-50%,-50%); width:87px; height:99px;">
+      <img data-bind="studentImage"
+           style="width:100%; height:100%; object-fit:cover;" />
+    </div>
+
+    <!-- Student Info -->
+    <div style="position:absolute; top:55.5%; left:50%; transform:translate(-50%,-50%); text-align:center;">
+      <h1 data-bind="studentName"
+          style="font-weight:bold; font-size:16px; color:red;">
+        Student Name
+      </h1>
+
+      <p data-bind="studentFather"
+         style="font-weight:bold; font-size:12px;">
+        Father's Name
+      </p>
+    </div>
+
+    <!-- Table -->
+    <table style="position:absolute; top:70%; left:50%; transform:translate(-50%,-50%); width:75%;">
+      <tr>
+        <td>Class</td>
+        <td>:</td>
+        <td data-bind="studentClassRoll"></td>
+      </tr>
+
+      <tr>
+        <td>DOB</td>
+        <td>:</td>
+        <td data-bind="studentDOB"></td>
+      </tr>
+
+      <tr>
+        <td>Phone</td>
+        <td>:</td>
+        <td data-bind="studentPhone"></td>
+      </tr>
+
+      <tr>
+        <td>Address</td>
+        <td>:</td>
+        <td data-bind="studentAddress"></td>
+      </tr>
+    </table>
+
+    <!-- Signatures -->
+    <img data-bind="teacherSign" style="position:absolute; bottom:15%; left:20%; width:80px;" />
+    <img data-bind="principalSign" style="position:absolute; bottom:15%; right:20%; width:80px;" />
+
+    <!-- Footer -->
+    <svg style="position:absolute; bottom:0; width:100%; height:38px;">
+      <rect width="100%" height="38" fill="rgb(20,56,104)"/>
+
+      <text x="50%" y="40%" text-anchor="middle" fill="white"
+            data-bind="schoolAddress">
+        School Address
+      </text>
+
+      <text x="50%" y="75%" text-anchor="middle" fill="white"
+            data-bind="schoolPhone">
+        School Phone
+      </text>
+    </svg>
+
+  </div>
+</div>

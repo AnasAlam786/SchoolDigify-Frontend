@@ -1,0 +1,23 @@
+.present-option.selected {
+    background-image: linear-gradient(to bottom right, #22c55e, #10b981);
+    /* green example */
+    color: rgb(255, 255, 255);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.absent-option.selected {
+    background-image: linear-gradient(to bottom right, #ef4444, #ef4444);
+    /* green example */
+    color: rgb(255, 255, 255);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.halfDay-option.selected {
+    background-image: linear-gradient(to bottom right, #f59e0b, #f59e0b);
+    /* green example */
+    color: rgb(255, 255, 255);
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}

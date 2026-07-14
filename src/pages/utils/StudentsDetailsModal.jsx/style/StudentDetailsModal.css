@@ -1,0 +1,45 @@
+  /* Custom scrollbar */
+  #studentDetailsModal .overflow-y-auto {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(75, 85, 99, 0.5) transparent;
+  }
+
+  #studentDetailsModal .overflow-y-auto::-webkit-scrollbar {
+      width: 8px;
+  }
+
+  #studentDetailsModal .overflow-y-auto::-webkit-scrollbar-track {
+      background: transparent;
+  }
+
+  #studentDetailsModal .overflow-y-auto::-webkit-scrollbar-thumb {
+      background-color: rgba(75, 85, 99, 0.5);
+      border-radius: 4px;
+  }
+
+  #studentDetailsModal .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(75, 85, 99, 0.7);
+  }
+
+  /* Safe area for mobile */
+  @supports (-webkit-touch-callout: none) {
+      #studentDetailsModal {
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+      }
+  }
+
+  /* Smooth transitions */
+  #studentModalContent {
+      transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Rotate animation for chevron */
+  .rotate-180 {
+      transform: rotate(180deg);
+  }
+
+  /* Bank details animation */
+  #bankDetailsContent {
+      transition: max-height 0.3s ease;
+  }

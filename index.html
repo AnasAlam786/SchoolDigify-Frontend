@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Digify</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #030404;
+      color: #e0e0e0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    }
+
+    /* Premium glass effect - softened to better blend with layout */
+    .glass-effect {
+      background: rgba(18, 18, 18, 0.98);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Subtle scrollbar */
+    .sidebar-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sidebar-container::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+    }
+
+    .sidebar-container::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Fixed sidebar - cleaner, more neutral styling */
+    .sidebar-container {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      overflow-y: auto;
+      z-index: 50;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      background: radial-gradient(circle at top, #181818 0%, #101010 55%, #080808 100%);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.0);
+      direction: rtl;
+    }
+
+    /* Reset text direction for child elements */
+    .sidebar-container>* {
+      direction: ltr;
+    }
+
+    /* Main content adjustment */
+    .main-content {
+      background: linear-gradient(135deg, #121212 0%, #0d0d0d 100%);
+      position: relative;
+      padding: 25px;
+    }
+
+    .main-content::before {
+
+      height: 1px;
+    }
+
+    /* Mobile adjustment */
+    @media (max-width: 1024px) {
+      .sidebar-container {
+        transform: translateX(-100%);
+      }
+
+      .sidebar-container.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
+    /* Mobile top bar */
+    .mobile-top-bar {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: rgba(26, 26, 26, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Drawer overlay */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 45;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Navigation link styling */
+    .nav-link {
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .nav-link::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #4361ee;
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-link.active::before {
+      transform: scaleY(1);
+    }
+
+    .nav-link.active {
+      background: linear-gradient(90deg, rgba(67, 97, 238, 0.18), rgba(72, 149, 239, 0.08));
+      color: #ffffff;
+      border-left: 0;
+    }
+
+    .nav-link:hover:not(.active) {
+      background-color: rgba(255, 255, 255, 0.03);
+      transform: translateX(0);
+    }
+
+    /* Scroll buttons */
+    .scroll-btn {
+      position: fixed;
+      right: 24px;
+      z-index: 30;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #4361ee, #3f37c9);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .scroll-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .scroll-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 25px rgba(67, 97, 238, 0.4);
+    }
+
+    .scroll-btn-top {
+      bottom: 100px;
+    }
+
+    .scroll-btn-bottom {
+      bottom: 40px;
+    }
+
+    /* School name truncation */
+    .school-name {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+
+    /* Icon containers - toned down to feel more professional */
+    .icon-container {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 30% 0, rgba(72, 149, 239, 0.26), rgba(18, 18, 18, 0.7));
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .icon-container i {
+      font-size: 15px;
+    }
+
+    /* Session badge */
+    .session-badge {
+      background: linear-gradient(135deg, rgba(67, 97, 238, 0.9), rgba(72, 149, 239, 0.9));
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(67, 97, 238, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* User info card - simplified and blended with sidebar */
+    .user-card {
+      background: linear-gradient(135deg, rgba(20, 20, 20, 0.95), rgba(8, 8, 8, 0.98));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .user-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(67, 97, 238, 0.5), transparent);
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #4361ee, #7209b7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+      box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Premium effects */
+    .premium-glow {
+      position: relative;
+    }
+
+    .premium-glow::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #4361ee, #4895ef, #7209b7, #4361ee);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .premium-glow:hover::after {
+      opacity: 0.3;
+    }
+
+    /* Section headers */
+    .section-header {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      padding-left: 12px;
+    }
+
+    .section-header::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 4px;
+      background: #4361ee;
+      border-radius: 50%;
+    }
+
+    /* GRADIENT ICONS */
+    .icon-blue {
+      background: linear-gradient(135deg, #4361ee, #4895ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .icon-cyan {
+      background: linear-gradient(135deg, #4cc9f0, #4895ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .icon-pink {
+      background: linear-gradient(135deg, #ff006e, #f72585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .icon-purple {
+      background: linear-gradient(135deg, #8338ec, #7209b7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .icon-yellow {
+      background: linear-gradient(135deg, #ffbe0b, #f72585);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root" class="animate-fade-in"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+<script>
+  // Alert System
+  function showAlert(statusCode, message) {
+    const isSuccess = statusCode >= 200 && statusCode < 300;
+    const alertId = 'alert-' + Date.now();
+
+    const alertHTML = `
+        <div id="${alertId}" class="fixed top-4 right-4 z-50 animate-slide-up">
+          <div class="${isSuccess ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-red-600 to-pink-600'} text-white px-6 py-4 rounded-xl shadow-2xl max-w-sm border border-white/10 backdrop-blur-sm">
+            <div class="flex items-start gap-3">
+              <div class="${isSuccess ? 'bg-green-500/20' : 'bg-red-500/20'} p-2 rounded-lg">
+                <i class="fas ${isSuccess ? 'fa-check-circle text-green-400' : 'fa-exclamation-circle text-red-400'} text-lg"></i>
+              </div>
+              <div class="flex-1">
+                <p class="font-semibold">${isSuccess ? 'Success' : 'Error'}</p>
+                <p class="text-sm mt-1 opacity-90">${message}</p>
+              </div>
+              <button onclick="document.getElementById('${alertId}').remove()" 
+                      class="opacity-70 hover:opacity-100 transition-opacity ml-2 hover:scale-110">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+    document.body.insertAdjacentHTML('beforeend', alertHTML);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      const alert = document.getElementById(alertId);
+      if (alert) {
+        alert.style.opacity = '0';
+        alert.style.transform = 'translateY(-10px)';
+        setTimeout(() => alert.remove(), 300);
+      }
+    }, 5000);
+  }
+
+</script>
+
+</html>

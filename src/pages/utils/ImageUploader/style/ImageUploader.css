@@ -1,0 +1,15 @@
+.image-upload {
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    background: #1C1C1C !important;
+}
+
+.btn-upload {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(30, 30, 30, 0.9) !important;
+    transition: all 0.3s ease;
+}
+
+.btn-upload:hover {
+    background: rgba(67, 97, 238, 0.2) !important;
+    border-color: #4361ee;
+}

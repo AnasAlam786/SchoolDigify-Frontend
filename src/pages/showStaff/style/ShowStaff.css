@@ -1,0 +1,135 @@
+.staff-card {
+  background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #333;
+}
+
+.staff-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+  border-color: #4361ee;
+}
+
+.search-box {
+  background: #1e1e1e;
+  border: 1px solid #333;
+}
+
+.custom-select {
+  background: #1e1e1e;
+  border: 1px solid #333;
+}
+
+.badge-teacher {
+  background: rgba(58, 134, 255, 0.2);
+  color: #3a86ff;
+}
+
+.badge-admin {
+  background: rgba(255, 0, 110, 0.2);
+  color: #ff006e;
+}
+
+.badge-support {
+  background: rgba(131, 56, 236, 0.2);
+  color: #8338ec;
+}
+
+.badge-assistant {
+  background: rgba(255, 190, 11, 0.2);
+  color: #ffbe0b;
+}
+
+.priority-high {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.priority-medium {
+  color: #ffd166;
+  font-weight: 600;
+}
+
+.priority-low {
+  color: #06d6a0;
+  font-weight: 600;
+}
+
+.action-btn {
+  transition: all 0.2s ease;
+  border-radius: 8px;
+}
+
+.action-btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #4361ee, #3f37c9);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #3f37c9, #4361ee);
+}
+
+.feature-pill {
+  background: rgba(67, 97, 238, 0.15);
+  border: 1px solid rgba(67, 97, 238, 0.3);
+}
+
+.mobile-staff-card {
+  background: linear-gradient(145deg, #1e1e1e, #2a2a2a);
+  border-radius: 12px;
+  border: 1px solid #333;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.mobile-staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.mobile-staff-info {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-staff-details {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.mobile-detail-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.mobile-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
