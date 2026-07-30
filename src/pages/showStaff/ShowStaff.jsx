@@ -8,14 +8,9 @@ import StaffList from "./components/StaffList";
 
 import "./style/ShowStaff.css"
 import { apiGet } from "../../api/api";
+import { SkeletonLoader } from "./components/PageStatus";
 
-const ShowStaff = ({
-  totalStaff = 0,
-  teachersCount = 0,
-  administratorCount = 0,
-  helperStaffCount = 0,
-  totalClasses = 0,
-}) => {
+function ShowStaff () {
   const navigate = useNavigate();
 
   const [teachers, setTeachers] = useState([]);
@@ -96,22 +91,22 @@ const ShowStaff = ({
 
   let mainContent = null;
   if (loading) {
-    mainContent = (<div className="flex items-center justify-center h-screen text-white"> Loading... </div>);
+    mainContent = <SkeletonLoader/>;
   } else if (error) {
     mainContent = (<div className="flex items-center justify-center h-screen text-red-500"> {error} </div>);
   } else {
     mainContent = (
     <>
       <StaffStats
-        totalStaff={totalStaff}
-        teachersCount={teachersCount}
-        administratorCount={administratorCount}
-        helperStaffCount={helperStaffCount}
+        totalStaff={stats.total_staff}
+        teachersCount={stats.teachers}
+        administratorCount={stats.administrators}
+        helperStaffCount={stats.support_staff}
       />
 
       <StaffList
         teachers={filteredTeachers}
-        totalClasses={totalClasses}
+        totalClasses={stats.total_classes}
         onResetFilters={resetFilters}
       />
     </>

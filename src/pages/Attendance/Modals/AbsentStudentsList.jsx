@@ -220,7 +220,7 @@ function AbsentStudentsList({ classID, date, onClose }) {
       const copyBtn = document.getElementById('copyAbsentListBtn');
       if (copyBtn) {
         const originalHTML = copyBtn.innerHTML;
-        copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied';
+        copyBtn.innerHTML = '<i className="fas fa-check mr-2"></i>Copied';
         copyBtn.classList.add('bg-green-500');
         setTimeout(() => {
           copyBtn.innerHTML = originalHTML;

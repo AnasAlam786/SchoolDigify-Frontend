@@ -1,8 +1,10 @@
 import React from 'react'
 import { useNavigate } from "react-router-dom";
+import { printAdmissionForm } from '../../utils/printAdmissionForm';
+import { sendMessage } from '../../utils/sendWhatsAppMessage';
 
 
-function Header({ onOpenBulkImport }) {
+function Header({ studentID }) {
 
     const navigate = useNavigate();
 
@@ -15,21 +17,25 @@ function Header({ onOpenBulkImport }) {
                     </div>
                     <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-3">
-                            <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Add New Student</h1>
-                            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700/60 text-gray-200 border border-gray-600">New</span>
+                            <h1 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-white">Edit Student</h1>
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-700/60 text-gray-200 border border-gray-600">Edit</span>
                         </div>
-                        <p className="text-gray-400 text-sm max-w-xl">Fill in the student details to add them to the system</p>
+                        <p className="text-gray-400 text-sm max-w-xl">Update student information and details</p>
                     </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row lg:flex-row gap-3">
-                    <button
-                        type="button"
-                        onClick={onOpenBulkImport}
-                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-green-500 to-emerald-700 hover:opacity-90 text-white text-sm font-medium transition"
-                    >
-                        <i className="fas fa-upload"></i>
-                        Bulk Import
+
+                    <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-sm font-medium transition"
+                        onClick={() => printAdmissionForm(studentID)}>
+                        <i className="fas fa-print"></i>
+                        Print Form
+                    </button>
+
+                    <button className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-medium transition"
+                        onClick={() => sendMessage(studentID)}>
+                        <i className="fab fa-whatsapp"></i>
+                        Send Message
                     </button>
 
                     <button

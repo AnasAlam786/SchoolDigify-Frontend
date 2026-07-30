@@ -25,71 +25,82 @@ import ShowMarks from "./pages/showMarks/ShowMarks.jsx";
 import AddStudent from "./pages/addStudent/AddStudent.jsx";
 import StudentsList from "./pages/studentsList/StudentsList.jsx";
 import PromoteAndTC from "./pages/promoteAndTC/PromoteAndTC.jsx";
-import ShowStaff from "./pages/showStaff/ShowStaff.jsx";
 import EditStudent from "./pages/editStudent/EditStudent.jsx";
+
+import ShowStaff from "./pages/showStaff/ShowStaff.jsx";
+import AddStaff from "./pages/addStaff/AddStaff.jsx";
+import EditStaff from "./pages/editStaff/EditStaff.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <BrowserRouter>
-        <TitleManager/>
+        <TitleManager />
 
         <Routes>
 
           {/* Login */}
-          <Route path="/login" element={ <LoginCheck> <Login /> </LoginCheck> } />
+          <Route path="/login" element={<LoginCheck> <Login /> </LoginCheck>} />
 
-          <Route element={ <LoginRequired> <Layout /> </LoginRequired> } >
+          <Route element={<LoginRequired> <Layout /> </LoginRequired>} >
 
             <Route path="/logout" element={<Logout />} />
 
             <Route
               path="/idcard"
-              element={ <PermissionRoute permission="idcard"> <IDCard /> </PermissionRoute> } />
+              element={<PermissionRoute permission="idcard"> <IDCard /> </PermissionRoute>} />
 
             <Route
               path="/fillmarks"
-              element={ <PermissionRoute permission="fill_marks"> <FillMarks /> </PermissionRoute> } />
+              element={<PermissionRoute permission="fill_marks"> <FillMarks /> </PermissionRoute>} />
 
             <Route
               path="/question-papers"
-              element={ <PermissionRoute permission="create_paper"> <Dashboard /> </PermissionRoute> }/>
+              element={<PermissionRoute permission="create_paper"> <Dashboard /> </PermissionRoute>} />
 
             <Route
               path="/question-papers/:paperId"
-              element={ <PermissionRoute permission="create_paper"> <Editor /> </PermissionRoute> } />
+              element={<PermissionRoute permission="create_paper"> <Editor /> </PermissionRoute>} />
 
             <Route
               path="/admit_and_scheme"
-              element={ <PermissionRoute permission="admit_card"> <AdmitAndScheme /> </PermissionRoute> } />
+              element={<PermissionRoute permission="admit_card"> <AdmitAndScheme /> </PermissionRoute>} />
 
             <Route
               path="/attendance"
-              element={ <PermissionRoute permission="attendance"> <Attendance /> </PermissionRoute> } />
+              element={<PermissionRoute permission="attendance"> <Attendance /> </PermissionRoute>} />
 
             <Route
               path="/show_marks"
-              element={ <PermissionRoute permission="show_marks"> <ShowMarks /> </PermissionRoute> } />
+              element={<PermissionRoute permission="show_marks"> <ShowMarks /> </PermissionRoute>} />
 
             <Route
               path="/admission"
-              element={ <PermissionRoute permission="admission"> <AddStudent /> </PermissionRoute>} />
+              element={<PermissionRoute permission="admission"> <AddStudent /> </PermissionRoute>} />
 
             <Route
               path="/student_list"
-              element={ <PermissionRoute permission="student_list"> <StudentsList /> </PermissionRoute> } />
+              element={<PermissionRoute permission="student_list"> <StudentsList /> </PermissionRoute>} />
 
             <Route
               path="/edit_student/:studentID"
-              element={ <PermissionRoute permission="update_student"> <EditStudent /> </PermissionRoute> } />
+              element={<PermissionRoute permission="update_student"> <EditStudent /> </PermissionRoute>} />
 
             <Route
               path="/promote_and_tc"
-              element={ <PermissionRoute permission="promote_student"> <PromoteAndTC /> </PermissionRoute> } />
-            
+              element={<PermissionRoute permission="promote_student"> <PromoteAndTC /> </PermissionRoute>} />
+
             <Route
               path="/show_staff"
-              element={ <PermissionRoute permission="show_staff"> <ShowStaff /> </PermissionRoute> } />
+              element={<PermissionRoute permission="show_staff"> <ShowStaff /> </PermissionRoute>} />
+
+            <Route
+              path="/add_staff"
+              element={<PermissionRoute permission="add_staff"> <AddStaff /> </PermissionRoute>} />
+
+            <Route
+              path="/edit_staff/:staffID"
+              element={<PermissionRoute permission="update_staff"> <EditStaff /> </PermissionRoute>} />
 
           </Route>
 

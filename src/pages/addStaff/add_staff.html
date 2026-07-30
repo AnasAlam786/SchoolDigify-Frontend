@@ -1,0 +1,1710 @@
+{% extends "base.html" %}
+{% block title %}Add Staff{% endblock %}
+{% block content %}
+
+<style>
+    .p-3.mx-auto {
+        background: transparent !important;
+    }
+
+    /* Custom borders */
+    .form-section,
+    .tips-section {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(30, 30, 30, 0.7);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .section-header {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .form-input,
+    .radio-card{
+        background: rgba(20, 20, 20, 0.7);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #4361ee;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    .image-upload {
+        border: 2px dashed rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.7) !important;
+    }
+
+    .validation-summary {
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        background: rgba(254, 226, 226, 0.1) !important;
+    }
+
+    .modal-content {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(30, 41, 59, 0.95) !important;
+        backdrop-filter: blur(20px);
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .tip {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .verification-item {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.7) !important;
+    }
+
+    /* Card hover effects */
+    .form-section {
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        border-color: rgba(67, 97, 238, 0.3);
+    }
+
+    /* Input field specific styling */
+    .form-input {
+        color: #e2e8f0 !important;
+        transition: all 0.3s ease;
+    }
+
+    .form-input::placeholder {
+        color: #94a3b8 !important;
+    }
+
+    /* Radio card backgrounds */
+    .radio-card {
+        background: rgba(20, 20, 20, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .radio-card:hover {
+        background: rgba(30, 41, 59, 0.9) !important;
+        border-color: rgba(67, 97, 238, 0.5);
+    }
+
+    .radio-card.selected {
+        background: rgba(67, 97, 238, 0.1);
+        border-color: #4361ee;
+    }
+
+    /* Button styling */
+    .btn-upload {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 23, 42, 0.9) !important;
+        transition: all 0.3s ease;
+    }
+
+    .btn-upload:hover {
+        background: rgba(67, 97, 238, 0.2) !important;
+        border-color: #4361ee;
+    }
+
+    /* Checkbox items */
+    .checkbox-item {
+        background: rgba(20, 20, 20, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .checkbox-item:hover {
+        transform: translateY(-2px);
+    }
+
+    .checkbox-item.selected {
+        background: #000000;
+        border-color: #4361ee;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        accent-color: #4361ee;
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    .permission_list {
+        background: rgba(20, 20, 20, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    /* Permission cards */
+    .permission-card {
+        background: rgba(20, 20, 20, 0.7) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .permission-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .permission-card.checked {
+        background: #000000;
+        border-color: #4361ee;
+    }
+
+    .permission-card input[type="checkbox"] {
+        accent-color: #4361ee;
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    /* Class tags */
+    .class-tag {
+        background: rgba(67, 97, 238, 0.15) !important;
+        border: 1px solid rgba(67, 97, 238, 0.3);
+        color: #e2e8f0;
+    }
+
+    /* Permission category buttons */
+    .permission-category-btn {
+        background: rgba(15, 23, 42, 0.7) !important;
+        transition: all 0.3s ease;
+    }
+
+    .permission-category-btn.active {
+        background: rgba(67, 97, 238, 0.2) !important;
+        color: #4361ee;
+    }
+
+    /* Text colors for better contrast */
+    .text-gray-light {
+        color: #e2e8f0 !important;
+    }
+
+    .text-gray-lighter {
+        color: #cbd5e1 !important;
+    }
+
+    /* Required field asterisk */
+    .required::after {
+        content: " *";
+        color: #ff6b6b;
+    }
+
+    /* Modal CSS */
+    .bg-primary-gradient {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    }
+
+    .bg-success-gradient {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .bg-whatsapp-gradient {
+        background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    }
+
+    .bg-dark-gradient {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    }
+
+    .shadow-primary-glow {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+
+    .shadow-success-glow {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .shadow-whatsapp-glow {
+        box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+    }
+
+    .shadow-modal {
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .animate-modal-enter {
+        animation: modal-enter 0.3s ease-out;
+    }
+
+    .animate-scale-in {
+        animation: scale-in 0.2s ease-out;
+    }
+
+    @keyframes modal-enter {
+        0% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes scale-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    /* Custom scrollbar for modal */
+    .modal-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .modal-scrollbar::-webkit-scrollbar-track {
+        background: rgba(30, 41, 59, 0.5);
+        border-radius: 10px;
+    }
+
+    .modal-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.5);
+        border-radius: 10px;
+    }
+
+    .modal-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 0.8);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+        .form-grid {
+            grid-template-columns: 1fr 1fr !important;
+        }
+
+        .radio-group {
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+        }
+
+        .classes-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+
+        .permissions-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .radio-group {
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+        }
+
+        .classes-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .permissions-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem !important;
+        }
+
+        .btn {
+            padding: 8px 15px !important;
+            font-size: 0.9rem !important;
+        }
+
+        .verification-grid {
+            grid-template-columns: 1fr !important;
+        }
+
+        .success-actions {
+            flex-direction: column !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .user-actions {
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+
+        .btn {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+        .radio-group {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    /* Error state for inputs */
+    .form-input.error {
+        border-color: #ff6b6b !important;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2) !important;
+        background: rgba(254, 226, 226, 0.1) !important;
+    }
+
+    .radio-card.error {
+        border-color: #ff6b6b !important;
+        background: rgba(254, 226, 226, 0.1) !important;
+    }
+</style>
+
+
+<div class="mx-auto">
+    <header
+        class="flex justify-between items-center py-5 border-b border-border-light mb-[30px] bg-gradient-to-r from-slate-800/50 to-slate-900/50 rounded-xl p-6">
+        <div class="mb-[30px]">
+            <h1 class="text-[2.2rem] font-bold mb-2 bg-title-gradient bg-clip-text">Add New Staff Member</h1>
+            <p class="text-gray-lighter text-[1.1rem] max-w-[600px]">Fill in all required details to add a new staff
+                member to your organization</p>
+        </div>
+        <div class="user-actions flex gap-4">
+            <button
+                class="btn btn-primary flex items-center gap-2 px-5 py-3 rounded-xl font-semibold cursor-pointer transition-all duration-300 border-none bg-primary-gradient text-white shadow-primary-glow hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(67,97,238,0.4)]"
+                id="saveButton">
+                <i class="fas fa-save"></i> Save Staff
+            </button>
+        </div>
+    </header>
+
+    <!-- Validation Summary -->
+    <div class="validation-summary hidden bg-danger/10 rounded-xl p-4 mb-5" id="validationSummary">
+        <h4 class="text-danger mb-2 flex items-center gap-2"><i class="fas fa-exclamation-circle"></i> Please fix the
+            following errors:</h4>
+        <ul class="pl-5 text-[#ff9f9f]" id="errorList"></ul>
+    </div>
+
+    <div class="form-container flex flex-col gap-[30px] flex-wrap">
+        <div class="main-form flex-1 min-w-[300px]">
+            <!-- Personal Information -->
+            <div class="form-section bg-gray-dark/70 backdrop-blur-md rounded-xl p-6 mb-6 shadow-section">
+                <div class="section-header flex items-center mb-6 pb-4">
+                    <div
+                        class="section-icon w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mr-4 text-primary">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h2 class="section-title text-[1.4rem] font-semibold">Personal Information</h2>
+                </div>
+                <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Full Name</label>
+                        <input type="text"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="name" placeholder="John Smith"
+                            oninput="this.value = this.value.replace(/\b\w/g, c => c.toUpperCase()).replace(/\B\w/g, c => c.toLowerCase());">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="fullNameError">Please enter a
+                            full name</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Email</label>
+                        <input type="email"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="email" placeholder="john.smith@example.com">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="emailError">Please enter a valid
+                            email address</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Phone Number</label>
+                        <input type="tel"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="phone" placeholder="+91 98765543210">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="phoneError">Please enter a valid
+                            phone number</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Date of Birth</label>
+                        <input type="date"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="dob">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="dobError">Please select a date of
+                            birth</div>
+                    </div>
+
+                    <div class="form-group radio-group-container mb-4 mt-2 mb-5 col-span-full">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Gender</label>
+                        <div class="radio-group grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <label
+                                class="radio-card p-4 rounded-xl text-center cursor-pointer transition-all duration-300 relative">
+                                <input type="radio" name="gender" value="male" class="absolute opacity-0 w-0 h-0">
+                                <i class="fas fa-mars text-[1.8rem] mb-2 text-[#3a86ff]"></i>
+                                <div>Male</div>
+                            </label>
+                            <label
+                                class="radio-card p-4 rounded-xl text-center cursor-pointer transition-all duration-300 relative">
+                                <input type="radio" name="gender" value="female" class="absolute opacity-0 w-0 h-0">
+                                <i class="fas fa-venus text-[1.8rem] mb-2 text-[#ff006e]"></i>
+                                <div>Female</div>
+                            </label>
+                        </div>
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="genderError">Please select a
+                            gender</div>
+                    </div>
+
+                    <div class="form-group col-span-full">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Address</label>
+                        <textarea
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            rows="3" id="address" placeholder="123 Main Street, City, Country"
+                            oninput="this.value = this.value.replace(/\b\w/g, c => c.toUpperCase()).replace(/\B\w/g, c => c.toLowerCase());"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Information -->
+            <div class="form-section bg-gray-dark/70 backdrop-blur-md rounded-xl p-6 mb-6 shadow-section">
+                <div class="section-header flex items-center mb-6 pb-4">
+                    <div
+                        class="section-icon w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mr-4 text-primary">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h2 class="section-title text-[1.4rem] font-semibold">Account Information</h2>
+                </div>
+                <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Username</label>
+                        <input type="text"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="username" placeholder="john.smith">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="usernameError">Please enter a
+                            username</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Password</label>
+                        <div class="password-wrapper relative w-full">
+                            <input type="password"
+                                class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)] pr-12"
+                                id="password" placeholder="••••••••">
+                            <button
+                                class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-lighter cursor-pointer bg-transparent border-none text-lg z-10"
+                                id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="passwordError">Please enter a
+                            password (min 8 characters)</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Confirm
+                            Password</label>
+                        <div class="password-wrapper relative w-full">
+                            <input type="password"
+                                class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)] pr-12"
+                                id="confirmPassword" placeholder="••••••••">
+                            <button
+                                class="toggle-password absolute right-3 top-1/2 -translate-y-1/2 text-gray-lighter cursor-pointer bg-transparent border-none text-lg z-10"
+                                id="toggleConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="confirmPasswordError">Passwords
+                            do not match</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="form-section bg-gray-dark/70 backdrop-blur-md rounded-xl p-6 mb-6 shadow-section">
+                <div class="section-header flex items-center mb-6 pb-4">
+                    <div
+                        class="section-icon w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mr-4 text-primary">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h2 class="section-title text-[1.4rem] font-semibold">Professional Information</h2>
+                </div>
+                <div class="form-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Date of
+                            Joining</label>
+                        <input type="date"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="date_of_joining">
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="joinDateError">Please select a
+                            join date</div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Qualification</label>
+                        <input type="text"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="qualification" placeholder="MSc, BEd, PhD, etc.">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">Salary</label>
+                        <input type="text"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="salary" placeholder="In rupees">
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="form-label block mb-2 font-medium text-gray-light">UDISE National ID</label>
+                        <input type="text"
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]"
+                            id="national_id" placeholder="e.g: UP2021123456789" style="text-transform: uppercase;"
+                            oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                    <div class="form-group radio-group-container mb-4 col-span-full">
+                        <label class="form-label block mb-2 font-medium text-gray-light required">Role</label>
+                        <div class="flex flex-wrap justify-center gap-4">
+                            {% for role in roles %}
+                            <label class="radio-card flex flex-col items-center justify-center 
+                                        cursor-pointer transition-all duration-300 relative 
+                                        w-[46%] sm:w-[30%] md:w-[22%] lg:w-[18%] p-4 
+                                        rounded-xl text-center shadow hover:shadow-lg bg-white">
+
+                                <input type="radio" name="role_id" value="{{ role.id }}"
+                                    class="absolute opacity-0 w-0 h-0">
+
+                                <i class="{{ ROLE_ICONS[role.role_name].icon }} 
+                                            text-[1.8rem] mb-2 text-{{ ROLE_ICONS[role.role_name].color }}"></i>
+
+                                <div class="font-medium">{{ role.role_name }}</div>
+                            </label>
+                            {% endfor %}
+                        </div>
+
+                        <div class="error-message text-danger text-sm mt-1 hidden" id="roleError">Please select a role
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permissions Assignment -->
+            <div class="form-section bg-gray-dark/70 backdrop-blur-md rounded-xl p-6 mb-6 shadow-section">
+                <div class="section-header flex items-center mb-6 pb-4">
+                    <div
+                        class="section-icon w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mr-4 text-primary">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2 class="section-title text-[1.4rem] font-semibold">Permissions</h2>
+                </div>
+                <div class="form-content" id="permissionCardBody">
+
+                    <!-- Permissions Placeholder Card -->
+                    <div
+                        class="flex flex-col items-center justify-center text-center rounded-2xl border border-dashed border-gray-700 bg-[#1A1A1A] p-10 shadow-inner">
+                        <div
+                            class="flex items-center justify-center w-16 h-16 mb-5 rounded-full bg-indigo-500/10 text-indigo-400">
+                            <i class="fas fa-user-shield text-2xl"></i>
+                        </div>
+
+                        <h3 class="text-lg font-semibold text-gray-100 mb-2">No Role Selected</h3>
+                        <p class="text-gray-400 max-w-sm leading-relaxed mb-6">
+                            Please select a role to automatically load its default permissions.
+                            Once selected, permissions will appear here.
+                        </p>
+
+                        <button
+                            onclick="document.querySelector('[name=role_id]')?.scrollIntoView({behavior:'smooth',block:'center'})"
+                            class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg">
+                            <i class="fas fa-arrow-up text-sm"></i>
+                            Select a Role
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Assignment (Visible only for Teachers) -->
+            <div class="form-section bg-gray-dark/70 backdrop-blur-md rounded-xl p-6 mb-6 shadow-section"
+                id="classAssignmentSection">
+                <div class="section-header flex items-center mb-6 pb-4">
+                    <div
+                        class="section-icon w-10 h-10 bg-primary/15 rounded-lg flex items-center justify-center mr-4 text-primary">
+                        <i class="fas fa-chalkboard"></i>
+                    </div>
+                    <h2 class="section-title text-[1.4rem] font-semibold">Class Assignment</h2>
+                </div>
+                <div class="form-content">
+                    <p class="text-gray-lighter mb-4">Assign classes to this teacher. You can select multiple classes.
+                    </p>
+
+                    <!-- Search and Filter -->
+                    <div class="search-filter mb-4">
+                        <input type="text" id="classSearch" placeholder="Search classes..."
+                            class="form-input w-full p-3 rounded-xl text-gray-light text-base transition-all duration-300 focus:outline-none focus:border-primary focus:shadow-[0_0_0_3px_rgba(67,97,238,0.2)]">
+                    </div>
+
+                    <!-- Selected Classes Preview -->
+                    <div class="selected-classes-preview mb-4" id="selectedClassesPreview">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-light font-medium">Selected Classes:</span>
+                            <span class="text-primary text-sm" id="selectedCount">0 classes</span>
+                        </div>
+                        <div class="selected-classes-tags flex flex-wrap gap-2" id="selectedClassesTags">
+                            <!-- Selected classes will appear here -->
+                        </div>
+                    </div>
+
+                    <!-- Classes Grid -->
+                    <div class="classes-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-80 overflow-y-auto p-2"
+                        id="classesContainer">
+                        {% for cls in classes %}
+                        <div class="checkbox-item p-4 rounded-xl cursor-pointer transition-all duration-300"
+                            data-id="{{ cls.id }}" data-name="{{ cls.CLASS }}">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-medium text-gray-light">{{ cls.CLASS }}</div>
+                                    <div class="text-sm text-gray-lighter mt-1">Class Teacher: None</div>
+                                </div>
+                                <div class="checkbox-indicator">
+                                    <input type="checkbox"
+                                        class="w-4 h-4 rounded-sm border border-gray-400 bg-gray-600 checked:bg-green-500 checked:border-green-500 text-green-500 focus:ring-2 focus:ring-green-400 appearance-none relative">
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- No results message -->
+                    <div class="no-results hidden text-center py-8 text-gray-lighter" id="noClassesMessage">
+                        <i class="fas fa-search text-3xl mb-2 opacity-50"></i>
+                        <p>No classes found matching your search</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section custom-bg-gray-darker backdrop-blur-md rounded-xl custom-border p-3 mb-6 pb-6 shadow-[0_4px_15px_rgba(0,0,0,1)]">
+
+                <div class="section-header flex items-center gap-4 mb-8 pb-4 bottom-border">
+                    <!-- Icon container -->
+                    <div class="section-icon w-12 h-12 bg-primary/15 rounded-xl flex items-center justify-center text-primary shadow-sm">
+                    <i class="fas fa-camera text-lg"></i>
+                    </div>
+                    <div>
+                    <h2 class="section-title text-xl font-semibold leading-tight">Profile Photo</h2>
+                    <p class="text-gray-500 text-sm mt-1">Upload or Capture the photo of student</p>
+                    </div>
+                </div>
+
+                <!-- Centered Image Uploader -->
+                <div class="w-full lg:w-1/2 mx-auto">
+                    {% from "html-components/image-uploader.html" import render_image_uploader %}
+                    {{ render_image_uploader(unique_suffix='new_staff', label='Click to upload the image of staff', image_url='', icon='fas fa-cloud-upload-alt') }}
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center p-4 overflow-hidden hidden"
+    id="managePermission">
+    <div
+        class="bg-[#0f0f0f] rounded-2xl w-full max-w-4xl mx-4 shadow-2xl border border-gray-800 max-h-[90vh] flex flex-col overflow-hidden transition-all duration-300 transform scale-100">
+
+        <!-- Modal Header -->
+        <div class="relative bg-gradient-to-br from-slate-900 to-slate-800 p-4 sm:p-6 border-b border-slate-700/50">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <div class="p-2 sm:p-3 bg-white/5 rounded-xl backdrop-blur-sm border border-slate-600/30">
+                        <i class="fas fa-user-shield text-slate-300 text-lg sm:text-xl"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-white text-xl sm:text-2xl font-light tracking-tight">Manage Permissions</h5>
+                        <p class="text-slate-400 text-xs sm:text-sm mt-1 font-light">Configure access controls and
+                            system privileges</p>
+                    </div>
+                </div>
+                <button type="button"
+                    class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200 border border-transparent hover:border-slate-600"
+                    onclick="closePermissionModal()">
+                    <i class="fas fa-times text-base sm:text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div
+            class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-[#0f0f0f] scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent hover:scrollbar-thumb-slate-600">
+
+            <!-- Selected Permissions Preview -->
+            <div class="selected-permissions-preview mb-6 p-4 bg-slate-900/30 rounded-xl border border-slate-700/30 backdrop-blur-sm transition-all duration-300"
+                id="selectedPermissionsPreview">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-check-circle text-emerald-400 text-lg"></i>
+                        <span class="text-slate-300 font-medium text-base sm:text-lg">Selected Permissions</span>
+                    </div>
+                    <span
+                        class="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-sm rounded-full font-medium border border-emerald-500/20 self-start sm:self-auto"
+                        id="selectedPermissionsCount">
+                        0 selected
+                    </span>
+                </div>
+                <div class="selected-permissions-tags flex flex-wrap gap-2 min-h-8" id="selectedPermissionsTags">
+                    <div class="flex items-center space-x-2 text-slate-500 text-sm">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Select permissions from the list below</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Permissions Grid -->
+            <div class="mb-2">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+                    <h6 class="text-slate-400 font-medium text-sm uppercase tracking-widest">Available Permissions</h6>
+                    <div class="flex items-center space-x-2 text-slate-500 text-sm">
+                        <i class="fas fa-filter"></i>
+                        <span>{{ permissions_list|length }} permissions available</span>
+                    </div>
+                </div>
+
+                <div class="permissions-grid grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto p-1"
+                    id="permissionsContainer">
+                    {% for permission in permissions_list %}
+                    <div class="permission-card p-4 sm:p-5 rounded-xl cursor-pointer transition-all duration-300 border border-slate-700/50 hover:border-blue-400/30 hover:bg-slate-800/20 hover:shadow-lg hover:shadow-blue-500/5 group relative overflow-hidden"
+                        data-id="{{ permission.id }}" data-name="{{ permission.title }}">
+                        <!-- Selection indicator -->
+                        <div
+                            class="absolute top-3 sm:top-4 right-3 sm:right-4 w-5 h-5 sm:w-6 sm:h-6 border-2 border-slate-600 rounded-lg group-hover:border-blue-400 transition-all duration-300 flex items-center justify-center">
+                            <div
+                                class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-blue-500 rounded-sm scale-0 transition-transform duration-200 group-[.selected]:scale-100">
+                            </div>
+                        </div>
+
+                        <div class="pr-6 sm:pr-8">
+                            <div
+                                class="font-semibold text-slate-200 group-hover:text-white transition-colors mb-2 text-base sm:text-lg leading-tight">
+                                {{ permission.title }}
+                            </div>
+                            <div class="text-xs sm:text-sm text-slate-400 mb-3 sm:mb-4 leading-relaxed font-light">
+                                {{ permission.description }}
+                            </div>
+                            <div
+                                class="permission-category-tag inline-flex items-center space-x-1.5 px-2.5 py-1 text-xs rounded-full bg-slate-700/50 text-slate-300 border border-slate-600/50">
+                                <i class="fas fa-tag text-xs"></i>
+                                <span class="truncate max-w-[120px] sm:max-w-none">{{ permission.action }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+            class="bg-slate-900/50 border-t border-slate-700/30 px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row gap-3 justify-between backdrop-blur-sm">
+
+            <!-- Close button -->
+            <button type="button"
+                class="px-5 py-2.5 bg-transparent hover:bg-slate-700/50 text-slate-400 hover:text-white rounded-xl font-medium transition-all duration-200 border border-slate-600 hover:border-slate-500 flex items-center justify-center space-x-2 group order-2 sm:order-1"
+                onclick="closePermissionModal()">
+                <i class="fas fa-arrow-left group-hover:-translate-x-0.5 transition-transform"></i>
+                <span>Cancel</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Verification Modal -->
+<div class="modal fixed hidden inset-0 w-full h-full bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    id="verificationModal">
+    <div
+        class="modal-content bg-slate-800 rounded-2xl max-w-2xl w-full overflow-hidden shadow-modal animate-modal-enter">
+        <!-- Modal Header -->
+        <div class="modal-header p-6 pb-4 border-b border-slate-700">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                        <i class="fas fa-shield-alt text-indigo-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-white">Verify Staff Details</h3>
+                        <p class="text-sm text-slate-400 mt-1">Review all information before adding to system</p>
+                    </div>
+                </div>
+                <button
+                    class="close-modal bg-slate-700 hover:bg-slate-600 w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body p-6 max-h-[70vh] overflow-y-auto modal-scrollbar">
+            <!-- Profile Preview -->
+            <div class="flex flex-col items-center mb-6">
+                <div class="profile-preview w-24 h-24 rounded-full mb-4 bg-cover bg-center border-4 border-indigo-500/30 shadow-lg bg-slate-700 flex items-center justify-center text-slate-400"
+                    id="finalProfilePreview">
+                </div>
+            </div>
+
+            <!-- Verification Grid -->
+            <div class="verification-grid grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Full Name</div>
+                    <div class="verification-value font-medium text-white" id="verifyName"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Email</div>
+                    <div class="verification-value font-medium text-white" id="verifyEmail"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Phone</div>
+                    <div class="verification-value font-medium text-white" id="verifyPhone"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Role</div>
+                    <div class="verification-value font-medium text-white" id="verifyRole"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Username</div>
+                    <div class="verification-value font-medium text-white" id="verifyUsername"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Status</div>
+                    <div class="verification-value font-medium">
+                        <span class="px-2 py-1 rounded-full text-xs bg-emerald-500/20 text-emerald-400">Active</span>
+                    </div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Qualification</div>
+                    <div class="verification-value font-medium text-white" id="verifyQualification"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Salary</div>
+                    <div class="verification-value font-medium text-white" id="verifySalary"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600">
+                    <div class="verification-label text-xs text-slate-400 mb-1">National ID</div>
+                    <div class="verification-value font-medium text-white" id="verifyNational_id"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600 md:col-span-2"
+                    id="verifyClassesItem">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Assigned Classes</div>
+                    <div class="verification-value flex flex-wrap gap-1" id="verifyClasses"></div>
+                </div>
+
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600 md:col-span-2"
+                    id="verifyPermissionsItem">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Assigned Permissions</div>
+                    <div class="verification-value flex flex-wrap gap-1" id="verifyPermissions"></div>
+                </div>
+                <div class="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600 md:col-span-2">
+                    <div class="verification-label text-xs text-slate-400 mb-1">Date of Joining</div>
+                    <div class="verification-value font-medium text-white" id="verifyJoinDate"></div>
+                </div>
+            </div>
+
+            <!-- Verification Note -->
+            <div class="mt-6 bg-slate-700/30 p-4 rounded-xl border border-slate-600">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-info-circle text-indigo-500 mt-0.5"></i>
+                    <p class="text-sm text-slate-300">Please verify all details carefully before adding to the system.
+                        Once confirmed, the staff member will be added to the database and will receive system access.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer p-6 pt-4 border-t border-slate-700 flex flex-col sm:flex-row justify-end gap-3">
+            <button
+                class="btn-crop btn-cancel px-5 py-3 rounded-xl font-medium cursor-pointer transition-all duration-300 border border-slate-600 bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white w-full sm:w-auto">
+                Cancel
+            </button>
+            <button
+                class="btn-crop btn-confirm px-5 py-3 rounded-xl font-medium cursor-pointer transition-all duration-300 border-none bg-primary-gradient text-white hover:shadow-primary-glow flex items-center justify-center gap-2 w-full sm:w-auto"
+                id="verifyConfirm">
+                <i class="fas fa-check-circle"></i>
+                Verify & Add Staff
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal fixed hidden inset-0 w-full h-full bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    id="successModal">
+    <div class="modal-content bg-slate-800 rounded-2xl max-w-md w-full overflow-hidden shadow-modal animate-scale-in">
+        <div class="success-modal-content text-center p-8">
+            <!-- Success Icon -->
+            <div
+                class="success-icon w-20 h-20 bg-success-gradient rounded-full flex items-center justify-center mx-auto mb-5 text-white text-2xl shadow-lg animate-modal-enter">
+                <i class="fas fa-check"></i>
+            </div>
+
+            <!-- Success Title and Message -->
+            <h2 class="success-title text-2xl font-bold mb-3 text-white">Success!</h2>
+            <p class="success-message text-slate-300 mb-6" id="successMessage">
+
+            </p>
+
+            <!-- Success Actions -->
+            <div class="success-actions flex flex-col sm:flex-row justify-center gap-3 mt-6">
+                <a href="/show_staff"
+                    class="btn btn-success px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 border-none bg-success-gradient text-white hover:shadow-success-glow w-full sm:w-auto">
+                    <i class="fas fa-users"></i>
+                    Staff Module
+                </a>
+                <a class="btn btn-whatsapp px-5 py-3 rounded-xl font-medium flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 border-none bg-whatsapp-gradient text-white hover:shadow-whatsapp-glow w-full sm:w-auto"
+                    id="sendWhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                    Send WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    // Define required fields for validation
+    const requiredFields = [
+        { id: 'name', errorId: 'fullNameError', name: 'Full Name', type: 'text' },
+        { id: 'email', errorId: 'emailError', name: 'Email', type: 'email' },
+        { id: 'username', errorId: 'usernameError', name: 'Username', type: 'text' },
+        { id: 'password', errorId: 'passwordError', name: 'Password', type: 'password' },
+        { id: 'confirmPassword', errorId: 'confirmPasswordError', name: 'Confirm Password', type: 'password' },
+    ];
+
+    // Define radio groups for validation
+    const radioGroups = [
+        { name: 'gender', errorId: 'genderError' },
+        { name: 'role_id', errorId: 'roleError' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Modal elements
+        const verificationModal = document.getElementById('verificationModal');
+        const successModal = document.getElementById('successModal');
+        const closeButtons = document.querySelectorAll('.close-modal, .btn-cancel');
+
+        // Form elements
+        const saveButton = document.getElementById('saveButton');
+        const verifyConfirm = document.getElementById('verifyConfirm');
+        const goToStaffButton = document.getElementById('goToStaff');
+        const sendWhatsAppButton = document.getElementById('sendWhatsApp');
+
+        // Validation elements
+        const validationSummary = document.getElementById('validationSummary');
+        const errorList = document.getElementById('errorList');
+
+        // Class Assignment elements
+        const classAssignmentSection = document.getElementById('classAssignmentSection');
+        const classSearch = document.getElementById('classSearch');
+        const classesContainer = document.getElementById('classesContainer');
+        const selectedClassesPreview = document.getElementById('selectedClassesPreview');
+        const selectedClassesTags = document.getElementById('selectedClassesTags');
+        const selectedCount = document.getElementById('selectedCount');
+        const noClassesMessage = document.getElementById('noClassesMessage');
+
+        // Permissions elements
+        const permissionCategoryBtns = document.querySelectorAll('.permission-category-btn');
+        const permissionsContainer = document.getElementById('permissionsContainer');
+        const selectedPermissionsPreview = document.getElementById('selectedPermissionsPreview');
+        const selectedPermissionsTags = document.getElementById('selectedPermissionsTags');
+        const selectedPermissionsCount = document.getElementById('selectedPermissionsCount');
+
+        // Password toggle functionality
+        const passwordField = document.getElementById('password');
+        const confirmPasswordField = document.getElementById('confirmPassword');
+        const togglePassword = document.getElementById('togglePassword');
+        const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+
+        // Variables
+        let selectedClasses = [];
+        // allPermissions is hydrated from server-side Jinja `permissions_list` JSON
+        let allPermissions = [];
+        try {
+            // If the template provides `permissions_list`, this will parse it; fallback to []
+            allPermissions = JSON.parse('{{ permissions_list | tojson | safe }}') || [];
+            // ensure each permission has selected flag
+            allPermissions.forEach(p => { if (typeof p.selected === 'undefined') p.selected = !!p.selected; });
+        } catch (e) {
+            allPermissions = [];
+        }
+
+        // ---------- Utility helpers ----------
+        function el(id) { return document.getElementById(id); }
+        function createBadge(name, bgClass = 'bg-gray-200', textClass = 'text-gray-700') {
+            const span = document.createElement('span');
+            span.textContent = name;
+            span.className = `text-sm px-2 py-1 rounded-full font-medium ${bgClass} ${textClass} mr-1 mb-1`;
+            return span;
+        }
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        function clearValidationSummary() {
+            if (!validationSummary || !errorList) return;
+            validationSummary.style.display = 'none';
+            errorList.innerHTML = '';
+        }
+        function showValidationSummary(errors = []) {
+            if (!validationSummary || !errorList) return;
+                validationSummary.style.display = 'block';
+                errorList.innerHTML = '';
+                errors.forEach(err => {
+                const li = document.createElement('li');
+                li.textContent = err;
+                errorList.appendChild(li);
+            });
+            validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+
+        // ---------- Class search/filter ----------
+        if (classSearch && classesContainer) {
+            classSearch.addEventListener('input', function () {
+                const searchTerm = this.value.trim().toLowerCase();
+                let anyVisible = false;
+                classesContainer.querySelectorAll('.checkbox-item').forEach(item => {
+                    const className = (item.getAttribute('data-name') || '').toLowerCase();
+                    if (className.includes(searchTerm)) {
+                    item.style.display = '';
+                    anyVisible = true;
+                    } else {
+                    item.style.display = 'none';
+                    }
+                });
+                if (noClassesMessage) noClassesMessage.style.display = anyVisible ? 'none' : 'block';
+            });
+        }
+
+        // ---------- Class selection (delegated) ----------
+        if (classesContainer) {
+            classesContainer.addEventListener('click', (e) => {
+            const elItem = e.target.closest('.checkbox-item');
+            if (!elItem) return;
+            const id = elItem.getAttribute('data-id');
+            const name = elItem.getAttribute('data-name') || (elItem.textContent || '').trim();
+            const checkbox = elItem.querySelector('input[type="checkbox"]');
+            if (!id) return;
+
+            const idx = selectedClasses.findIndex(c => c.id === id);
+            if (idx === -1) {
+                selectedClasses.push({ id, name });
+                elItem.classList.add('selected');
+                if (checkbox) checkbox.checked = true;
+            } else {
+                selectedClasses.splice(idx, 1);
+                elItem.classList.remove('selected');
+                if (checkbox) checkbox.checked = false;
+            }
+
+            // Update preview
+            const n = selectedClasses.length;
+            if (selectedCount) selectedCount.textContent = `${n} ${n === 1 ? 'class' : 'classes'}`;
+            if (selectedClassesPreview && selectedClassesTags) {
+                if (n > 0) {
+                selectedClassesTags.innerHTML = '';
+                selectedClasses.forEach(cls => selectedClassesTags.appendChild(createBadge(cls.name, 'bg-blue-50', 'text-blue-700')));
+                } else {
+                selectedClassesTags.innerHTML = '';
+                }
+            }
+            });
+        }
+
+        // setup image uploader
+        let avatarUploader;
+        avatarUploader = new ImageUploader('new_staff');
+        avatarUploader.onChange((blob, status) => console.log('Avatar:', status, blob));
+
+        // ---------- Permissions: render / modal update ----------
+        function renderMainPermissionChips() {
+            const permissionCardBody = document.getElementById('permissionCardBody');
+            if (!permissionCardBody) return;
+
+            // Filter only selected permissions
+            const selected = allPermissions.filter(p => p.selected);
+            if (selected.length === 0) {
+
+                permissionCardBody.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Section Header -->
+                    <div class="text-center">
+                        <h2 class="text-2xl font-semibold text-blue-400 mb-2">
+                            Permissions & Features
+                        </h2>
+                        <!-- Manage Permissions Button -->
+                        <button 
+                            onclick="openPermissionModal()" 
+                            class="mb-4 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium shadow shadow-blue-500/30 transition-all duration-300">
+                            <i class="fa-solid fa-pen-to-square mr-2"></i> Manage Permissions
+                        </button>
+                        <p class="text-gray-400 text-sm max-w-2xl mx-auto">
+                            For the selected role, these are the permissions and features this staff member will have access to.
+                        </p>
+                    </div>
+                    <div class="flex flex-col items-center justify-center text-center py-16 bg-[#1A1A1A] from-gray-800 to-gray-900 rounded-2xl border border-dashed border-gray-700 shadow-inner shadow-black/30">
+                        <div class="h-20 w-20 rounded-full bg-blue-600 flex items-center justify-center mb-5 shadow-lg shadow-blue-600/30">
+                            <i class="fa-solid fa-lock-open text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">No Permissions Assigned</h3>
+                        <p class="text-gray-400 text-sm max-w-md mb-5">
+                            This role doesn’t currently have any permissions or features assigned.
+                            Try assigning permissions from the "Manage Permissions" button.
+                        </p>
+                    </div>
+                </div>
+                    `;
+                return;
+            }
+
+            // Update the main form chips
+            let html = `
+            <div class="space-y-6">
+
+                <!-- Section Header -->
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-blue-400 mb-2">
+                        Permissions & Features
+                    </h2>
+                
+
+                    <!-- Manage Permissions Button -->
+                    <button 
+                        onclick="openPermissionModal()" 
+                        class="mb-4 px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium shadow shadow-blue-500/30 transition-all duration-300">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i> Manage Permissions
+                    </button>
+                    <p class="text-gray-400 text-sm max-w-2xl mx-auto">
+                        For the selected role, these are the permissions and features this staff member will have access to.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            `;
+
+            for (const perm of selected) {
+                html +=
+                    `
+                <div class="permission_list group relative rounded-2xl p-5 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700 shadow-lg hover:shadow-blue-500/40 hover:scale-[1.03] transition-all duration-300">
+                
+                    <!-- Blue Hover Glow -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl"></div>
+
+                    <!-- Title + Icon Row -->
+                    <div class="flex items-center gap-3 mb-3 relative z-10">
+                        <div class="h-10 w-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-inner shadow-black/30">
+                            <i class="fas ${perm.icon} text-white text-lg"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-blue-400 group-hover:text-blue-300 transition-colors duration-300">
+                            ${perm.title}
+                        </h3>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="text-gray-400 text-sm leading-snug relative z-10">
+                        ${perm.description}
+                    </p>
+                </div>
+                `
+            }
+            html += '</div></div>';
+
+            permissionCardBody.innerHTML = html;
+        }
+
+        function updateModalPermissions() {
+            const cards = document.querySelectorAll('.permission-card');
+            const selectedPermissionsPreview = document.getElementById('selectedPermissionsPreview');
+            const selectedPermissionsTags = document.getElementById('selectedPermissionsTags');
+
+
+            // Go through each permission card in the modal
+            cards.forEach(card => {
+                const id = card.dataset.id;
+                const perm = allPermissions.find(p => String(p.id) === String(id));
+
+                // If permission not found, skip
+                if (!perm) return;
+
+                // Apply or remove "selected" look based on its state
+                if (perm.selected) {
+                    card.classList.add('selected', 'border-blue-400/40', 'bg-slate-800/30');
+                    card.classList.remove('hover:bg-slate-800/20');
+                } else {
+                    card.classList.remove('selected', 'border-blue-400/40', 'bg-slate-800/30');
+                    card.classList.add('hover:bg-slate-800/20');
+                }
+            });
+
+            // Get all selected permissions from allPermissions
+            const selected = allPermissions.filter(p => p.selected);
+
+            // Update count text
+            selectedPermissionsCount.textContent = `${selected.length} selected`;
+
+            // If any selected permissions exist
+            if (selected.length > 0) {
+                // Show preview section
+                selectedPermissionsPreview.classList.remove('hidden');
+
+                // Clear old tags
+                selectedPermissionsTags.innerHTML = '';
+
+                // Create tag for each selected permission
+                selected.forEach(perm => {
+                    const tag = document.createElement('span');
+                    tag.className = `
+                        inline-flex items-center space-x-1 px-2 py-1
+                        bg-blue-600/20 text-blue-400 border border-blue-500/30
+                        rounded-full text-sm
+                    `;
+                    tag.innerHTML = `<span>${perm.title}</span>`;
+                    selectedPermissionsTags.appendChild(tag);
+                });
+            }
+            // If none selected
+            else {
+                selectedPermissionsPreview.classList.add('hidden');
+            }
+
+        }
+
+        // Expose open/close modal functions for inline handlers
+        window.openPermissionModal = function () {
+            const manageModal = document.getElementById('managePermission');
+            if (!manageModal) return;
+            manageModal.classList.remove('hidden');
+            updateModalPermissions();
+        };
+        
+        window.closePermissionModal = function () {
+            const manageModal = document.getElementById('managePermission');
+            if (!manageModal) return;
+            manageModal.classList.add('hidden');
+        };
+
+
+        // ---------- Permission card click (delegated) ----------
+        if (permissionsContainer) {
+            permissionsContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.permission-card');
+            if (!card) return;
+            const id = card.dataset.id;
+            const perm = allPermissions.find(p => String(p.id) === String(id));
+            if (!perm) return;
+            perm.selected = !perm.selected;
+            renderMainPermissionChips();
+            updateModalPermissions();
+            });
+        }
+
+        // Gender and role selection (delegated) — use single handler to avoid duplicate listeners
+        document.addEventListener('click', async function (event) {
+            const card = event.target.closest('.radio-card');
+            if (!card) return;
+            const radioInput = card.querySelector('input[type="radio"]');
+            if (!radioInput) return;
+
+            // For gender
+            if (radioInput.name === 'gender') {
+                document.querySelectorAll('.radio-card').forEach(c => {
+                    if (c.querySelector('input[name="gender"]')) {
+                        c.classList.remove('selected');
+                        c.classList.remove('error');
+                    }
+                });
+                card.classList.add('selected');
+                radioInput.checked = true;
+
+                // Clear error
+                const genderErr = document.getElementById('genderError');
+                if (genderErr) genderErr.style.display = 'none';
+                return;
+            }
+
+            // For role
+            if (radioInput.name === 'role_id') {
+                document.querySelectorAll('.radio-card').forEach(c => {
+                    if (c.querySelector('input[name="role_id"]')) {
+                        c.classList.remove('selected');
+                        c.classList.remove('error');
+                    }
+                });
+                card.classList.add('selected');
+                radioInput.checked = true;
+
+                // Clear error
+                const roleErr = document.getElementById('roleError');
+                if (roleErr) roleErr.style.display = 'none';
+
+                const permissionCardBody = document.getElementById('permissionCardBody');
+                if (permissionCardBody) permissionCardBody.innerHTML = "";
+
+                const roleId = radioInput.value;
+                // Ensure we only call once per click
+                await pullRolePermisions(roleId);
+                renderMainPermissionChips();
+            }
+        });
+        
+        async function pullRolePermisions(roleId) {
+            try {
+                const response = await fetch(`/api/get_role_permissions?role_id=${roleId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const rolePermIds = data.permissions_list; // e.g. [1, 3, 5, 7]
+
+                    // Step 1: reset all permissions
+                    allPermissions.forEach(p => p.selected = false);
+
+                    // Step 2: mark the returned ones as true
+                    allPermissions.forEach(p => {
+                        if (rolePermIds.includes(p.id)) {
+                            p.selected = true;
+                        }
+                    });
+                    return true
+                } else {
+                    console.error('Failed to fetch role permissions');
+                }
+            } catch (err) {
+                console.error('Error fetching role permissions:', err);
+            }
+        }
+
+        // ---------- Validation ----------
+        function validateForm() {
+            clearValidationSummary();
+            const errors = [];
+            let isValid = true;
+
+            // Clear previous errors
+            errorList.innerHTML = '';
+            validationSummary.style.display = 'none';
+
+            requiredFields.forEach(field => {
+                const element = document.getElementById(field.id);
+                const errorElement = document.getElementById(field.errorId);
+                if (!element) return;
+
+                // Remove previous error styling
+                element.classList.remove('error');
+                errorElement.style.display = 'none';
+
+                // Check if field is empty
+                if (!element.value.trim()) {
+                    isValid = false;
+                    element.classList.add('error');
+                    errorElement.style.display = 'block';
+                    errors.push(`${field.name} is required`);
+                }
+                // Validate email format
+                else if (field.type === 'email' && !isValidEmail(element.value)) {
+                    isValid = false;
+                    element.classList.add('error');
+                    errorElement.textContent = 'Please enter a valid email address';
+                    errorElement.style.display = 'block';
+                    errors.push('Please enter a valid email address');
+                }
+                // Validate password length
+                else if (field.id === 'password' && element.value.length < 8) {
+                    isValid = false;
+                    element.classList.add('error');
+                    errorElement.textContent = 'Password must be at least 8 characters';
+                    errorElement.style.display = 'block';
+                    errors.push('Password must be at least 8 characters');
+                }
+                // Validate password match
+                else if (field.id === 'confirmPassword' && element.value !== passwordField.value) {
+                    isValid = false;
+                    element.classList.add('error');
+                    errorElement.style.display = 'block';
+                    errors.push('Passwords do not match');
+                }
+            });
+
+            // Validate radio groups
+            radioGroups.forEach(group => {
+                const selected = document.querySelector(`input[name="${group.name}"]:checked`);
+                const errorElement = document.getElementById(group.errorId);
+
+                // Remove error from all cards in group
+                document.querySelectorAll(`.radio-card input[name="${group.name}"]`).forEach(input => {
+                    input.parentElement.classList.remove('error');
+                });
+
+                errorElement.style.display = 'none';
+
+                if (!selected) {
+                    isValid = false;
+                    // Add error to all cards in group
+                    document.querySelectorAll(`.radio-card input[name="${group.name}"]`).forEach(input => {
+                        input.parentElement.classList.add('error');
+                    });
+                    errorElement.style.display = 'block';
+                    errors.push(`Please select a ${group.name}`);
+                }
+            });
+
+            if (!isValid) showValidationSummary(errors);
+            return isValid;
+        }
+        
+        // small Real-time validation for inputs validation
+        requiredFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            const errorElement = document.getElementById(field.errorId);
+            if (!element) return;
+            element.addEventListener('blur', function () {
+                if (!this.value.trim()) {
+                    this.classList.add('error');
+                    errorElement.style.display = 'block';
+                } else {
+                    this.classList.remove('error');
+                    errorElement.style.display = 'none';
+                }
+            });
+            element.addEventListener('input', function () {
+                if (this.value.trim()) {
+                    this.classList.remove('error');
+                    errorElement.style.display = 'none';
+                }
+                if (field.id === 'confirmPassword' && this.value === passwordField.value) {
+                    this.classList.remove('error');
+                    errorElement.style.display = 'none';
+                }
+            });
+        });
+
+        // ---------- Password toggles ----------
+        function togglePasswordVisibility(field, button) {
+            const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+            field.setAttribute('type', type);
+
+            // Toggle eye icon
+            if (type === 'text') {
+                button.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+        }
+
+        togglePassword.addEventListener('click', () => {
+            togglePasswordVisibility(passwordField, togglePassword);
+        });
+
+        toggleConfirmPassword.addEventListener('click', () => {
+            togglePasswordVisibility(confirmPasswordField, toggleConfirmPassword);
+        });
+
+
+        // ---------- Close modals ----------
+        closeButtons.forEach(button => button.addEventListener('click', () => {
+            if (verificationModal) verificationModal.style.display = 'none';
+            if (successModal) successModal.style.display = 'none';
+        }));
+
+        // Close modal by clicking outside
+        window.addEventListener('click', (event) => {
+            if (verificationModal && event.target === verificationModal) verificationModal.style.display = 'none';
+            if (successModal && event.target === successModal) successModal.style.display = 'none';
+            const manageModal = document.getElementById('managePermission');
+            if (manageModal && event.target === manageModal) {
+            if (typeof window.closePermissionModal === 'function') window.closePermissionModal();
+            else manageModal.classList.add('hidden');
+            }
+        });
+
+        // Ensure Save button works and opens verification modal
+        if (saveButton) {
+            saveButton.addEventListener('click', function () {
+                // Validate form before proceeding
+                if (!validateForm()) { return; }
+
+                // Update profile preview in verification modal
+                let imageURL = null;
+                let croppedBlob = avatarUploader && typeof avatarUploader.getBlob === 'function' ? avatarUploader.getBlob() : null;
+                if (typeof croppedBlob !== 'undefined' && croppedBlob !== null) {
+                    imageURL = URL.createObjectURL(croppedBlob);
+                }
+                if (finalProfilePreview) {
+                    console.log("imageURL")
+                    if (imageURL) { finalProfilePreview.style.backgroundImage = `url(${imageURL})`; }
+                    else {finalProfilePreview.style.backgroundImage = `url(https://cdn.pixabay.com/photo/2016/04/22/04/57/graduation-1345143_1280.png)`;}
+                }
+
+                // Fill verification modal fields (safe insertion)
+                const setText = (id, text) => {
+                    const node = document.getElementById(id);
+                    if (node) node.textContent = text || 'Not Provided';
+                };
+
+                // Update verification modal with form data
+                setText('verifyName', el('name') ? el('name').value.trim() : '');
+                setText('verifyEmail', el('email') ? el('email').value.trim() : '');
+                setText('verifyUsername', el('username') ? el('username').value.trim() : '');
+                setText('verifyQualification', el('qualification') ? el('qualification').value.trim() : 'Not Provided');
+                setText('verifySalary', el('salary') ? el('salary').value.trim() : 'Not Provided');
+                setText('verifyNational_id', el('national_id') ? el('national_id').value.trim() : 'Not Provided');
+                setText('verifyPhone', el('phone') ? el('phone').value.trim() : 'Not Provided');
+
+
+
+                const joinDateInput = document.getElementById('date_of_joining').value;
+                const joinDate = new Date(joinDateInput);
+                let JoinDateValue = 'Not Provided';
+
+                if (joinDateInput && !isNaN(joinDate.getTime())) {
+                    JoinDateValue = joinDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                }
+                document.getElementById('verifyJoinDate').textContent = JoinDateValue;
+
+                // Get selected role
+                const selectedRole = document.querySelector('input[name="role_id"]:checked');
+                document.getElementById('verifyRole').textContent = selectedRole ? selectedRole.parentElement.querySelector('div').textContent : 'Not selected';
+
+                // classes preview
+                const verifyClasses = document.getElementById('verifyClasses');
+                if (verifyClasses) {
+                    verifyClasses.innerHTML = '';
+                    if (selectedClasses.length > 0) {
+                        selectedClasses.forEach(cls => verifyClasses.appendChild(createBadge(cls.name, 'bg-blue-50', 'text-blue-700')));
+                    } else {
+                        verifyClasses.appendChild(createBadge('None', 'bg-gray-100', 'text-gray-600'));
+                    }
+                }
+
+                // permissions preview
+                const verifyPermissions = document.getElementById('verifyPermissions');
+                if (verifyPermissions) {
+                    verifyPermissions.innerHTML = ''; // clear previous badges
+                    const selectedPermissions = allPermissions.filter(p => p.selected);
+                    if (selectedPermissions.length > 0) {
+                        selectedPermissions.forEach(perm => {
+                            verifyPermissions.appendChild(createBadge(perm.title, 'bg-green-500/20', 'text-green-300'));
+                        });
+                    } else {
+                        verifyPermissions.appendChild(createBadge('None', 'bg-gray-500/20', 'text-gray-300'));
+                    }
+                }
+
+                if (verificationModal) verificationModal.style.display = 'flex';
+            });
+        }
+
+
+        // Verify and add staff
+        verifyConfirm.addEventListener('click', async function () {
+
+            let base64Image = null;
+            let croppedBlob = avatarUploader && typeof avatarUploader.getBlob === 'function' ? avatarUploader.getBlob() : null;
+            
+            if (typeof croppedBlob !== 'undefined' && croppedBlob !== null) {
+                base64Image = await convertBlobToBase64(croppedBlob);
+            }
+            verifyConfirm.disabled = true;
+            verifyConfirm.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            const selectedGender = document.querySelector('input[name="gender"]:checked');
+            const selectedRole = document.querySelector('input[name="role_id"]:checked');
+            const roleLabel = selectedRole ? selectedRole.parentElement.querySelector('div').textContent : null;
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.replace(/\D/g, '') || null,
+                dob: document.getElementById('dob').value,
+                gender: selectedGender ? selectedGender.value : null,
+                address: document.getElementById('address').value.trim() || null,
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value,
+                date_of_joining: document.getElementById('date_of_joining').value || null,
+                qualification: document.getElementById('qualification').value.trim() || null,
+                salary: document.getElementById('salary').value.trim() || null,
+                national_id: document.getElementById('national_id').value.trim() || null,
+                role_id: selectedRole ? selectedRole.value : null,
+                role_name: roleLabel,
+                assigned_classes: selectedClasses.map(cls => cls.id),
+                permissions: allPermissions.filter(p => p.selected).map(p => p.id),
+                image: base64Image,
+            };
+            try {
+                // console.log("Sending payload:", payload);
+                const res = await fetch('/api/add_staff', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                // console.log("Response status:", res);
+                const data = await res.json().catch(() => ({}));
+                verificationModal.style.display = 'none';
+                console.log(data)
+                if (!res.ok) {
+                    validationSummary.style.display = 'block';
+                    errorList.innerHTML = '';
+
+                    // Handle multiple error messages from backend
+                    if (data.errors && Array.isArray(data.errors)) {
+                        data.errors.forEach(err => {
+                            const li = document.createElement('li');
+                            li.textContent = err;
+                            errorList.appendChild(li);
+                        });
+                    } else {
+                        // Fallback to single message
+                        const li = document.createElement('li');
+                        li.textContent = data.message || 'Failed to add staff. Please review the form.';
+                        errorList.appendChild(li);
+                    }
+
+                    validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    document.querySelector('#successModal .success-message').textContent =
+                        `${payload.name} has been successfully added to the staff database.`;
+                    successModal.style.display = 'flex';
+                }
+            } catch (e) {
+                verificationModal.style.display = 'none';
+                validationSummary.style.display = 'block';
+                errorList.innerHTML = '';
+                const li = document.createElement('li');
+                li.textContent = 'Network error while saving. Please try again.';
+                errorList.appendChild(li);
+                validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } finally {
+                verifyConfirm.disabled = false;
+                verifyConfirm.innerHTML = 'Verify & Add Staff';
+            }
+        });
+
+        // Send WhatsApp message
+        sendWhatsAppButton.addEventListener('click', function () {
+            const phone = document.getElementById('phone').value.replace(/\D/g, '');
+            const name = document.getElementById('name').value;
+
+            if (phone) {
+                const whatsappUrl = `https://wa.me/${phone}?text=Welcome%20${encodeURIComponent(name)}%20to%20our%20staff%20team!%20Your%20account%20has%20been%20successfully%20created.`;
+                window.open(whatsappUrl, '_blank');
+            } else {
+                alert('Phone number is required to send WhatsApp message');
+            }
+        });
+
+
+    });
+
+    function convertBlobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                resolve(reader.result);  // base64 string
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+</script>
+
+{% endblock %}

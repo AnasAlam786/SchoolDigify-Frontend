@@ -1,4 +1,4 @@
-
+import { useNavigate } from "react-router-dom";
 import { NoStaff } from "./PageStatus"
 import femaleTeacher from "../../../assets/femaleTeacher.jpg"
 import maleTeacher from "../../../assets/maleTeacher.jpg"
@@ -14,6 +14,8 @@ const roleBadgeClasses = {
 
 function StaffList({ teachers, totalClasses, onResetFilters }) {
   const hasNoResults = teachers.length === 0
+
+  const navigate = useNavigate();
 
   console.log(teachers)
   console.log(totalClasses)
@@ -127,7 +129,7 @@ function StaffList({ teachers, totalClasses, onResetFilters }) {
                     <div className="flex justify-end space-x-1 md:space-x-2">
                       <button
                         type="button"
-                        onClick={() => window.location.href = `/update_staff?id=${teacher.id}`}
+                        onClick={() => navigate(`/edit_staff/${teacher.id}`)}
                         className="action-btn bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center"
                       >
                         <i className="fas fa-edit text-xs md:text-sm" />
@@ -199,7 +201,7 @@ function StaffList({ teachers, totalClasses, onResetFilters }) {
               <div className="mobile-actions">
                 <button
                   type="button"
-                  onClick={() => window.location.href = `/update_staff?id=${teacher.id}`}
+                  onClick={() => navigate(`/edit_staff/${teacher.id}`)}
                   className="action-btn bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-lg flex items-center text-xs"
                 >
                   <i className="fas fa-edit mr-1" /> Edit

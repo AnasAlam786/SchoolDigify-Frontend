@@ -334,7 +334,6 @@
       transform: translateY(-50%);
       width: 4px;
       height: 4px;
-      background: #4361ee;
       border-radius: 50%;
     }
 
@@ -383,7 +382,7 @@
     const alertId = 'alert-' + Date.now();
 
     const alertHTML = `
-        <div id="${alertId}" class="fixed top-4 right-4 z-50 animate-slide-up">
+        <div id="${alertId}" class="fixed top-4 right-4 z-500 animate-slide-up">
           <div class="${isSuccess ? 'bg-gradient-to-r from-green-600 to-emerald-600' : 'bg-gradient-to-r from-red-600 to-pink-600'} text-white px-6 py-4 rounded-xl shadow-2xl max-w-sm border border-white/10 backdrop-blur-sm">
             <div class="flex items-start gap-3">
               <div class="${isSuccess ? 'bg-green-500/20' : 'bg-red-500/20'} p-2 rounded-lg">

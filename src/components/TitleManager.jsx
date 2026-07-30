@@ -1,21 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useLocation, matchPath } from "react-router-dom";
+import { AuthContext } from "../auth/authProvider";
 
 export default function TitleManager() {
   const location = useLocation();
+  const { sessionData } = useContext(AuthContext);
+
 
   useEffect(() => {
     const { pathname } = location;
 
     let title = "SchoolDigify";
 
-    // Dynamic routes
     if (matchPath("/question-papers/:paperId", pathname)) {
       title = "Question Paper Editor";
-    }
-
-    // Static routes
-    else {
+    } else if (matchPath("/edit_student/:studentID", pathname)) {
+      title = "Edit Student";
+    } else {
       const titles = {
         "/login": "Login",
         "/logout": "Logout",
@@ -33,8 +34,28 @@ export default function TitleManager() {
       title = titles[pathname] || "SchoolDigify";
     }
 
-    document.title = `${title}`;
-  }, [location.pathname]);
+    document.title = title;
+
+    // Update favicon
+    const session = JSON.parse(sessionStorage.getItem("session"));
+
+    // Update favicon
+    if (sessionData?.logo) {
+      setFavicon(sessionData.logo);
+    }
+  }, [location.pathname, sessionData]);
 
   return null;
+}
+
+function setFavicon(url) {
+  let link = document.querySelector("link[rel='icon']");
+
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "icon";
+    document.head.appendChild(link);
+  }
+
+  link.href = url;
 }

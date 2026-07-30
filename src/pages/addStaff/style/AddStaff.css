@@ -1,0 +1,358 @@
+.p-3.mx-auto {
+    background: transparent !important;
+}
+
+/* Custom borders */
+.form-section,
+.tips-section {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 30, 30, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.form-input,
+.radio-card{
+    background: rgba(20, 20, 20, 0.7);
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+.image-upload {
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.7) !important;
+}
+
+.validation-summary {
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    background: rgba(254, 226, 226, 0.1) !important;
+}
+
+.modal-content {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(30, 41, 59, 0.95) !important;
+    backdrop-filter: blur(20px);
+}
+
+.modal-header,
+.modal-footer {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.tip {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.verification-item {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Card hover effects */
+.form-section {
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    border-color: rgba(67, 97, 238, 0.3);
+}
+
+/* Input field specific styling */
+.form-input {
+    color: #e2e8f0 !important;
+    transition: all 0.3s ease;
+}
+
+.form-input::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* Radio card backgrounds */
+.radio-card {
+    background: rgba(20, 20, 20, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.radio-card:hover {
+    background: rgba(30, 41, 59, 0.9) !important;
+    border-color: rgba(67, 97, 238, 0.5);
+}
+
+.radio-card.selected {
+    background: rgba(67, 97, 238, 0.1);
+    border-color: #4361ee;
+}
+
+/* Button styling */
+.btn-upload {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(15, 23, 42, 0.9) !important;
+    transition: all 0.3s ease;
+}
+
+.btn-upload:hover {
+    background: rgba(67, 97, 238, 0.2) !important;
+    border-color: #4361ee;
+}
+
+/* Checkbox items */
+.checkbox-item {
+    background: rgba(20, 20, 20, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.checkbox-item:hover {
+    transform: translateY(-2px);
+}
+
+.checkbox-item.selected {
+    background: #000000;
+    border-color: #4361ee;
+}
+
+.checkbox-item input[type="checkbox"] {
+    accent-color: #4361ee;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.permission_list {
+    background: rgba(20, 20, 20, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Permission cards */
+.permission-card {
+    background: rgba(20, 20, 20, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.permission-card:hover {
+    transform: translateY(-2px);
+}
+
+.permission-card.checked {
+    background: #000000;
+    border-color: #4361ee;
+}
+
+.permission-card input[type="checkbox"] {
+    accent-color: #4361ee;
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Class tags */
+.class-tag {
+    background: rgba(67, 97, 238, 0.15) !important;
+    border: 1px solid rgba(67, 97, 238, 0.3);
+    color: #e2e8f0;
+}
+
+/* Permission category buttons */
+.permission-category-btn {
+    background: rgba(15, 23, 42, 0.7) !important;
+    transition: all 0.3s ease;
+}
+
+.permission-category-btn.active {
+    background: rgba(67, 97, 238, 0.2) !important;
+    color: #4361ee;
+}
+
+/* Text colors for better contrast */
+.text-gray-light {
+    color: #e2e8f0 !important;
+}
+
+.text-gray-lighter {
+    color: #cbd5e1 !important;
+}
+
+/* Required field asterisk */
+.required::after {
+    content: " *";
+    color: #ff6b6b;
+}
+
+/* Modal CSS */
+.bg-primary-gradient {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+}
+
+.bg-success-gradient {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.bg-whatsapp-gradient {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+}
+
+.bg-dark-gradient {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+}
+
+.shadow-primary-glow {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+.shadow-success-glow {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.shadow-whatsapp-glow {
+    box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+}
+
+.shadow-modal {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.animate-modal-enter {
+    animation: modal-enter 0.3s ease-out;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.2s ease-out;
+}
+
+@keyframes modal-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scale-in {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Custom scrollbar for modal */
+.modal-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 10px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.5);
+    border-radius: 10px;
+}
+
+.modal-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .radio-group {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) !important;
+    }
+
+    .classes-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .permissions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .radio-group {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+    }
+
+    .classes-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .permissions-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .page-title h1 {
+        font-size: 1.8rem !important;
+    }
+
+    .btn {
+        padding: 8px 15px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .verification-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .success-actions {
+        flex-direction: column !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-actions {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+
+    .btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .radio-group {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Error state for inputs */
+.form-input.error {
+    border-color: #ff6b6b !important;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2) !important;
+    background: rgba(254, 226, 226, 0.1) !important;
+}
+
+.radio-card.error {
+    border-color: #ff6b6b !important;
+    background: rgba(254, 226, 226, 0.1) !important;
+}

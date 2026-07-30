@@ -43,7 +43,7 @@ function StudentContent({ student, siblings, handleSiblingClick }) {
               icon="fas fa-user-tag"
               color="orange"
               label="Caste"
-              value={`${student.Caste ?? "-"} (${student.Caste_Type ?? "-"})`}
+              value={`${student.Caste ?? ""} (${student.Caste_Type ?? "N/A"})`}
             />
 
             <DetailCard icon="fas fa-praying-hands" color="pink" label="Religion" value={student.RELIGION} />
@@ -147,7 +147,9 @@ function Section({ title, color, children }) {
 }
 
 export default function StudentDetailsModal({
-  isOpen, onClose, studentId, phone,
+  onClose,
+  studentId, phone,
+  student = null, onSubmit = null, finalSubmitBtn = null
 }) {
   const [status, setStatus] = useState("loading");
   const [studentData, setStudentData] = useState({
@@ -167,7 +169,16 @@ export default function StudentDetailsModal({
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
+
+    // Direct data supplied
+    if (student) {
+      setStudentData({
+        student,
+        siblings: student.siblings ?? [],
+      });
+      setStatus("success");
+      return;
+    }
 
     setStudentData({ student: null, siblings: [] });
     setStatus("loading");
@@ -194,36 +205,30 @@ export default function StudentDetailsModal({
     return () => {
       ignore = true;
     };
-  }, [isOpen, studentId, phone, fetchStudentData]);
+  }, [studentId, phone, student, fetchStudentData]);
 
-
-  useEffect(() => {
-    if (!isOpen) {
-      setStatus("loading");
-      setStudentData({ student: null, siblings: [] });
-    }
-  }, [isOpen]);
 
 
   // Handler for sibling click
   const handleSiblingClick = useCallback(
     async (siblingId, phone) => {
 
+      if (student) return;
+
       if (status === "loading") return;
       setStatus("loading");
 
       try {
-        const data = await fetchStudentData({ student_id: siblingId, phone:phone });
+        const data = await fetchStudentData({ student_id: siblingId, phone: phone });
         setStudentData(data);
         setStatus("success");
       } catch (err) {
-          setStatus("error");
+        setStatus("error");
       }
     },
-    [status, fetchStudentData]
+    [status, student, fetchStudentData]
   );
 
-  if (!isOpen) return null;
 
   const handleWhatsAppClick = () => {
     const number = studentData.student?.PHONE || phone;
@@ -239,6 +244,13 @@ export default function StudentDetailsModal({
       alert(err.message || "Failed to open WhatsApp.");
     }
   };
+
+  const handleClose = () => {
+    setStudentData({ student: null, siblings: [], })
+    setStatus("loading")
+    onClose()
+  };
+
 
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 m-0">
@@ -285,12 +297,56 @@ export default function StudentDetailsModal({
 
         {/* Footer */}
         <div className="p-4 bg-gray-900/95 border-t border-gray-700/30">
-          <button
-            onClick={onClose}
-            className="w-full px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl"
-          >
-            Close
-          </button>
+          <div className="flex gap-3">
+
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 text-white rounded-xl"
+            >
+              Close
+            </button>
+
+            {typeof onSubmit === "function" && (
+              <button
+                type="button"
+                onClick={onSubmit}
+                disabled={finalSubmitBtn}
+                className={`flex-1 px-6 py-3 rounded-xl text-white transition flex items-center justify-center gap-2 ${finalSubmitBtn
+                    ? "bg-green-500 cursor-not-allowed opacity-80"
+                    : "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500"
+                  }`}
+              >
+                {finalSubmitBtn && (
+                  <svg
+                    className="w-4 h-4 animate-spin"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                )}
+
+                <span>
+                  {finalSubmitBtn ? "Submitting..." : "Submit"}
+                </span>
+              </button>
+            )}
+
+          </div>
         </div>
 
       </div>

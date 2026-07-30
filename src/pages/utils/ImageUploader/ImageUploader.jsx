@@ -8,10 +8,8 @@ import UploadContainer from "./components/UploaderContainer"
 import "./style/ImageUploader.css"
 
 export default function ImageUploader({
-    imageUrl = "",
+    image = "", setImage
 }) {
-    const [image, setImage] = useState(imageUrl);
-
 
     const [cropSrc, setCropSrc] = useState(null);
 

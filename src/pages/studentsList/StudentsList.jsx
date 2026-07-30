@@ -155,12 +155,11 @@ export default function StudentsList() {
                 {mainContent}
             </section>
 
-            <StudentDetailsModal
-                isOpen={isDetailModalOpen}
+            {isDetailModalOpen && (<StudentDetailsModal
                 onClose={closeStudentDetails}
                 studentId={selectedStudent}
                 phone={selectedPhone}
-            />
+            />)}
         </div>
     );
 }

@@ -1,3 +1,29 @@
+import { apiGet } from "../../api/api";
+
+export async function sendMessage(studentId) {
+
+  if(!studentId){ showAlert(400, "Student not found!")}
+
+  try {
+    const resp = await apiGet(
+      `/api/create_watsapp_message_api?student_id=${encodeURIComponent(studentId)}`
+    );
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      throw new Error(data.message);
+    }
+
+    sendWhatsAppMessage(data.phone, data.watsapp_message);
+
+  } catch (err) {
+    console.error(err);
+    showAlert?.("error", err.message);
+  }
+}
+
+
 export function sendWhatsAppMessage(phone, message = "") {
   if (phone === null || phone === undefined) {
     throw new Error("📞 Invalid phone number format.");
@@ -53,3 +79,5 @@ export function sendWhatsAppMessage(phone, message = "") {
   stored.count += 1;
   localStorage.setItem(storageKey, JSON.stringify(stored));
 }
+
+
