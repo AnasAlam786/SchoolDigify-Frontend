@@ -1,11 +1,29 @@
-export default function PermissionModal({ open, permissions, selectedPermissions, onTogglePermission, onClose }) {
-  if (!open) return null;
+export default function PermissionModal({ formData, allPermissions, handleFieldChange, onClose }) {
 
-  const selectedCount = selectedPermissions.length;
+
+  const selectedPermissionIds = new Set(
+    (formData.assigned_permissions_id || []).map(String)
+  );
+
+  const selectedPermissions = allPermissions.filter(permission =>
+    selectedPermissionIds.has(String(permission.id))
+  );
+
+  const handlePermissionToggle = (permissionId) => {
+
+    const id = String(permissionId);
+    const isSelected = selectedPermissionIds.has(id);
+
+    const updatedPermissionIds = isSelected
+      ? [...selectedPermissionIds].filter(permissionId => permissionId !== id)
+      : [...selectedPermissionIds, id];
+
+    handleFieldChange("assigned_permissions_id", updatedPermissionIds);
+  };
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-lg z-50 flex items-center justify-center"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
@@ -41,12 +59,15 @@ export default function PermissionModal({ open, permissions, selectedPermissions
                 <i className="fas fa-check-circle text-emerald-400 text-lg" />
                 <span className="text-slate-300 font-medium text-base sm:text-lg">Selected Permissions</span>
               </div>
-              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-sm rounded-full font-medium border border-emerald-500/20">
-                {selectedCount} selected
+
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 text-sm rounded-full font-medium 
+              border border-emerald-500/20 self-start sm:self-auto">
+                {selectedPermissionIds.size} selected
               </span>
+
             </div>
             <div className="selected-permissions-tags flex flex-wrap gap-2 min-h-8">
-              {selectedPermissions.length > 0 ? (
+              {selectedPermissionIds.size > 0 ? (
                 selectedPermissions.map((permission) => (
                   <span
                     key={permission.id}
@@ -69,21 +90,20 @@ export default function PermissionModal({ open, permissions, selectedPermissions
               <h6 className="text-slate-400 font-medium text-sm uppercase tracking-widest">Available Permissions</h6>
               <div className="flex items-center space-x-2 text-slate-500 text-sm">
                 <i className="fas fa-filter" />
-                <span>{permissions.length} permissions available</span>
+                <span>{allPermissions.length} permissions available</span>
               </div>
             </div>
 
             <div className="permissions-grid grid grid-cols-1 lg:grid-cols-2 gap-3 overflow-y-auto p-1">
-              {permissions.map((permission) => {
+              {allPermissions.map((permission) => {
                 const selected = selectedPermissions.some((item) => String(item.id) === String(permission.id));
                 return (
                   <button
                     key={permission.id}
                     type="button"
-                    className={`permission-card p-4 sm:p-5 rounded-xl text-left cursor-pointer transition-all duration-300 border border-slate-700/50 hover:border-blue-400/30 hover:bg-slate-800/20 hover:shadow-lg hover:shadow-blue-500/5 group relative overflow-hidden ${
-                      selected ? "selected border-blue-400/40 bg-slate-800/30" : ""
-                    }`}
-                    onClick={() => onTogglePermission(permission.id)}
+                    className={`permission-card p-4 sm:p-5 rounded-xl text-left cursor-pointer transition-all duration-300 border border-slate-700/50 hover:border-blue-400/30 hover:bg-slate-800/20 hover:shadow-lg hover:shadow-blue-500/5 group relative overflow-hidden ${selected ? "selected border-blue-400/40 bg-slate-800/30" : ""
+                      }`}
+                    onClick={() => handlePermissionToggle(permission.id)}
                   >
                     <div className="absolute top-3 sm:top-4 right-3 sm:right-4 w-5 h-5 sm:w-6 sm:h-6 border-2 border-slate-600 rounded-lg transition-all duration-300 flex items-center justify-center">
                       <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-sm ${selected ? "bg-blue-500 scale-100" : "bg-transparent scale-0"}`} />
@@ -110,11 +130,11 @@ export default function PermissionModal({ open, permissions, selectedPermissions
         <div className="bg-slate-900/50 border-t border-slate-700/30 px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row gap-3 justify-between backdrop-blur-sm">
           <button
             type="button"
-            className="px-5 py-2.5 bg-transparent hover:bg-slate-700/50 text-slate-400 hover:text-white rounded-xl font-medium transition-all duration-200 border border-slate-600 hover:border-slate-500 flex items-center justify-center space-x-2"
+            className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center space-x-2"
             onClick={onClose}
           >
-            <i className="fas fa-arrow-left" />
-            <span>Cancel</span>
+            <i className="fas fa-check" />
+            <span>Done</span>
           </button>
         </div>
       </div>

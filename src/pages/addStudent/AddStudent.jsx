@@ -80,11 +80,11 @@ function AddStudent() {
   const [educationOptions, setEducationOptions] = useState([])
   const [fatherOccupationOptions, setFatherOccupationOptions] = useState([])
   const [motherOccupationOptions, setMotherOccupationOptions] = useState([])
-  const [homeDistanceOptions, setHomeDistanceOptions] = useState([])  
+  const [homeDistanceOptions, setHomeDistanceOptions] = useState([])
 
   const [reviewSubmitBtn, setReviewSubmitBtn] = useState(false);
   const [finalSubmitBtn, setFinalSubmitBtn] = useState(false);
-  
+
 
   const [validationModalOpen, setValidationModalOpen] = useState(false);
   const [successState, setSuccessState] = useState({ open: false, studentID: null, message: '' });
@@ -217,16 +217,13 @@ function AddStudent() {
       const data = await resp.json();
 
       if (!resp.ok) {
-        const errorMap = Object.fromEntries(
-          (data.errors || []).map(({ field, message }) => [field, message])
-        );
 
-        setErrors(errorMap);
+        setErrors(data.errors);
         if (data.errors?.length) {
           scrollToField(data.errors[0].field);
         }
 
-        throw new Error(data.error || "Failed to validate data.");
+        throw new Error(Object.values(errors)[0] || "Failed to validate data.");
       }
 
       const verifiedData = data.verifiedData
@@ -272,7 +269,7 @@ function AddStudent() {
           return;
         }
 
-        throw new Error(data.error || "Failed to add student.");
+        throw new Error(Object.values(errors)[0] || "Failed to add student.");
       }
 
       setValidationModalOpen(false);
@@ -304,6 +301,11 @@ function AddStudent() {
       setFinalSubmitBtn(false);
     }
   };
+
+  
+  const getClassName = (id) =>
+    classes.find(c => c.id === Number(id))?.class_name ?? "";
+
 
   return (
     <div className="max-w-6xl mx-auto sm:px-6 py-4">

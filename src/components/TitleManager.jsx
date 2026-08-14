@@ -16,6 +16,8 @@ export default function TitleManager() {
       title = "Question Paper Editor";
     } else if (matchPath("/edit_student/:studentID", pathname)) {
       title = "Edit Student";
+    } else if (matchPath("/edit_staff/:staffId", pathname)) {
+      title = "Edit Staff";
     } else {
       const titles = {
         "/login": "Login",
@@ -29,6 +31,8 @@ export default function TitleManager() {
         "/admit_and_scheme": "Admit Card & Scheme",
         "/show_marks": "Show Marks",
         "/promote_and_tc": "Promote & TC",
+        "/add_staff": "Add Staff",
+        "/show_staff":"Staff List",
       };
 
       title = titles[pathname] || "SchoolDigify";

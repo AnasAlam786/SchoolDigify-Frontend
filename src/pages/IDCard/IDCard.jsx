@@ -12,6 +12,8 @@ import "./style/IDCard.css"
 function IDCard() {
 
     const [StudentsIDCardData, setStudentsIDCardData] = useState(null);
+    const [SchoolData, setSchoolData] = useState(null);
+
     const [studentIDCardError, setstudentIDCardError] = useState(null);
     const [isStudentIDCardloading, setStudentIDCardloading] = useState(false);
 
@@ -24,200 +26,21 @@ function IDCard() {
 
     let totalSelected = selectedStudents.size;
 
-
-    const students = [
-        {
-            student_id: 1,
-            studentName: "Anas Khan",
-            studentFather: "Mohd. Ali",
-            studentImage: "https://randomuser.me/api/portraits/men/32.jpg",
-            studentClassRoll: "10 - 25",
-            studentDOB: "12-03-2008",
-            studentPhone: "9876543210",
-            studentAddress: "Moradabad, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 2,
-            studentName: "Aarav Sharma",
-            studentFather: "Rajesh Sharma",
-            studentImage: "https://randomuser.me/api/portraits/men/11.jpg",
-            studentClassRoll: "6 - 12",
-            studentDOB: "21-08-2013",
-            studentPhone: "9123456780",
-            studentAddress: "Delhi, India",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 3,
-            studentName: "Priya Verma",
-            studentFather: "Sanjay Verma",
-            studentImage: "https://randomuser.me/api/portraits/women/21.jpg",
-            studentClassRoll: "7 - 08",
-            studentDOB: "15-11-2012",
-            studentPhone: "9234567810",
-            studentAddress: "Lucknow, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 4,
-            studentName: "Mohammad Faizan",
-            studentFather: "Irfan Ahmad",
-            studentImage: "https://randomuser.me/api/portraits/men/45.jpg",
-            studentClassRoll: "8 - 17",
-            studentDOB: "05-02-2011",
-            studentPhone: "9345678120",
-            studentAddress: "Bareilly, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 5,
-            studentName: "Sneha Gupta",
-            studentFather: "Manoj Gupta",
-            studentImage: "https://randomuser.me/api/portraits/women/55.jpg",
-            studentClassRoll: "9 - 03",
-            studentDOB: "18-07-2010",
-            studentPhone: "9456781230",
-            studentAddress: "Kanpur, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 6,
-            studentName: "Rahul Singh",
-            studentFather: "Vijay Singh",
-            studentImage: "https://randomuser.me/api/portraits/men/61.jpg",
-            studentClassRoll: "11 - 14",
-            studentDOB: "02-01-2009",
-            studentPhone: "9567812340",
-            studentAddress: "Agra, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 7,
-            studentName: "Ayesha Siddiqui",
-            studentFather: "Nadeem Siddiqui",
-            studentImage: "https://randomuser.me/api/portraits/women/68.jpg",
-            studentClassRoll: "12 - 07",
-            studentDOB: "27-09-2008",
-            studentPhone: "9678123450",
-            studentAddress: "Aligarh, UP",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        },
-
-        {
-            student_id: 8,
-            studentName: "Rohan Patel",
-            studentFather: "Dinesh Patel",
-            studentImage: "https://randomuser.me/api/portraits/men/72.jpg",
-            studentClassRoll: "5 - 19",
-            studentDOB: "14-04-2014",
-            studentPhone: "9781234506",
-            studentAddress: "Ahmedabad, Gujarat",
-
-            schoolName: "ABC School",
-            schoolUDISE: "123456",
-            schoolLogo: "/logo.png",
-            sessionYear: "2025-26",
-
-            teacherSign: "/sign/teacher.png",
-            principalSign: "https://www.clipartmax.com/png/full/474-4744045_signatures-samples-png-signature-samples-png.png",
-
-            schoolAddress: "Moradabad, UP",
-            schoolPhone: "9999999999"
-        }
-    ];
-
     const handlePrint = () => {
 
         if (!Array.isArray(StudentsIDCardData)) { return };
 
-        const selectedData = StudentsIDCardData.filter(
+        const selectedStudentsData = StudentsIDCardData.filter(
             student =>
                 selectedStudents.has(student.student_id)
         );
 
-        if (selectedData.length === 0) {
+        if (selectedStudentsData.length === 0) {
             alert("Please select at least one ID card to print.");
             return;
         }
 
-        PrintIDCard(selectedData);
+        PrintIDCard(selectedStudentsData, SchoolData);
     };
 
 
@@ -231,12 +54,12 @@ function IDCard() {
 
             // simulate API
             if (response.ok) {
-                setStudentsIDCardData(data.students)
+                setStudentsIDCardData(data.students_data)
+                setSchoolData(data.school_data)
             } else {
                 setstudentIDCardError(data.message || 'Failed to fetch attendance')
                 showAlert(500, data.message || 'Failed to fetch attendance')
             }
-
 
         } catch (err) {
             // handle error if needed
@@ -259,8 +82,6 @@ function IDCard() {
 
                 const studentFather =
                     student.student_father?.toLowerCase() || "";
-
-                
 
                 if (
                     !studentName.includes(term) &&
@@ -345,10 +166,10 @@ function IDCard() {
             <IDCardContainer
                 filteredStudents={filteredStudents}
                 selectedStudents={selectedStudents}
+                schoolData={SchoolData}
                 setSelectedStudents={setSelectedStudents}
             />);
     }
-
 
     return (
         <>

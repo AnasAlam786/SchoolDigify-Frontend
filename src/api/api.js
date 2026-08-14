@@ -17,3 +17,11 @@ export async function apiPost(path, body) {
         body: JSON.stringify(body),
     });
 }
+
+export async function apiPostFormData(path, formData) {
+  return fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  });
+}

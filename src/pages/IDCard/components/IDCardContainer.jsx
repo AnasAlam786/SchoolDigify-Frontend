@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import HangingIDCard from "../designs/hangingIDCard/hangingIDCard";
+import IDCardPreview from "../components/IDCardPreview";
 
 
-function IDCardContainer({ filteredStudents, selectedStudents, setSelectedStudents }) {
+function IDCardContainer({ filteredStudents, selectedStudents, schoolData, setSelectedStudents }) {
 
     const toggleSelection = (studentId) => {
         setSelectedStudents(prev => {
@@ -29,7 +29,7 @@ function IDCardContainer({ filteredStudents, selectedStudents, setSelectedStuden
                         transition-all duration-300 hover:scale-105 cursor-pointer
                         ${isSelected ? "ring-4 ring-blue-500 bg-blue-900/20" : "bg-gray-800 hover:scale-105"}`}>
 
-                        <HangingIDCard key={index} student={student} />
+                        <IDCardPreview key={index} student={student} school={schoolData}/>
                         <div className='p-3 bg-gray-700 border-t border-gray-600'>
                             <div className="text-white font-semibold text-sm mb-1">{student.student_name}</div>
                             <div className="text-gray-400 text-xs">Class: {student.class+" - "+student.roll}</div>

@@ -6,8 +6,8 @@ import { DEFAULT_FILTERS, fieldOptions, sortOptions } from "./StudentsFilter";
 export default function StudentFilters({
     studentFilters, setStudentFilters,
     totalCount, visibleCount,
-    activeTags, 
-    classes, 
+    activeTags,
+    classes,
 }) {
 
     let hasActiveTags = activeTags.length > 0
@@ -56,7 +56,7 @@ export default function StudentFilters({
                                         <select
                                             value={studentFilters.searchIn}
                                             onChange={(e) => updateFilter("searchIn", e.target.value)}
-                                            className="appearance-none bg-transparent border-0 pl-2 pr-6 py-1 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="appearance-none bg-gray-900/80 border-0 pl-2 pr-6 py-1 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
                                             style={{
                                                 backgroundImage:
                                                     "url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239ca3af%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')",
@@ -203,11 +203,17 @@ export default function StudentFilters({
                                         <select
                                             value={studentFilters.filterPEN}
                                             onChange={(e) => updateFilter("filterPEN", e.target.value)}
-                                            className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
                                         >
-                                            <option value="any">Any Status</option>
-                                            <option value="present">PEN Present</option>
-                                            <option value="missing">PEN Missing</option>
+                                            <option value="any" >
+                                                Any Status
+                                            </option>
+                                            <option value="present" >
+                                                PEN Present
+                                            </option>
+                                            <option value="missing">
+                                                PEN Missing
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -218,7 +224,7 @@ export default function StudentFilters({
                                         <select
                                             value={studentFilters.filterGender}
                                             onChange={(e) => updateFilter("filterGender", e.target.value)}
-                                            className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
                                         >
                                             <option value="any">Any Gender</option>
                                             <option value="male">Male</option>
@@ -234,7 +240,7 @@ export default function StudentFilters({
                                         <select
                                             value={studentFilters.filterAdmission}
                                             onChange={(e) => updateFilter("filterAdmission", e.target.value)}
-                                            className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
                                         >
                                             <option value="any">Any Admission</option>
                                             <option value="new">New Admission</option>
@@ -258,7 +264,7 @@ export default function StudentFilters({
                                         <select
                                             value={studentFilters.sortBy}
                                             onChange={(e) => updateFilter("sortBy", e.target.value)}
-                                            className="flex-1 appearance-none bg-transparent border-0 text-base focus:outline-none focus:ring-0 cursor-pointer text-white pr-8"
+                                            className="flex-1 appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-base focus:outline-none focus:ring-0 cursor-pointer text-white pr-8"
                                         >
                                             {sortOptions.map((option) => (
                                                 <option key={option.value} value={option.value}>

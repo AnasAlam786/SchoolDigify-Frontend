@@ -74,9 +74,9 @@ function StaffList({ teachers, totalClasses, onResetFilters }) {
               <th className="pb-4 text-left text-gray-400 font-medium">Staff Member</th>
               <th className="pb-4 text-left text-gray-400 font-medium">Role</th>
               <th className="pb-4 text-left text-gray-400 font-medium">Classes</th>
-              <th className="pb-4 text-left text-gray-400 font-medium">Qualification</th>
+              {/* <th className="pb-4 text-left text-gray-400 font-medium">Qualification</th> */}
               <th className="pb-4 text-left text-gray-400 font-medium">Access</th>
-              <th className="pb-4 text-left text-gray-400 font-medium">Status</th>
+              {/* <th className="pb-4 text-left text-gray-400 font-medium">Status</th> */}
               <th className="pb-4 text-right text-gray-400 font-medium">Actions</th>
             </tr>
           </thead>
@@ -109,22 +109,22 @@ function StaffList({ teachers, totalClasses, onResetFilters }) {
                   <td>
                     <div className="text-white text-sm md:text-base">{renderAccessDisplay(teacher)}</div>
                   </td>
-                  <td>
+                  {/* <td>
                     <div className="text-white text-sm md:text-base">
                       {teacher.qualification || <span className="priority-warning">Empty</span>}
                     </div>
-                  </td>
+                  </td> */}
                   <td>
                     <span className={`priority-${accessLevel.toLowerCase()} text-sm md:text-base`}>
                       {accessLevel}
                     </span>
                   </td>
-                  <td>
+                  {/* <td>
                     <span className={`${statusClass} flex items-center text-sm md:text-base`}>
                       <i className="fas fa-circle text-xs mr-1 md:mr-2" />
                       {renderStatus(teacher.status)}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="text-right">
                     <div className="flex justify-end space-x-1 md:space-x-2">
                       <button

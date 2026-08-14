@@ -1,6 +1,4 @@
-export default function SuccessModal({ open, message, onClose, onSendWhatsApp }) {
-  if (!open) return null;
-
+export default function SuccessModal({ message, onClose, onSendWhatsApp }) {
   return (
     <div className="modal fixed inset-0 w-full h-full bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="modal-content bg-slate-800 rounded-2xl max-w-md w-full overflow-hidden shadow-modal animate-scale-in">

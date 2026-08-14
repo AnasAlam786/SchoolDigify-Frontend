@@ -177,37 +177,58 @@ export default function Sidebar({ isSidebarOpen, setSidebarOpen, menuSections })
                         {visibleSections.map((section) => (
                             <div key={section.title} className="pt-6">
 
-                                <h3 className="section-header mb-3">
+                                {/* Section title */}
+                                <h3 className="px-3 mb-2 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
                                     {section.title}
                                 </h3>
 
                                 <div className="space-y-1">
-
                                     {section.items.map((item) => (
                                         <NavLink
-
-                                            onClick={() => setSidebarOpen(false)}
                                             key={item.route}
                                             to={item.route}
+                                            onClick={() => setSidebarOpen(false)}
                                             className={({ isActive }) =>
-                                                `nav-link flex items-center p-3 rounded-xl transition-all ${isActive
-                                                    ? "bg-gradient-to-r from-primary/20 to-accent/20 border border-primary/30 text-white"
-                                                    : "text-gray-300 hover:bg-white/5 hover:text-white"
+                                                `group flex items-center gap-3 px-3 py-2.5 rounded-xl
+                        transition-all duration-200
+                        ${isActive
+                                                    ? "bg-white/[0.07] text-white"
+                                                    : "text-gray-300 hover:bg-white/[0.04] hover:text-gray-200"
                                                 }`
                                             }
                                         >
-                                            <div className="icon-container">
-                                                <i className={item.icon}></i>
-                                            </div>
+                                            {({ isActive }) => (
+                                                <>
+                                                    {/* Icon */}
+                                                    <div
+                                                        className={`
+                                    w-9 h-9 shrink-0
+                                    flex items-center justify-center
+                                    rounded-lg
+                                    transition-all duration-200
+                                    ${isActive
+                                                                ? "bg-primary/15 text-primary"
+                                                                : "bg-white/[0.03] text-gray-500 group-hover:bg-white/[0.05] group-hover:text-gray-300"
+                                                            }
+                                `}
+                                                    >
+                                                        <i className={`${item.icon} text-sm`} />
+                                                    </div>
 
-                                            <span className="font-medium">
-                                                {item.label}
-                                            </span>
+                                                    {/* Label */}
+                                                    <span className="font-medium text-sm">
+                                                        {item.label}
+                                                    </span>
+
+                                                    {/* Active dot */}
+                                                    {isActive && (
+                                                        <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_8px_currentColor]" />
+                                                    )}
+                                                </>
+                                            )}
                                         </NavLink>
                                     ))}
-
                                 </div>
-
                             </div>
                         ))}
 

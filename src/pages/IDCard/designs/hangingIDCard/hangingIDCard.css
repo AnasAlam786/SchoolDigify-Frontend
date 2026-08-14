@@ -1,15 +1,8 @@
-/* Fixed ID card dimensions */
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-
-@font-face {
-  font-family: "League Spartan";
-  src: url("/fonts/LeagueSpartan.ttf") format("truetype");
-  font-display: swap;
 }
 
 .id-card-container {
@@ -20,7 +13,6 @@
     overflow: hidden;
     transform: scale(1);
     transform-origin: center;
-    font-family: "League Spartan", sans-serif !important;
 }
 
 .page {
@@ -36,7 +28,7 @@
     position: relative;
     overflow: hidden;
     font-family: 'League Spartan';
-    color: black
+    color:black
 }
 
 .signature img {
@@ -45,7 +37,6 @@
     width: auto !important;
     height: auto !important;
 }
-
 .no-image {
     display: flex;
     align-items: center;
@@ -78,3 +69,9 @@
     font-size: 0.9rem;
     color: var(--text-secondary);
 }
+
+/* @media print { */
+    .id-card-container {
+        outline: 0.3mm dotted #c2c2c2;
+        outline-offset: 0.1mm;
+    }

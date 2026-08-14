@@ -1,5 +1,4 @@
-export default function VerificationModal({ open, reviewData, imageUrl, onClose, onConfirm }) {
-  if (!open || !reviewData) return null;
+export default function VerificationModal({ reviewData, imageUrl, onClose, onConfirm }) {
 
   const formatDate = (value) => {
     if (!value) return "Not Provided";
@@ -88,10 +87,10 @@ export default function VerificationModal({ open, reviewData, imageUrl, onClose,
             <div className="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600 md:col-span-2">
               <div className="verification-label text-xs text-slate-400 mb-1">Assigned Classes</div>
               <div className="verification-value flex flex-wrap gap-1">
-                {reviewData.assignedClasses?.length > 0 ? (
-                  reviewData.assignedClasses.map((className) => (
-                    <span key={className} className="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-sm">
-                      {className}
+                {reviewData.selectedClasses?.length > 0 ? (
+                  reviewData.selectedClasses.map((cls) => (
+                    <span key={cls.id} className="inline-flex items-center px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-sm">
+                      {cls.class_name}
                     </span>
                   ))
                 ) : (
@@ -102,10 +101,10 @@ export default function VerificationModal({ open, reviewData, imageUrl, onClose,
             <div className="verification-item p-4 bg-slate-700/50 rounded-xl border border-slate-600 md:col-span-2">
               <div className="verification-label text-xs text-slate-400 mb-1">Assigned Permissions</div>
               <div className="verification-value flex flex-wrap gap-1">
-                {reviewData.assignedPermissions?.length > 0 ? (
-                  reviewData.assignedPermissions.map((permission) => (
-                    <span key={permission} className="inline-flex items-center px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-sm">
-                      {permission}
+                {reviewData.selectedPermissions?.length > 0 ? (
+                  reviewData.selectedPermissions.map((permission) => (
+                    <span key={permission.id} className="inline-flex items-center px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-sm">
+                      {permission.title}
                     </span>
                   ))
                 ) : (

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router-dom";
 import { apiGet, apiPost } from '../../api/api.js';
-import './style/AddStudent.css';
+import './style/EditStudent.css';
 
 import Header from './components/Header.jsx';
 import FormField from './components/FormField.jsx';
@@ -226,7 +226,7 @@ function EditStudent() {
 
       const payload = {
         student_id: Number(studentID),
-        verified_data: form,
+        student_data: form,
         image_b64: studentImage,
         image_status:
           studentImage === originalImage
@@ -247,7 +247,7 @@ function EditStudent() {
           scrollToField(firstField);
         }
 
-        throw new Error(data.error || "Failed to validate data.");
+        throw new Error(Object.values(errors)[0] || "Failed to validate data.");
       }
 
       // Image is now the saved image
@@ -261,6 +261,9 @@ function EditStudent() {
       setFinalSubmitBtn(false)
     }
   };
+
+  const getClassName = (id) =>
+    classes.find(c => c.id === Number(id))?.class_name ?? "";
 
   return (
     <div className="max-w-6xl mx-auto sm:px-6 py-4">
@@ -296,10 +299,12 @@ function EditStudent() {
               form={form}
               setForm={setForm}
               classes={classes}
+              studentID = {studentID}
               errors={errors}
               sessionYears={sessionYears}
               hasOtherSessions={hasOtherSessions}
               handleInputChange={handleInputChange}
+              getClassName={getClassName}
 
             />
             <GuardianInfo

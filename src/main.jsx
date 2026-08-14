@@ -28,11 +28,10 @@ import PromoteAndTC from "./pages/promoteAndTC/PromoteAndTC.jsx";
 import EditStudent from "./pages/editStudent/EditStudent.jsx";
 
 import ShowStaff from "./pages/showStaff/ShowStaff.jsx";
-import AddStaff from "./pages/addStaff/AddStaff.jsx";
-import EditStaff from "./pages/editStaff/EditStaff.jsx";
+import AddStaff from "./pages/staffModule/addStaff/AddStaff.jsx";
+import EditStaff from "./pages/staffModule/editStaff/EditStaff.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <AuthProvider>
       <BrowserRouter>
         <TitleManager />
@@ -99,7 +98,7 @@ createRoot(document.getElementById("root")).render(
               element={<PermissionRoute permission="add_staff"> <AddStaff /> </PermissionRoute>} />
 
             <Route
-              path="/edit_staff/:staffID"
+              path="/edit_staff/:staffId"
               element={<PermissionRoute permission="update_staff"> <EditStaff /> </PermissionRoute>} />
 
           </Route>
@@ -111,5 +110,5 @@ createRoot(document.getElementById("root")).render(
 
       </BrowserRouter>
     </AuthProvider>
-  </StrictMode>
+
 );

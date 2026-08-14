@@ -14,30 +14,26 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, handleInpu
             }
             setRollText("Loading...")
             try {
-                const response = await apiPost("/api/get_new_roll_api", { class_id: form.class_id })
+                const response = await apiPost("/api/get-available-rolls", { class_id: form.class_id })
 
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || "Failed to fetch rolls");
+                    throw new Error(data.message || "Failed to fetch rolls");
                 }
 
-                if (data.gapped_rolls.length > 0) {
-                    setRollText(
-                        `Available rolls: ${data.gapped_rolls.join(", ")}`
-                    );
-                } else {
-                    setRollText("No gaps. Next roll: " + data.next_roll);
-                }
+                const rolls = data.available_rolls;
+
+                setRollText( `Available rolls: ${rolls.join(", ")}` );
+            
 
                 // Optionally auto-fill the roll field
                 setForm((prev) => ({
                     ...prev,
-                    ROLL: data.next_roll,
+                    ROLL: rolls.at(-1),
                 }));
 
             } catch (error) {
-                console.error(error);
                 showAlert(400, error);
                 setRollText("Error fetching available rolls.");
             }

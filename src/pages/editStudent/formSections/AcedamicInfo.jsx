@@ -2,36 +2,41 @@ import React, { useState, useEffect } from 'react';
 import FormField from '../components/FormField';
 import { apiPost } from '../../../api/api';
 
-function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSessions, handleInputChange }) {
+function AcedamicInfo({ form, setForm, classes, studentID, errors, sessionYears, hasOtherSessions, handleInputChange, getClassName }) {
+
 
     const [rollText, setRollText] = useState('');
+    const [original] = useState({
+        ROLL: form.ROLL,
+        class_id: form.class_id,
+        SR: form.SR,
+        ADMISSION_NO: form.ADMISSION_NO
+    });
 
-    const fetchAvailableRolls = async () => {
+    const fetchAvailableRolls = async (classId) => {
+        console.log("Sending class:", classId);
         if (!form.class_id) {
             setRollText("Available rolls will appear after selecting class.");
             return;
         }
         setRollText("Loading...")
         try {
-            const response = await apiPost("/api/get_new_roll_api", { class_id: form.class_id })
+            const response = await apiPost("/api/get-available-rolls", { class_id: classId, excluded_student_id: studentID })
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to fetch rolls");
+                throw new Error(data.message || "Failed to fetch rolls");
             }
 
-            console.log(data)
+            const rolls = data.available_rolls;
 
-            setRollText(
-                `Available rolls: ${[...data.gapped_rolls, data.next_roll].join(", ")}`
-            );
-
+            setRollText(`Available rolls: ${rolls.join(", ")}`);
 
             // Optionally auto-fill the roll field
             setForm((prev) => ({
                 ...prev,
-                ROLL: data.next_roll,
+                ROLL: rolls.at(-1),
             }));
 
         } catch (error) {
@@ -47,11 +52,12 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSe
         const classId = e.target.value;
 
         handleInputChange("class_id", classId);
-        fetchAvailableRolls()
 
         if (form.admitted_as_new) {
             handleInputChange("admission_class_id", classId);
         }
+
+        fetchAvailableRolls(classId);
     };
 
     const getClassSuggestion = (dobString) => {
@@ -245,7 +251,10 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSe
                     </div>
                 </FormField>
 
-                <FormField id="class_id" label="Current Class" required error={errors.class_id}>
+                <FormField id="class_id" label="Current Class" required error={errors.class_id}
+                    labelHint={
+                        form.class_id !== original.class_id ? `Original: ${getClassName(original.class_id)}` : null
+                    }>
                     <div className="relative">
                         <select
                             id="class_id"
@@ -279,7 +288,10 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSe
 
                 </FormField>
 
-                <FormField id="ROLL" label="Roll No" required error={errors.ROLL}>
+                <FormField id="ROLL" label="Roll No" required error={errors.ROLL}
+                    labelHint={
+                        form.ROLL !== original.ROLL ? `Original: ${original.ROLL}` : null
+                    }>
                     <div className="relative">
                         <input
                             type="number"
@@ -299,7 +311,10 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSe
                     </div>
                 </FormField>
 
-                <FormField id="SR" label="SR No." required error={errors.SR}>
+                <FormField id="SR" label="SR No." required error={errors.SR}
+                    labelHint={
+                        form.SR !== original.SR ? `Original: ${original.SR}` : null
+                    }>
                     <div className="relative">
                         <input
                             type="number"
@@ -316,7 +331,10 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, hasOtherSe
                     </div>
                 </FormField>
 
-                <FormField id="ADMISSION_NO" label="Admission No." required error={errors.ADMISSION_NO}>
+                <FormField id="ADMISSION_NO" label="Admission No." required error={errors.ADMISSION_NO}
+                    labelHint={
+                        form.ADMISSION_NO !== original.ADMISSION_NO ? `Original: ${original.ADMISSION_NO}` : null
+                    }>
                     <div className="relative">
                         <input
                             type="number"

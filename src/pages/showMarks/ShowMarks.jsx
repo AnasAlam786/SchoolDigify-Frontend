@@ -64,7 +64,6 @@ function ShowMarks() {
       }
 
       const studentMarks = data.student_marks || data.students || []
-      console.log(studentMarks[0])
       setStudents(Array.isArray(studentMarks) ? studentMarks : [])
       setClassEmpty(data.class_empty ?? (Array.isArray(studentMarks) && studentMarks.length === 0))
     } catch (err) {
@@ -77,12 +76,24 @@ function ShowMarks() {
 
   const handlePrintCertificate = async (studentIds) => {
     try {
-      const students = studentIds instanceof Set
-        ? Array.from(studentIds)
-        : studentIds;
 
-      const response = await apiPost("/api/get_certificate_html", {
-        students: students,
+      const studentPayload = students
+        .filter((student) => studentIds.has(student.student_id))
+        .map((student) => ({
+          student_id: student.student_id,
+          STUDENTS_NAME: student.STUDENTS_NAME,
+          FATHERS_NAME: student.FATHERS_NAME,
+          CLASS: student.CLASS,
+          IMAGE: student.IMAGE,
+          overall_rank: student.overall_rank,
+          percentage: student.marks?.["G. Total"]?.percentage ?? 0,
+        }));
+
+        console.log(studentPayload)
+
+
+      const response = await apiPost("/api/bulk_print_certificate", {
+        students_data: studentPayload,
       });
 
       const data = await response.json();
@@ -105,14 +116,16 @@ function ShowMarks() {
     try {
 
       // Accept both Set and Array
-      const students = studentIds instanceof Set
+      const studentIDs = studentIds instanceof Set
         ? Array.from(studentIds)
         : studentIds;
 
-      if (!Array.isArray(students)) {
+      if (!Array.isArray(studentIDs)) {
         throw new Error("studentIds must be a Set or an Array.");
       }
-      const response = await apiPost('/api/get_certificate_html', { students: students })
+      const response = await apiPost('/api/bulk_download_results',
+        { student_ids: studentIDs, class_id: selectedClass }
+      )
 
       const data = await response.json();
 
