@@ -7,7 +7,7 @@ export default function Login() {
 
     return (
         <>
-            <NavBar />
+            <Navbar />
             <MainContent />
             <Footer />
         </>
