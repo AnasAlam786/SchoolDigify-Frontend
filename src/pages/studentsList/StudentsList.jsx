@@ -134,7 +134,7 @@ export default function StudentsList() {
     }
 
     return (
-        <div className="mx-auto p-4">
+        <div className="mx-auto">
             <Header />
 
             <StudentFilters
