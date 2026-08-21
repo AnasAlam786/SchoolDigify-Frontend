@@ -16,7 +16,7 @@ function getImageUrl(student) {
         : "/static/no-student-girl-image.png";
 }
 
-function StudentCard({ student, onViewDetails }) {
+function StudentCard({ student, onViewDetails, onPayFees }) {
 
     const navigate = useNavigate();
 
@@ -32,9 +32,9 @@ function StudentCard({ student, onViewDetails }) {
         }
     };
 
-    const handlePayFees = (studentSessionId, phone) => {
-        if (typeof window.openDrawer === "function") {
-            window.openDrawer(studentSessionId, phone);
+    const handlePayFees = () => {
+        if (typeof onPayFees === "function") {
+            onPayFees(student, phone);
             return;
         }
         console.warn("Pay fees drawer handler is not available.");
@@ -140,7 +140,7 @@ function StudentCard({ student, onViewDetails }) {
                 </button>
                 <button
                     type="button"
-                    onClick={() => onPayFees(student.student_session_id, phone)}
+                    onClick={handlePayFees}
                     className="action-button bg-green-800 bg-opacity-20 text-green-400 hover:bg-[rgba(65,233,135,0.2)] hover:text-white rounded-br-lg"
                 >
                     <i className="fa-solid fa-indian-rupee-sign mr-2" /> Pay Fees

@@ -59,12 +59,23 @@ export default function CropperModal({
         const canvas = cropperRef.current?.getCroppedCanvas({
             width: 500,
             height: 500,
+            fillColor: "#fff",
             imageSmoothingQuality: "high",
         });
 
         if (!canvas) return;
 
-        setImage(canvas.toDataURL("image/png"));
+        canvas.toBlob(
+        (blob) => {
+                if (!blob) return;
+
+                const file = new File([blob], "student_image.jpg", { type: "image/jpeg" })
+                setImage(file);
+            },
+            "image/jpeg",
+            1
+        );
+
         setShowCropper(false);
     };
 

@@ -30,6 +30,7 @@ import EditStudent from "./pages/editStudent/EditStudent.jsx";
 import ShowStaff from "./pages/showStaff/ShowStaff.jsx";
 import AddStaff from "./pages/staffModule/addStaff/AddStaff.jsx";
 import EditStaff from "./pages/staffModule/editStaff/EditStaff.jsx";
+import FeePage from "./pages/feeModule/FeePage.jsx";
 
 createRoot(document.getElementById("root")).render(
     <AuthProvider>
@@ -100,6 +101,10 @@ createRoot(document.getElementById("root")).render(
             <Route
               path="/edit_staff/:staffId"
               element={<PermissionRoute permission="update_staff"> <EditStaff /> </PermissionRoute>} />
+
+            <Route
+              path="/fees"
+              element={<PermissionRoute permission="pay_fees"> <FeePage /> </PermissionRoute>} />
 
           </Route>
 

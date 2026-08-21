@@ -231,10 +231,13 @@ function AddStudent() {
       const className = classes.find(c => String(c.id) === String(verifiedData.class_id))?.class_name ?? "";
       const AdmissionClassName = classes.find(c => String(c.id) === String(verifiedData.admission_class_id))?.class_name ?? "";
 
-      console.log(className, AdmissionClassName)
-
       setReviewedData(
-        { ...verifiedData, 'IMAGE': studentImage, CLASS: className, Admission_Class: AdmissionClassName }
+        {
+          ...verifiedData,
+          'image_blob': studentImage,
+          CLASS: className,
+          Admission_Class: AdmissionClassName
+        }
       );
 
       setValidationModalOpen(true);
@@ -252,7 +255,23 @@ function AddStudent() {
     setFinalSubmitBtn(true);
 
     try {
-      const response = await apiPost("/api/add_student", { 'verifiedData': reviewedData });
+      const formData = new FormData();
+      // Student data
+      formData.append(
+        "verifiedData",
+        JSON.stringify(reviewedData)
+      );
+
+      // Actual image file
+      if (studentImage instanceof Blob) {
+        formData.append(
+          "image_blob",
+          studentImage,
+          "student_image.jpg"
+        );
+      }
+
+      const response = await apiPostFormData("/api/add_student", formData);
       const data = await response.json();
 
       if (!response.ok) {
@@ -302,7 +321,7 @@ function AddStudent() {
     }
   };
 
-  
+
   const getClassName = (id) =>
     classes.find(c => c.id === Number(id))?.class_name ?? "";
 

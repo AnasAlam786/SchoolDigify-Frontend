@@ -16,7 +16,7 @@ function applyCardData(cardNode, student, school) {
         "session-year": student?.session_year || "2025-26",
         "student-image": student?.image
             ? `${imageBaseUrl}${student.image}=s220`
-            : "/no-student-boy-image.png",
+            : "/static/no-student-boy-image.png",
         "student-name": student?.student_name || "Student Name",
         "student-father": `C/O ${student?.father_name || student?.student_father || "Father Name"}`,
         "student-class-roll": student?.class_roll || "Class - Roll",

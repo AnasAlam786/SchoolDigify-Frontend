@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from "react-router-dom";
-import { apiGet, apiPost } from '../../api/api.js';
+import { apiGet, apiPostFormData } from '../../api/api.js';
 import './style/EditStudent.css';
 
 import Header from './components/Header.jsx';
@@ -224,19 +224,23 @@ function EditStudent() {
     try {
       setFinalSubmitBtn(true)
 
-      const payload = {
-        student_id: Number(studentID),
-        student_data: form,
-        image_b64: studentImage,
-        image_status:
-          studentImage === originalImage
-            ? "unchanged"
-            : studentImage
-              ? "changed"
-              : "removed"
-      };
+      const imageStatus = studentImage === originalImage
+        ? "unchanged"
+        : studentImage
+          ? "changed"
+          : "removed";
 
-      const resp = await apiPost("/api/update_student", payload);
+      const formData = new FormData();
+
+      formData.append("student_id", Number(studentID));
+      formData.append("student_data", JSON.stringify(form)); // Serialize nested object as JSON string
+      formData.append("image_status", imageStatus);
+      if (imageStatus === "changed" && studentImage instanceof Blob) {
+        formData.append("image_file", studentImage, "student_image.jpg");
+      }
+
+
+      const resp = await apiPostFormData("/api/update_student", formData);
       const data = await resp.json();
 
       if (!resp.ok) {
@@ -299,7 +303,7 @@ function EditStudent() {
               form={form}
               setForm={setForm}
               classes={classes}
-              studentID = {studentID}
+              studentID={studentID}
               errors={errors}
               sessionYears={sessionYears}
               hasOtherSessions={hasOtherSessions}
@@ -341,7 +345,15 @@ function EditStudent() {
               </div>
               <div className="max-w-lg mx-auto">
                 <ImageUploader
-                  image={`https://lh3.googleusercontent.com/d/${studentImage}`}
+                  image={
+                    studentImage instanceof Blob
+                      ? URL.createObjectURL(studentImage)
+                      : typeof studentImage === "string" && studentImage.startsWith("data:image")
+                        ? studentImage
+                        : studentImage
+                          ? `https://lh3.googleusercontent.com/d/${studentImage}`
+                          : ""
+                  }
                   setImage={setStudentImage}
                 />
               </div>

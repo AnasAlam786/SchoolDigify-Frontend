@@ -10,12 +10,13 @@ import "./style/StudentsList.css";
 import SkeletonLoader from "./components/PageStatus";
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
 import { DEFAULT_FILTERS, matchesSearch, matchesFilters, sortStudents } from "./components/StudentsFilter";
+import FeeDrawer from "../feeModule/components/feeDrawer/FeeDrawer";
 
 import usePermission from "../../hooks/usePermission";
 
 export default function StudentsList() {
-    
-    const {hasPermission, PERMISSIONS} = usePermission()
+
+    const { hasPermission, PERMISSIONS } = usePermission()
 
     const [students, setStudents] = useState([]);
     const [classes, setClasses] = useState([]);
@@ -28,6 +29,9 @@ export default function StudentsList() {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [isDetailModalOpen, setDetailModalOpen] = useState(false);
     const [selectedPhone, setSelectedPhone] = useState("");
+
+    const [feeDrawerOpen, setFeeDrawerOpen] = useState(false);
+    const [feeDrawerStudent, setFeeDrawerStudent] = useState({});
 
     useEffect(() => {
         fetchClasses().then(setClasses);
@@ -108,6 +112,15 @@ export default function StudentsList() {
         setDetailModalOpen(true);
     }, []);
 
+
+    const openFeeDrawer = (student) => {
+        const studentSessionId = student?.student_session_id || student?.id;
+        const studentPhone = student?.PHONE;
+        setFeeDrawerStudent({ studentSessionId, studentPhone });
+        setFeeDrawerOpen(true);
+    }
+
+
     const closeStudentDetails = () => {
         setDetailModalOpen(false);
         setSelectedStudent(null);
@@ -127,6 +140,7 @@ export default function StudentsList() {
                         key={student.id}
                         student={student}
                         onViewDetails={openStudentDetails}
+                        onPayFees={openFeeDrawer}
                     />
                 ))}
             </div>
@@ -147,7 +161,7 @@ export default function StudentsList() {
                 activeTags={activeTags}
                 classes={classes} />
 
-            
+
 
             {stats && hasPermission(PERMISSIONS.STUDENTS_STATS) && <StudentStatsSection stats={stats} />}
 
@@ -155,11 +169,20 @@ export default function StudentsList() {
                 {mainContent}
             </section>
 
-            {isDetailModalOpen && (<StudentDetailsModal
-                onClose={closeStudentDetails}
-                studentId={selectedStudent}
-                phone={selectedPhone}
-            />)}
+            {isDetailModalOpen && (
+                <StudentDetailsModal
+                    onClose={closeStudentDetails}
+                    studentId={selectedStudent}
+                    phone={selectedPhone}
+                />
+            )}
+
+            {feeDrawerOpen && (
+                <FeeDrawer
+                    feeDrawerStudent={feeDrawerStudent}
+                    onClose={() => setFeeDrawerOpen(false)}
+                />
+            )}
         </div>
     );
 }

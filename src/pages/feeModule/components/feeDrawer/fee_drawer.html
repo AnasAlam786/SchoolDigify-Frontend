@@ -1,0 +1,1007 @@
+<style>
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.3);
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(148, 163, 184, 0.4);
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(148, 163, 184, 0.6);
+    }
+
+    /* Smooth transitions */
+    .transition-height {
+        transition: max-height 0.3s ease-in-out;
+    }
+
+    /* Popover animation */
+    @keyframes popoverFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .popover-animate {
+        animation: popoverFadeIn 0.2s ease-out;
+    }
+
+    /* Card hover effect */
+    .transaction-card {
+        transition: all 0.2s ease;
+    }
+
+    .transaction-card:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-container {
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-container {
+        transform: scale(1);
+    }
+</style>
+
+<!-- Modal Overlay -->
+<div id="modal-overlay" class="modal-overlay p-4">
+    <!-- Modal Container -->
+    <div class="modal-container w-full max-w-6xl max-h-[90vh]">
+        <!-- Modal -->
+        <div
+            class="w-full bg-[#1e293b]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-700/50 flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <header
+                class="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <h1 id="modal-title"
+                            class="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">Fee Transactions
+                        </h1>
+                        <p id="modal-subtitle" class="mt-1 text-xs sm:text-sm text-slate-400">View and manage all fee
+                            transactions</p>
+                    </div>
+                    <button id="close-modal-btn" type="button"
+                        class="shrink-0 w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full bg-slate-800/80 hover:bg-slate-700 
+                    text-slate-400 hover:text-white border border-slate-600/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+                        aria-label="Close modal">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Status Message -->
+            <div id="status-container" class="hidden px-4 sm:px-6 lg:px-8 pt-4">
+                <div id="status-message" class="rounded-lg px-4 py-2.5 text-sm flex items-center gap-2">
+                    <span id="status-icon"></span>
+                    <span id="status-text"></span>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <main class="flex-1 overflow-y-auto custom-scrollbar px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+                <!-- Active Transactions -->
+                <section id="active-transactions-section" class="space-y-3 sm:space-y-4">
+                    <!-- Transaction cards will be inserted here -->
+                </section>
+
+                <!-- Deleted Transactions Section -->
+                <section id="deleted-section" class="mt-6 sm:mt-8">
+                    <button id="deleted-toggle" type="button"
+                        class="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-slate-800/60 
+                    hover:bg-slate-800/80 border border-slate-700/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+                        aria-expanded="false">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="flex items-center justify-center w-7 h-7 rounded-full bg-slate-700/50 border border-slate-600/50">
+                                <span id="deleted-count" class="text-xs font-semibold text-slate-300">0</span>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-sm font-semibold text-slate-200">Deleted Transactions</p>
+                                <p class="text-xs text-slate-500">Soft-deleted records kept for reference</p>
+                            </div>
+                        </div>
+                        <svg id="deleted-chevron" class="w-5 h-5 text-slate-400 transition-transform" fill="none"
+                            stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    <div id="deleted-transactions-container" class="hidden mt-3 space-y-3 sm:space-y-4">
+                        <!-- Deleted transaction cards will be inserted here -->
+                    </div>
+                </section>
+            </main>
+
+            <!-- Modal Footer -->
+            <footer class="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-t border-slate-700/50 bg-slate-900/30">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p class="text-xs text-slate-500 text-center sm:text-left">💡 <span
+                            class="font-medium text-slate-400">Tip:</span> Click on monthly fees to view detailed
+                        breakdown</p>
+                    <button id="export-btn" type="button"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white text-sm font-semibold shadow-lg 
+                        shadow-sky-900/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Summary
+                    </button>
+                </div>
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== CONSTANTS ====================
+    const Constants = {
+        SAMPLE_DATA: [
+            {
+                id: 'TXN-2024-001',
+                paymentDate: '2024-03-15',
+                totalPaid: 25500,
+                discount: 1000,
+                paymentMode: 'Online Banking',
+                remark: 'Paid on time with early bird discount',
+                isDeleted: false,
+                siblings: [
+                    {
+                        studentName: 'Aarav Kumar',
+                        className: 'Grade 10-A',
+                        rollNo: '2024-A-015',
+                        fees: {
+                            monthly: {
+                                label: 'Tuition Fees',
+                                total: 15000,
+                                months: ['January 2024', 'February 2024', 'March 2024']
+                            },
+                            oneTime: [
+                                { name: 'Exam Fee', amount: 2500 },
+                                { name: 'Lab Fee', amount: 3000 }
+                            ]
+                        }
+                    },
+                    {
+                        studentName: 'Diya Kumar',
+                        className: 'Grade 7-B',
+                        rollNo: '2024-B-032',
+                        fees: {
+                            monthly: {
+                                label: 'Tuition Fees',
+                                total: 9000,
+                                months: ['January 2024', 'February 2024', 'March 2024']
+                            },
+                            oneTime: [
+                                { name: 'Sports Fee', amount: 1500 },
+                                { name: 'Activity Fee', amount: 1500 }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'TXN-2024-002',
+                paymentDate: '2024-02-28',
+                totalPaid: 18000,
+                discount: 500,
+                paymentMode: 'UPI',
+                remark: 'Regular payment',
+                isDeleted: false,
+                siblings: [
+                    {
+                        studentName: 'Rohan Sharma',
+                        className: 'Grade 12-A',
+                        rollNo: '2024-A-008',
+                        fees: {
+                            monthly: {
+                                label: 'Tuition Fees',
+                                total: 12000,
+                                months: ['January 2024', 'February 2024']
+                            },
+                            oneTime: [
+                                { name: 'Board Exam Fee', amount: 3500 },
+                                { name: 'Library Fee', amount: 2000 }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'TXN-2023-150',
+                paymentDate: '2023-12-20',
+                totalPaid: 14500,
+                discount: 0,
+                paymentMode: 'Cash',
+                remark: 'Year-end payment',
+                isDeleted: true,
+                siblings: [
+                    {
+                        studentName: 'Priya Patel',
+                        className: 'Grade 9-C',
+                        rollNo: '2023-C-021',
+                        fees: {
+                            monthly: {
+                                label: 'Tuition Fees',
+                                total: 10000,
+                                months: ['November 2023', 'December 2023']
+                            },
+                            oneTime: [
+                                { name: 'Annual Fee', amount: 4500 }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+
+        STATUS_TYPES: {
+            SUCCESS: 'success',
+            ERROR: 'error',
+            INFO: 'info'
+        },
+
+        STATUS_ICONS: {
+            success: '✓',
+            error: '✕',
+            info: 'ℹ'
+        },
+
+        STATUS_STYLES: {
+            success: 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300',
+            error: 'bg-rose-500/10 border border-rose-500/30 text-rose-300',
+            info: 'bg-sky-500/10 border border-sky-500/30 text-sky-300'
+        }
+    };
+
+    // ==================== UTILITIES ====================
+    class Utils {
+        static formatCurrency(amount) {
+            return new Intl.NumberFormat('en-IN', {
+                style: 'currency',
+                currency: 'INR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        static formatDate(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            return date.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        static createElement(tag, className = '', attributes = {}, content = '') {
+            const el = document.createElement(tag);
+            if (className) el.className = className;
+            Object.entries(attributes).forEach(([key, value]) => el.setAttribute(key, value));
+            if (content) el.innerHTML = content;
+            return el;
+        }
+
+        static debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    }
+
+    // ==================== STATE MANAGEMENT ====================
+    class TransactionState {
+        constructor(data = []) {
+            this.transactions = JSON.parse(JSON.stringify(data));
+            this.expandedCards = new Set();
+            this.activePopover = null;
+            this.deletedSectionExpanded = false;
+        }
+
+        getActiveTransactions() {
+            return this.transactions.filter(t => !t.isDeleted);
+        }
+
+        getDeletedTransactions() {
+            return this.transactions.filter(t => t.isDeleted);
+        }
+
+        toggleCardExpansion(txnId) {
+            if (this.expandedCards.has(txnId)) {
+                this.expandedCards.delete(txnId);
+            } else {
+                this.expandedCards.add(txnId);
+            }
+        }
+
+        isCardExpanded(txnId) {
+            return this.expandedCards.has(txnId);
+        }
+
+        softDeleteTransaction(txnId) {
+            const txn = this.transactions.find(t => t.id === txnId);
+            if (txn && !txn.isDeleted) {
+                txn.isDeleted = true;
+                return true;
+            }
+            return false;
+        }
+
+        restoreTransaction(txnId) {
+            const txn = this.transactions.find(t => t.id === txnId);
+            if (txn && txn.isDeleted) {
+                txn.isDeleted = false;
+                return true;
+            }
+            return false;
+        }
+
+        setActivePopover(popoverId) {
+            this.activePopover = popoverId;
+        }
+
+        closePopover() {
+            this.activePopover = null;
+        }
+
+        toggleDeletedSection() {
+            this.deletedSectionExpanded = !this.deletedSectionExpanded;
+        }
+
+        getTransactionById(txnId) {
+            return this.transactions.find(t => t.id === txnId);
+        }
+
+        addTransaction(transaction) {
+            this.transactions.push(transaction);
+        }
+
+        updateTransaction(txnId, updates) {
+            const index = this.transactions.findIndex(t => t.id === txnId);
+            if (index !== -1) {
+                this.transactions[index] = { ...this.transactions[index], ...updates };
+                return true;
+            }
+            return false;
+        }
+    }
+
+    // ==================== COMPONENTS ====================
+    class TransactionComponents {
+        static createTransactionCard(transaction, isDeleted = false) {
+            const card = Utils.createElement('article',
+                `transaction-card rounded-xl border ${isDeleted ? 'border-slate-700/40 bg-[#172033] opacity-80' : 'border-[#2d3748] bg-[#1a2436]'} shadow-lg overflow-hidden`,
+                { 'data-txn-id': transaction.id }
+            );
+
+            // Card Header
+            const header = this.createCardHeader(transaction, isDeleted);
+            card.appendChild(header);
+
+            // Expandable Content
+            const content = this.createExpandableContent(transaction);
+            card.appendChild(content);
+
+            return card;
+        }
+
+        static createCardHeader(transaction, isDeleted) {
+            const header = Utils.createElement('div', 'p-4 sm:p-5 border-b border-[#2d3748]/60');
+            const topRow = Utils.createElement('div', 'flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-4');
+
+            // Transaction Info
+            const infoSection = Utils.createElement('div', 'flex-1 space-y-2');
+            infoSection.innerHTML = `
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#1e293b] border border-slate-700/50">
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+              </svg>
+              <span class="text-xs font-mono font-semibold text-slate-200">${transaction.id}</span>
+            </span>
+            <span class="text-slate-600">•</span>
+            <span class="text-xs text-slate-400">${Utils.formatDate(transaction.paymentDate)}</span>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30">
+              <span class="text-xs uppercase tracking-wide text-emerald-400 font-medium">Total</span>
+              <span class="text-sm font-bold text-emerald-300">${Utils.formatCurrency(transaction.totalPaid)}</span>
+            </div>
+            ${transaction.discount > 0 ? `
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/30">
+                <span class="text-xs text-amber-400">Discount</span>
+                <span class="text-xs font-semibold text-amber-300">${Utils.formatCurrency(transaction.discount)}</span>
+              </div>
+            ` : ''}
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#1e293b] border border-slate-700/50">
+              <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+              </svg>
+              <span class="text-xs text-slate-300">${transaction.paymentMode}</span>
+            </div>
+          </div>
+          <div class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-slate-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+            </svg>
+            <span class="text-xs text-slate-400 leading-relaxed">${transaction.remark}</span>
+          </div>
+        `;
+
+            // Action Buttons
+            const actionsSection = Utils.createElement('div', 'flex flex-wrap gap-2');
+            actionsSection.innerHTML = isDeleted ? this.getDeletedActionsHTML() : this.getActiveActionsHTML();
+
+            topRow.appendChild(infoSection);
+            topRow.appendChild(actionsSection);
+
+            // Expand/Collapse Button
+            const expandBtn = this.createExpandButton(transaction);
+            header.appendChild(topRow);
+            header.appendChild(expandBtn);
+
+            return header;
+        }
+
+        static getActiveActionsHTML() {
+            return `
+          <button type="button" class="action-btn-message inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-sky-600/20 hover:bg-sky-600/30 border border-sky-500/30 text-sky-300 text-xs font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+            </svg>
+            <span class="hidden sm:inline">Message</span>
+          </button>
+          <button type="button" class="action-btn-print inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-violet-600/20 hover:bg-violet-600/30 border border-violet-500/30 text-violet-300 text-xs font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            <span class="hidden sm:inline">Print</span>
+          </button>
+          <button type="button" class="action-btn-delete inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/30 text-rose-300 text-xs font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+            <span class="hidden sm:inline">Delete</span>
+          </button>
+        `;
+        }
+
+        static getDeletedActionsHTML() {
+            return `
+          <button type="button" class="action-btn-restore inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-300 text-xs font-medium transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+            </svg>
+            Restore
+          </button>
+        `;
+        }
+
+        static createExpandButton(transaction) {
+            const isExpanded = TransactionManager.getInstance().state.isCardExpanded(transaction.id);
+            return Utils.createElement('button',
+                'expand-toggle w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-[#1e293b] hover:bg-[#243044] transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500',
+                { type: 'button' },
+                `
+            <div class="flex items-center gap-2">
+              <svg class="expand-chevron w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+              <span class="text-sm font-medium text-slate-300">Sibling Details & Fee Breakdown</span>
+              <span class="text-xs text-slate-500">(${transaction.siblings.length} student${transaction.siblings.length > 1 ? 's' : ''})</span>
+            </div>
+            <span class="text-xs text-slate-500 hidden sm:inline">Click to ${isExpanded ? 'collapse' : 'expand'}</span>
+          `
+            );
+        }
+
+        static createExpandableContent(transaction) {
+            const isExpanded = TransactionManager.getInstance().state.isCardExpanded(transaction.id);
+            const content = Utils.createElement('div', `expandable-content ${isExpanded ? '' : 'hidden'}`);
+            const siblingsContainer = Utils.createElement('div', 'p-4 sm:p-5 space-y-4');
+
+            transaction.siblings.forEach((sibling, index) => {
+                const siblingCard = this.createSiblingCard(sibling, transaction.id, index);
+                siblingsContainer.appendChild(siblingCard);
+            });
+
+            content.appendChild(siblingsContainer);
+            return content;
+        }
+
+        static createSiblingCard(sibling, txnId, siblingIndex) {
+            const monthlyTotal = sibling.fees.monthly ? sibling.fees.monthly.total : 0;
+            const oneTimeTotal = sibling.fees.oneTime ? sibling.fees.oneTime.reduce((sum, fee) => sum + fee.amount, 0) : 0;
+            const studentTotal = monthlyTotal + oneTimeTotal;
+
+            const card = Utils.createElement('div', 'rounded-xl bg-[#151d2e] border border-[#2d3748] p-4 space-y-3');
+            card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-[#2d3748]">
+            <div>
+              <h3 class="text-base font-semibold text-white">${sibling.studentName}</h3>
+              <div class="flex flex-wrap items-center gap-2 mt-1">
+                <span class="inline-flex items-center gap-1 text-xs text-slate-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                  </svg>
+                  ${sibling.className}
+                </span>
+                <span class="text-slate-600">•</span>
+                <span class="inline-flex items-center gap-1 text-xs text-slate-400">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                  </svg>
+                  Roll ${sibling.rollNo}
+                </span>
+              </div>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 border border-emerald-500/30">
+              <span class="text-xs uppercase tracking-wide text-emerald-400 font-medium">Total</span>
+              <span class="text-sm font-bold text-emerald-300">${Utils.formatCurrency(studentTotal)}</span>
+            </div>
+          </div>
+          <div class="space-y-2">
+            ${sibling.fees.monthly ? this.createMonthlyFeeRow(sibling.fees.monthly, txnId, siblingIndex) : ''}
+            ${sibling.fees.oneTime ? sibling.fees.oneTime.map(fee => this.createOneTimeFeeRow(fee)).join('') : ''}
+          </div>
+        `;
+
+            return card;
+        }
+
+        static createMonthlyFeeRow(monthlyFee, txnId, siblingIndex) {
+            const popoverId = `popover-${txnId}-${siblingIndex}`;
+            return `
+          <div class="relative flex items-center justify-between gap-3 p-2.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+            <button type="button" class="monthly-fee-trigger flex-1 flex items-center gap-2 text-left focus:outline-none group" data-popover-id="${popoverId}">
+              <div class="flex items-center gap-2">
+                <div class="flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-500/20 border border-indigo-500/30 group-hover:bg-indigo-500/30 transition-colors">
+                  <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-indigo-300 group-hover:text-indigo-200 transition-colors">${monthlyFee.label}</p>
+                  <p class="text-xs text-indigo-400/70 underline decoration-dotted">${monthlyFee.months.length} month${monthlyFee.months.length > 1 ? 's' : ''} • Click to view</p>
+                </div>
+              </div>
+            </button>
+            <div class="text-sm font-bold text-indigo-200">${Utils.formatCurrency(monthlyFee.total)}</div>
+            ${this.createPopover(popoverId, monthlyFee.months)}
+          </div>
+        `;
+        }
+
+        static createPopover(popoverId, months) {
+            return `
+          <div id="${popoverId}" class="popover hidden absolute z-[9999] mt-2 w-64 sm:w-72 rounded-xl bg-[#0f1a2c] border border-indigo-600 shadow-2xl shadow-indigo-900/30 popover-animate" style="left: 0; top: 100%;">
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-sm font-semibold text-indigo-200">Months Covered</h4>
+                <button type="button" class="popover-close w-6 h-6 flex items-center justify-center rounded-full hover:bg-indigo-800 text-indigo-400 hover:text-white transition-colors focus:outline-none">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar pr-1">
+                ${months.map(month => `
+                  <div class="flex items-center gap-2 px-2.5 py-2 rounded-lg bg-[#182438] border border-indigo-700/50">
+                    <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span class="text-sm text-indigo-200">${month}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+        }
+
+        static createOneTimeFeeRow(fee) {
+            return `
+          <div class="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-[#1e293b] border border-[#2d3748]">
+            <div class="flex items-center gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-slate-600"></div>
+              <span class="text-sm text-slate-300">${fee.name}</span>
+            </div>
+            <span class="text-sm font-semibold text-slate-200">${Utils.formatCurrency(fee.amount)}</span>
+          </div>
+        `;
+        }
+    }
+
+    // ==================== EVENT HANDLER ====================
+    class EventHandler {
+        static setupCardEvents(card, transaction, isDeleted) {
+            const manager = TransactionManager.getInstance();
+
+            // Expand/Collapse
+            const expandBtn = card.querySelector('.expand-toggle');
+            if (expandBtn) {
+                expandBtn.addEventListener('click', () => {
+                    manager.state.toggleCardExpansion(transaction.id);
+                    this.updateCardExpansion(card, transaction.id);
+                });
+            }
+
+            // Action buttons
+            if (!isDeleted) {
+                this.setupActiveCardEvents(card, transaction);
+            } else {
+                this.setupDeletedCardEvents(card, transaction);
+            }
+
+            // Monthly fee popovers
+            this.setupPopoverEvents(card);
+        }
+
+        static setupActiveCardEvents(card, transaction) {
+            const manager = TransactionManager.getInstance();
+
+            const messageBtn = card.querySelector('.action-btn-message');
+            const printBtn = card.querySelector('.action-btn-print');
+            const deleteBtn = card.querySelector('.action-btn-delete');
+
+            if (messageBtn) {
+                messageBtn.addEventListener('click', () => {
+                    manager.showStatus(`Message interface opened for ${transaction.id}`, Constants.STATUS_TYPES.INFO);
+                });
+            }
+
+            if (printBtn) {
+                printBtn.addEventListener('click', () => {
+                    manager.showStatus(`Receipt for ${transaction.id} sent to printer`, Constants.STATUS_TYPES.SUCCESS);
+                });
+            }
+
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => {
+                    if (manager.state.softDeleteTransaction(transaction.id)) {
+                        manager.showStatus(`Transaction ${transaction.id} moved to deleted section`, Constants.STATUS_TYPES.SUCCESS);
+                        manager.renderTransactions();
+                    }
+                });
+            }
+        }
+
+        static setupDeletedCardEvents(card, transaction) {
+            const manager = TransactionManager.getInstance();
+            const restoreBtn = card.querySelector('.action-btn-restore');
+
+            if (restoreBtn) {
+                restoreBtn.addEventListener('click', () => {
+                    if (manager.state.restoreTransaction(transaction.id)) {
+                        manager.showStatus(`Transaction ${transaction.id} restored successfully`, Constants.STATUS_TYPES.SUCCESS);
+                        manager.renderTransactions();
+                    }
+                });
+            }
+        }
+
+        static setupPopoverEvents(card) {
+            const manager = TransactionManager.getInstance();
+
+            // Monthly fee triggers
+            const monthlyTriggers = card.querySelectorAll('.monthly-fee-trigger');
+            monthlyTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const popoverId = trigger.getAttribute('data-popover-id');
+                    manager.togglePopover(popoverId);
+                });
+            });
+
+            // Popover close buttons
+            const popoverCloses = card.querySelectorAll('.popover-close');
+            popoverCloses.forEach(closeBtn => {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    manager.closeAllPopovers();
+                });
+            });
+        }
+
+        static updateCardExpansion(card, txnId) {
+            const manager = TransactionManager.getInstance();
+            const content = card.querySelector('.expandable-content');
+            const chevron = card.querySelector('.expand-chevron');
+            const isExpanded = manager.state.isCardExpanded(txnId);
+
+            if (content) {
+                content.classList.toggle('hidden', !isExpanded);
+            }
+
+            if (chevron) {
+                chevron.classList.toggle('rotate-90', isExpanded);
+            }
+        }
+    }
+
+    // ==================== MODAL MANAGER ====================
+    class ModalManager {
+        constructor() {
+            this.modalOverlay = document.getElementById('modal-overlay');
+            this.openModalBtn = document.getElementById('open-modal-btn');
+            this.closeModalBtn = document.getElementById('close-modal-btn');
+            this.isOpen = false;
+        }
+
+        init() {
+            this.setupEventListeners();
+            this.setupGlobalEventListeners();
+        }
+
+        setupEventListeners() {
+            // Open modal
+            this.openModalBtn?.addEventListener('click', () => this.open());
+
+            // Close modal
+            this.closeModalBtn?.addEventListener('click', () => this.close());
+
+            // Close on overlay click
+            this.modalOverlay?.addEventListener('click', (e) => {
+                if (e.target === this.modalOverlay) {
+                    this.close();
+                }
+            });
+
+            // Close on Escape key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && this.isOpen) {
+                    this.close();
+                }
+            });
+        }
+
+        setupGlobalEventListeners() {
+            const manager = TransactionManager.getInstance();
+
+            // Deleted section toggle
+            const deletedToggle = document.getElementById('deleted-toggle');
+            const deletedChevron = document.getElementById('deleted-chevron');
+
+            if (deletedToggle) {
+                deletedToggle.addEventListener('click', () => {
+                    manager.state.toggleDeletedSection();
+                    const container = document.getElementById('deleted-transactions-container');
+                    const isExpanded = manager.state.deletedSectionExpanded;
+
+                    container.classList.toggle('hidden', !isExpanded);
+                    deletedChevron.classList.toggle('rotate-90', isExpanded);
+                    deletedToggle.setAttribute('aria-expanded', isExpanded);
+                });
+            }
+
+            // Export button
+            const exportBtn = document.getElementById('export-btn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', () => {
+                    manager.showStatus('Transaction summary export initiated', Constants.STATUS_TYPES.INFO);
+                });
+            }
+        }
+
+        open() {
+            this.isOpen = true;
+            this.modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        close() {
+            this.isOpen = false;
+            this.modalOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // ==================== MAIN MANAGER ====================
+    class TransactionManager {
+        static instance = null;
+
+        static getInstance() {
+            if (!TransactionManager.instance) {
+                TransactionManager.instance = new TransactionManager();
+            }
+            return TransactionManager.instance;
+        }
+
+        constructor() {
+            this.state = new TransactionState(Constants.SAMPLE_DATA);
+            this.modalManager = new ModalManager();
+            this.initializeSDK();
+        }
+
+        init() {
+            this.modalManager.init();
+            this.renderTransactions();
+            this.setupGlobalClickHandler();
+        }
+
+        renderTransactions() {
+            const activeSection = document.getElementById('active-transactions-section');
+            const deletedContainer = document.getElementById('deleted-transactions-container');
+            const deletedCount = document.getElementById('deleted-count');
+
+            if (!activeSection || !deletedContainer) return;
+
+            // Clear existing
+            activeSection.innerHTML = '';
+            deletedContainer.innerHTML = '';
+
+            // Render active transactions
+            const activeTransactions = this.state.getActiveTransactions();
+            activeTransactions.forEach(txn => {
+                const card = TransactionComponents.createTransactionCard(txn, false);
+                EventHandler.setupCardEvents(card, txn, false);
+                activeSection.appendChild(card);
+            });
+
+            // Render deleted transactions
+            const deletedTransactions = this.state.getDeletedTransactions();
+            deletedTransactions.forEach(txn => {
+                const card = TransactionComponents.createTransactionCard(txn, true);
+                EventHandler.setupCardEvents(card, txn, true);
+                deletedContainer.appendChild(card);
+            });
+
+            // Update deleted count
+            if (deletedCount) {
+                deletedCount.textContent = deletedTransactions.length.toString();
+            }
+
+            // Show empty state if no active transactions
+            if (activeTransactions.length === 0) {
+                activeSection.innerHTML = `
+            <div class="text-center py-12">
+              <svg class="w-16 h-16 mx-auto text-slate-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+              </svg>
+              <p class="text-slate-400 text-sm">No active transactions found</p>
+            </div>
+          `;
+            }
+        }
+
+        togglePopover(popoverId) {
+            const popover = document.getElementById(popoverId);
+            if (!popover) return;
+
+            if (this.state.activePopover === popoverId) {
+                this.closeAllPopovers();
+            } else {
+                this.closeAllPopovers();
+                popover.classList.remove('hidden');
+                this.state.setActivePopover(popoverId);
+            }
+        }
+
+        closeAllPopovers() {
+            const allPopovers = document.querySelectorAll('.popover');
+            allPopovers.forEach(p => p.classList.add('hidden'));
+            this.state.closePopover();
+        }
+
+        setupGlobalClickHandler() {
+            // Close popovers on outside click
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.monthly-fee-trigger') && !e.target.closest('.popover')) {
+                    this.closeAllPopovers();
+                }
+            });
+        }
+
+        showStatus(message, type = Constants.STATUS_TYPES.INFO) {
+            const container = document.getElementById('status-container');
+            const messageEl = document.getElementById('status-message');
+            const iconEl = document.getElementById('status-icon');
+            const textEl = document.getElementById('status-text');
+
+            messageEl.className = `rounded-lg px-4 py-2.5 text-sm flex items-center gap-2 ${Constants.STATUS_STYLES[type]}`;
+            iconEl.textContent = Constants.STATUS_ICONS[type];
+            textEl.textContent = message;
+            container.classList.remove('hidden');
+
+            setTimeout(() => {
+                container.classList.add('hidden');
+            }, 4000);
+        }
+
+        initializeSDK() {
+            const defaultConfig = {
+                modal_title: 'Fee Transactions',
+                modal_subtitle: 'View and manage all fee transactions'
+            };
+
+            function applyConfig(config) {
+                const merged = { ...defaultConfig, ...config };
+                const titleEl = document.getElementById('modal-title');
+                const subtitleEl = document.getElementById('modal-subtitle');
+
+                if (titleEl) titleEl.textContent = merged.modal_title;
+                if (subtitleEl) subtitleEl.textContent = merged.modal_subtitle;
+            }
+
+            if (window.elementSdk) {
+                window.elementSdk.init({
+                    defaultConfig,
+                    onConfigChange: async (config) => {
+                        applyConfig(config);
+                    },
+                    mapToCapabilities: () => ({
+                        recolorables: [],
+                        borderables: [],
+                        fontEditable: undefined,
+                        fontSizeable: undefined
+                    }),
+                    mapToEditPanelValues: (config) => {
+                        const merged = { ...defaultConfig, ...config };
+                        return new Map([
+                            ['modal_title', merged.modal_title],
+                            ['modal_subtitle', merged.modal_subtitle]
+                        ]);
+                    }
+                });
+
+                if (window.elementSdk.config) {
+                    applyConfig(window.elementSdk.config);
+                }
+            }
+        }
+    }
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        const manager = TransactionManager.getInstance();
+        manager.init();
+    });
+</script>

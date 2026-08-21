@@ -32,7 +32,7 @@ function IDCardPreview({ student, school}) {
       "student-image",
       student.image
         ? `${imageBaseUrl}${student.image}=s220`
-        : "/no-student-boy-image.png"
+        : "static/no-student-boy-image.png"
     );
 
     card.setAttribute(
