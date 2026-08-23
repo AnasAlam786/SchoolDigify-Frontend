@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { formatCurrency } from './feeDrawer.utils';
+// import { formatCurrency } from './feeDrawer.utils';
 
 function TransactionPopover({ months, isOpen, onClose }) {
   if (!isOpen) return null;
@@ -198,18 +198,13 @@ function TransactionCard({ transaction, isDeleted, onSoftDelete, onRestore, onMe
   );
 }
 
-export default function TransactionModal({ transactions, open, onClose, onSoftDelete, onRestore, onMessage, onPrint }) {
+export default function TransactionModal({ transactions, onClose, onSoftDelete, onRestore, onMessage, onPrint }) {
   const [deletedExpanded, setDeletedExpanded] = useState(false);
   const [popoverId, setPopoverId] = useState('');
 
-  useEffect(() => {
-    if (!open) {
-      setDeletedExpanded(false);
-      setPopoverId('');
-    }
-  }, [open]);
+  console.log(transactions)
 
-  if (!open) return null;
+
 
   const activeTransactions = transactions.filter((transaction) => !transaction.isDeleted);
   const deletedTransactions = transactions.filter((transaction) => transaction.isDeleted);

@@ -85,43 +85,43 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
 
             <div className="p-4">
                 <div className="flex items-start">
-<div className="relative mr-4 flex-shrink-0">
-  <img
-    src={imageUrl}
-    alt="Student"
-    className="student-image w-20 h-20 object-cover border-2 border-gray-700 shadow-lg"
-    loading="lazy"
-  />
+                    <div className="relative mr-4 flex-shrink-0">
+                        <img
+                            src={imageUrl}
+                            alt="Student"
+                            className="student-image w-20 h-20 object-cover border-2 border-gray-700 shadow-lg"
+                            loading="lazy"
+                        />
 
-<div className="absolute -bottom-2 -right-2
-                flex items-center gap-1.5
-                px-2.5 py-1
-                rounded-full
-                bg-slate-950/75
-                backdrop-blur-md
-                border border-indigo-500/25
-                shadow-[0_3px_12px_-3px_rgba(99,102,241,0.25)]
-                transition-all duration-300
-                hover:border-indigo-500/40">
+                        <div className="absolute -bottom-2 -right-2
+                            flex items-center gap-1.5
+                            px-2.5 py-1
+                            rounded-full
+                            bg-slate-950/75
+                            backdrop-blur-md
+                            border border-indigo-500/25
+                            shadow-[0_3px_12px_-3px_rgba(99,102,241,0.25)]
+                            transition-all duration-300
+                            hover:border-indigo-500/40">
 
-  <span className="w-1.5 h-1.5 rounded-full
-                   bg-gradient-to-r from-indigo-500 to-purple-600" />
+                            <span className="w-1.5 h-1.5 rounded-full
+                                bg-gradient-to-r from-indigo-500 to-purple-600" />
 
-  <span className="text-[9px] font-semibold
-                   tracking-wider text-indigo-300/75 uppercase">
-    SR
-  </span>
+                            <span className="text-[9px] font-semibold
+                                tracking-wider text-indigo-300/75 uppercase">
+                                SR
+                            </span>
 
-  <span className="w-px h-2.5 bg-white/10" />
+                            <span className="w-px h-2.5 bg-white/10" />
 
-  <span className="text-[11px] font-bold
+                            <span className="text-[11px] font-bold
                    text-white/90 tracking-tight">
-    {student.SR}
-  </span>
-</div>
+                                {student.SR}
+                            </span>
+                        </div>
 
 
-</div>
+                    </div>
 
                     <div className="flex-1 min-w-0">
                         <h3 className="text-xl font-bold text-blue-400 mb-0 truncate">

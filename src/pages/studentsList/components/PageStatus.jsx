@@ -18,7 +18,14 @@ function SkeletonLoader() {
                         <div className="flex items-start">
                             <div className="relative mr-4 flex-shrink-0">
                                 <div className="student-image bg-gray-700" />
-                                <div className="absolute -bottom-0 -right-1 roll-badge rounded-full w-8 h-8 bg-gray-700" />
+                                <div className="absolute -bottom-2 -right-2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-950/75 backdrop-blur-md border border-indigo-500/25 shadow-[0_3px_12px_-3px_rgba(99,102,241,0.25)] animate-pulse">
+                                    {/* Dot placeholder */}
+                                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-500/40" />
+                                    {/* Divider */}
+                                    <span className="w-px h-2.5 bg-white/10" />
+                                    {/* Number value placeholder */}
+                                    <span className="w-5 h-2.5 rounded bg-white/20" />
+                                </div>
                             </div>
                             <div className="flex-1 min-w-0 space-y-3">
                                 <div className="h-6 w-3/4 rounded bg-gray-700" />
