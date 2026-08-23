@@ -33,7 +33,7 @@ export const sortOptions = [
     { value: "", label: "Class → Roll (Default)" },
     { value: "STUDENTS_NAME", label: "Name (A-Z)" },
     { value: "ADMISSION_DATE", label: "Admission Date" },
-    { value: "ADMISSION_NO", label: "Admission Number" },
+    { value: "SR", label: "SR" },
     { value: "DOB", label: "Date of Birth" },
 ];
 
@@ -65,8 +65,8 @@ export const SORTERS = {
     ADMISSION_DATE: (a, b) =>
         new Date(b.ADMISSION_DATE) - new Date(a.ADMISSION_DATE),
 
-    ADMISSION_NO: (a, b) =>
-        String(a.ADMISSION_NO).localeCompare(String(b.ADMISSION_NO)),
+    SR: (a, b) =>
+        Number(a.SR) - Number(b.SR),
 
     DOB: (a, b) =>
         new Date(a.DOB) - new Date(b.DOB),

@@ -72,7 +72,7 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
 
                     <button
                         type="button"
-                        onClick={() =>  navigate(`/edit_student/${student.id}`)}
+                        onClick={() => navigate(`/edit_student/${student.id}`)}
                         className="relative group p-1.5 hover:bg-gray-700 rounded-full"
                     >
                         <i className="fas fa-edit text-green-400 text-lg" />
@@ -85,12 +85,43 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
 
             <div className="p-4">
                 <div className="flex items-start">
-                    <div className="relative mr-4 flex-shrink-0">
-                        <img src={imageUrl} alt="Student" className="student-image" loading="lazy" />
-                        <div className="absolute -bottom-0 -right-1 roll-badge rounded-full w-8 h-8 flex items-center justify-center border-2 border-gray-800">
-                            <span className="text-xl font-bold text-white">{student.ROLL}</span>
-                        </div>
-                    </div>
+<div className="relative mr-4 flex-shrink-0">
+  <img
+    src={imageUrl}
+    alt="Student"
+    className="student-image w-20 h-20 object-cover border-2 border-gray-700 shadow-lg"
+    loading="lazy"
+  />
+
+<div className="absolute -bottom-2 -right-2
+                flex items-center gap-1.5
+                px-2.5 py-1
+                rounded-full
+                bg-slate-950/75
+                backdrop-blur-md
+                border border-indigo-500/25
+                shadow-[0_3px_12px_-3px_rgba(99,102,241,0.25)]
+                transition-all duration-300
+                hover:border-indigo-500/40">
+
+  <span className="w-1.5 h-1.5 rounded-full
+                   bg-gradient-to-r from-indigo-500 to-purple-600" />
+
+  <span className="text-[9px] font-semibold
+                   tracking-wider text-indigo-300/75 uppercase">
+    SR
+  </span>
+
+  <span className="w-px h-2.5 bg-white/10" />
+
+  <span className="text-[11px] font-bold
+                   text-white/90 tracking-tight">
+    {student.SR}
+  </span>
+</div>
+
+
+</div>
 
                     <div className="flex-1 min-w-0">
                         <h3 className="text-xl font-bold text-blue-400 mb-0 truncate">
@@ -105,7 +136,7 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                         <p className="text-gray-400 text-md mb-2 truncate">C/O {student.FATHERS_NAME}</p>
 
                         <div className="bg-blue-900 bg-opacity-50 text-blue-400 px-2 py-1 rounded text-base font-medium mb-1 inline-block">
-                            {student.CLASS}
+                            {student.CLASS} - {student.ROLL}
                         </div>
 
                         <div className="text-gray-400 text-sm truncate mb-2">
