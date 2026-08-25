@@ -1,6 +1,7 @@
 import { formatCurrency } from './feeDrawer.utils';
 
-export default function FeeCard({ key, fee, isSelected, onToggle }) {
+export default function FeeCard({ fee, isSelected, onToggle }) {
+
   const statusUpper = (fee.status || '').toUpperCase();
   const isPaid = statusUpper === 'PAID';
   const isDue = statusUpper === 'DUE';
@@ -47,6 +48,7 @@ export default function FeeCard({ key, fee, isSelected, onToggle }) {
   const currentStyle = styles[statusUpper] || styles.UPCOMING;
 
   return (
+    
     <div
       className={`group relative flex flex-col justify-between w-full overflow-hidden rounded-2xl border  transition-all duration-200 backdrop-blur-md ${currentStyle.container
         } ${isPaid
@@ -65,7 +67,7 @@ export default function FeeCard({ key, fee, isSelected, onToggle }) {
       }}
     >
       {/* TOP HEADER ROW: Icon + Title on left, Badge on right */}
-      <div className={`${key} flex items-center justify-between gap-2.5 p-3`}>
+      <div className={`flex items-center justify-between gap-2.5 p-3`}>
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border transition-transform group-hover:scale-105 ${currentStyle.iconBox}`}>
             {isPaid ? (

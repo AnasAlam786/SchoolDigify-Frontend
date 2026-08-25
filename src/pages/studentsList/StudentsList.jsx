@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { apiGet } from "../../api/api";
+import { apiGet, apiPost } from "../../api/api";
 import StudentFilters from "./components/StudentFilters";
 import StudentCard from "./components/StudentCard";
 import StudentStatsSection from "./components/StudentStatsSection";
@@ -10,7 +10,10 @@ import "./style/StudentsList.css";
 import SkeletonLoader from "./components/PageStatus";
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
 import { DEFAULT_FILTERS, matchesSearch, matchesFilters, sortStudents } from "./components/StudentsFilter";
+
 import FeeDrawer from "../feeModule/components/feeDrawer/FeeDrawer";
+import FeeSessionSetupModal from "../feeModule/components/feeSessionSetup/FeeSessionSetupModal";
+import TransactionModal from '../feeModule/components/feeTransactionsModal/TransactionModal';
 
 import usePermission from "../../hooks/usePermission";
 
@@ -32,6 +35,10 @@ export default function StudentsList() {
 
     const [feeDrawerOpen, setFeeDrawerOpen] = useState(false);
     const [feeDrawerStudent, setFeeDrawerStudent] = useState({});
+    const [feeSessionSetup, setFeeSessionSetup] = useState(null);
+
+    const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
+    const [transactionModalStudent, setTransactionModalStudent] = useState({});
 
     useEffect(() => {
         fetchClasses().then(setClasses);
@@ -114,12 +121,18 @@ export default function StudentsList() {
 
 
     const openFeeDrawer = (student) => {
+
         const studentSessionId = student?.student_session_id || student?.id;
         const studentPhone = student?.PHONE;
         setFeeDrawerStudent({ studentSessionId, studentPhone });
+
         setFeeDrawerOpen(true);
     }
 
+    const openTransactionModal = (studentSessionId, Phone) => {
+        setTransactionModalStudent({ studentSessionId, studentPhone });
+        setTransactionModalOpen(true);
+    }
 
     const closeStudentDetails = () => {
         setDetailModalOpen(false);
@@ -180,7 +193,30 @@ export default function StudentsList() {
             {feeDrawerOpen && (
                 <FeeDrawer
                     feeDrawerStudent={feeDrawerStudent}
-                    onClose={() => setFeeDrawerOpen(false)}
+                    onClose={() => { setFeeDrawerOpen(false); }}
+                    onSetupFeeSession={setFeeSessionSetup}
+                    setTransactionModalOpen={openTransactionModal}
+                />
+            )}
+
+            {isTransactionModalOpen &&
+                <TransactionModal
+                    transactionModalStudent={transactionModalStudent}
+                    onClose={() => setTransactionModalOpen(false)}
+                />
+            }
+
+            {feeSessionSetup && (
+                <FeeSessionSetupModal
+                    feeStructure={feeSessionSetup.feeStructure}
+                    studentSessionId={feeSessionSetup.studentSessionId}
+                    onClose={() => setFeeSessionSetup(null)}
+                    onSubmit={async (payload) => {
+                        const response = await apiPost('/api/setup_fee_session', payload);
+                        const result = await response.json();
+                        if (!response.ok) throw new Error(result?.error || result?.message || 'Unable to save fee data.');
+                        setFeeSessionSetup(null);
+                    }}
                 />
             )}
         </div>
