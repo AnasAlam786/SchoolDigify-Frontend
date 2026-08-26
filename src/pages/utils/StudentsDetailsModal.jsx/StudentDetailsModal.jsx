@@ -105,6 +105,7 @@ function StudentContent({ student, siblings, handleSiblingClick }) {
         {/* Contact */}
         <Section title="Contact & Address" color="green">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <DetailCard icon="fas fa-map-marker-alt" label="Address" value={student.ADDRESS} color="green" fullWidth={true}/>
 
             <DetailCard icon="fas fa-phone" label="Phone No." value={student.PHONE} color="green" />
 

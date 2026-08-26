@@ -67,7 +67,7 @@ const textMap = {
 };
 
 export default function DetailCard({
-  icon, label, value, color, fillColour = null
+  icon, label, value, color, fillColour = null, fullWidth = false,
 }) {
   const classes = colorClasses[color] || colorClasses.blue;
 
@@ -78,7 +78,7 @@ export default function DetailCard({
 
   return (
     <div
-      className={`${bgColour} rounded-xl p-4 border border-gray-700/30 transition-colors 
+      className={`${fullWidth ? "col-span-2" : ""} ${bgColour} rounded-xl p-4 border border-gray-700/30 transition-colors 
       ${hasValue ? classes.border : "opacity-70"}`}
     >
       <div className="flex items-center gap-3">
