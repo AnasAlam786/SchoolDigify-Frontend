@@ -18,7 +18,7 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
     DUE: {
       container: isSelected
         ? 'border-blue-500 bg-slate-900/90 ring-1 ring-blue-500/50 shadow-xl shadow-blue-500/10'
-        : 'border-red-500/20 bg-slate-900/60 hover:border-red-500/40 hover:bg-slate-900/80',
+        : 'border-red-500/20 bg-red-950/10 hover:border-red-500/40 hover:bg-red-950/30',
       iconBox: isSelected
         ? 'bg-blue-500/20 text-blue-400 border-blue-400/30'
         : 'bg-red-500/10 text-red-400 border-red-500/20',
