@@ -40,6 +40,7 @@ export default function FeeDrawerMiddle({ currentStudentData, currentStudentInde
             <div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
                 {monthlyFees.map((fee, index) => (
                     <FeeCard
+                        key={fee.id}
                         fee={fee}
                         isSelected={
                             selectedFees.some((selected) => selected.id === fee.id || selected.fee_id === fee.fee_id)

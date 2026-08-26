@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { apiGet, apiPost } from '../../../../api/api';
+import { apiGet } from '../../../../api/api';
 import { DrawerLoader, SetupFeeSessionUI } from './components/DrawerStatus';
 import FeeDrawerFooter from './components/FeeDrawerFooter';
 import FeeDrawerHeader from './components/FeeDrawerHeader';
 import FeeDrawerMiddle from './components/FeeDrawerMiddle';
-import { getGrandTotal, getSelectedFeeTotal } from './components/feeDrawer.utils';
 
 const emptyStudent = { monthlyFees: [], otherFees: [], selectedFees: [] };
 
@@ -13,18 +12,10 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
     const [feeDrawerLoading, setFeeDrawerLoading] = useState(false);
     const [currentStudentIndex, setCurrentStudentIndex] = useState(0);
 
-    const [discount, setDiscount] = useState(0);
-    const [paymentMode, setPaymentMode] = useState('');
-    const [paymentDate, setPaymentDate] = useState('');
-
     const [feeStructure, setFeeStructure] = useState(null);
     const [isFeeSessionSetupRequired, setFeeSessionSetupRequired] = useState(false);
 
-    const [paymentModeError, setPaymentModeError] = useState(null);
-    const [paymentDateError, setPaymentDateError] = useState(null);
     const [noFeeSelectedError, setNoFeeSelectedError] = useState(null);
-    const [isFeesSubmitting, setFeesSubmitting] = useState(false);
-
     
 
     useEffect(() => {
@@ -68,51 +59,9 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
         loadStudentFeeData();
     }, [feeDrawerStudent]);
 
-    useEffect(() => {
-        const date = new Date();
-        setPaymentDate(`${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`);
-    }, []);
 
     const currentStudentData = students[currentStudentIndex] || students[0] || emptyStudent;
-    const currentStudentTotal = getSelectedFeeTotal(currentStudentData);
-    const grandTotal = getGrandTotal(students);
-    const finalAmount = Math.max(0, grandTotal - Number(discount || 0));
 
-
-
-    async function handleProcessPayment() {
-
-        if (!students.some((student) => student.selectedFees.length > 0)) {
-            setNoFeeSelectedError('Please select at least one fee before continuing.');
-            return;
-        }
-        if (!paymentMode.trim()) {
-            setPaymentModeError('Please select a payment mode.');
-            return;
-        }
-        if (!paymentDate.trim()) {
-            setPaymentDateError('Please select a payment date.');
-            return;
-        }
-
-        try {
-            setFeesSubmitting(true);
-            const response = await apiPost('/api/pay_fee', { payment_mode: paymentMode, payment_date: paymentDate, discount: Number(discount || 0), total_amount: grandTotal, final_amount: finalAmount, new_fee_data: students, student_session_ids: students.filter((student) => student.selectedFees.length > 0).map((student) => student.student_session_id).filter(Boolean) });
-            const result = await response.json();
-
-            if (!response.ok) {
-                if (result.fees_paid) {
-                    showAlert("Fees Paid Successfully!")
-                    onClose()
-                }
-                throw new Error(result?.message || 'Payment failed');
-            }
-
-            const studentsFeeData = result.students_fee_data || [];
-            setStudents(studentsFeeData);
-        } catch (error) { console.error(error.message || 'Payment failed'); }
-        finally { setFeesSubmitting(false); }
-    }
 
     const setup = () => {
         onClose();
@@ -170,34 +119,16 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
                             />
 
                             <FeeDrawerFooter
-                                currentStudentTotal={currentStudentTotal}
-                                grandTotal={grandTotal}
-                                finalAmount={finalAmount}
-                                discount={discount}
-                                onDiscountChange={setDiscount}
-
-                                paymentDate={paymentDate}
-                                onPaymentDateChange={(value) => {
-                                    setPaymentDate(value);
-                                    setPaymentDateError(null);
-                                }}
-                                paymentDateError={paymentDateError}
-
-                                paymentMode={paymentMode}
-                                onPaymentModeChange={(value) => {
-                                    setPaymentMode(value);
-                                    setPaymentModeError(null);
-                                }}
-                                paymentModeError={paymentModeError}
+                                students={students}
+                                setStudents={setStudents}
+                                currentStudentIndex={currentStudentIndex}
+                                setNoFeeSelectedError={setNoFeeSelectedError}
 
                                 onViewTransactions={() => {
                                     const studentSessionId = feeDrawerStudent.studentSessionId || feeDrawerStudent.student_session_id || feeDrawerStudent.id;
                                     const studentPhone = feeDrawerStudent.studentPhone || feeDrawerStudent.phone;
                                     setTransactionModalOpen(studentSessionId, studentPhone);
                                 }}
-
-                                onProcessPayment={handleProcessPayment}
-                                isFeesSubmitting={isFeesSubmitting}
                             />
                         </>
                     )}

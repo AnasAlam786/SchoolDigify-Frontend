@@ -1,5 +1,3 @@
-import { formatCurrency } from './feeDrawer.utils';
-
 export default function FeeCard({ fee, isSelected, onToggle }) {
 
   const statusUpper = (fee.status || '').toUpperCase();
@@ -106,7 +104,7 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
             Amount
           </span>
           <span className={`text-base font-extrabold tracking-tight ${currentStyle.amount}`}>
-            {formatCurrency(fee.amount)}
+            ₹{ fee.amount }
           </span>
         </div>
       </div>

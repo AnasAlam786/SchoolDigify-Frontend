@@ -54,7 +54,7 @@ function DrawerLoader() {
                             <div className="h-4 w-32 rounded bg-slate-800"></div>
                             <div className="h-5 w-20 rounded-full bg-slate-800"></div>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div className="h-28 rounded-2xl border border-slate-800 bg-slate-800/40 p-3 flex flex-col justify-between">
                                 <div className="flex justify-between items-center">
                                     <div className="h-4 w-16 rounded bg-slate-700"></div>

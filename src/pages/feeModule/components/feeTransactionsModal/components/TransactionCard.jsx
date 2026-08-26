@@ -23,12 +23,12 @@ function TransactionCard({ transaction, isDeleted, onSoftDelete, onRestore, onMe
             <div className="flex flex-wrap items-center gap-2">
               <div className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 px-3 py-1.5">
                 <span className="text-[10px] font-medium uppercase tracking-wide text-emerald-400">Total</span>
-                <span className="text-sm font-bold text-emerald-300">{formatCurrency(transaction.totalPaid)}</span>
+                <span className="text-sm font-bold text-emerald-300">₹{transaction.totalPaid}</span>
               </div>
               {transaction.discount > 0 && (
                 <div className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2.5 py-1">
                   <span className="text-xs text-amber-400">Discount</span>
-                  <span className="text-xs font-semibold text-amber-300">{formatCurrency(transaction.discount)}</span>
+                  <span className="text-xs font-semibold text-amber-300">₹{transaction.discount}</span>
                 </div>
               )}
               <div className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700/50 bg-[#1e293b] px-2.5 py-1">
@@ -124,7 +124,7 @@ function TransactionCard({ transaction, isDeleted, onSoftDelete, onRestore, onMe
                   </div>
                   <div className="inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 px-3 py-1.5">
                     <span className="text-[10px] font-medium uppercase tracking-wide text-emerald-400">Total</span>
-                    <span className="text-sm font-bold text-emerald-300">{formatCurrency(studentTotal)}</span>
+                    <span className="text-sm font-bold text-emerald-300">₹{studentTotal}</span>
                   </div>
                 </div>
 
@@ -144,7 +144,7 @@ function TransactionCard({ transaction, isDeleted, onSoftDelete, onRestore, onMe
                           </div>
                         </div>
                       </button>
-                      <div className="text-sm font-bold text-indigo-200">{formatCurrency(sibling.fees.monthly.total)}</div>
+                      <div className="text-sm font-bold text-indigo-200">₹{sibling.fees.monthly.total}</div>
                       <TransactionPopover months={sibling.fees.monthly.months} isOpen={isSiblingPopoverOpen} onClose={() => setOpenPopoverId('')} />
                     </div>
                   )}
@@ -155,7 +155,7 @@ function TransactionCard({ transaction, isDeleted, onSoftDelete, onRestore, onMe
                         <div className="h-1.5 w-1.5 rounded-full bg-slate-600" />
                         <span className="text-sm text-slate-300">{fee.name}</span>
                       </div>
-                      <span className="text-sm font-semibold text-slate-200">{formatCurrency(fee.amount)}</span>
+                      <span className="text-sm font-semibold text-slate-200">₹{fee.amount}</span>
                     </div>
                   ))}
                 </div>

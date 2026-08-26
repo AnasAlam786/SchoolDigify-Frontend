@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { sendWhatsAppMessage } from "../../utils/sendWhatsAppMessage";
+import boyImage from "../../../assets/no-student-boy-image.png";
+import girlImage from "../../../assets/no-student-girl-image.png";
 
 function normalizePhone(phone) {
     return phone ? String(phone).trim() : "";
@@ -12,8 +14,7 @@ function getImageUrl(student) {
     }
 
     return student.GENDER?.toLowerCase() === "male"
-        ? "/static/no-student-boy-image.png"
-        : "/static/no-student-girl-image.png";
+        ? boyImage : girlImage;
 }
 
 function StudentCard({ student, onViewDetails, onPayFees }) {
