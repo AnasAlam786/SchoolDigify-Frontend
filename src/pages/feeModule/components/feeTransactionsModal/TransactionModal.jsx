@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { apiGet } from '../../../../api/api';
 
 import TransactionCard from './components/TransactionCard';
-import TransactionPopover from './components/TransactionPopover';
 import TransactionModalSkeletonLoader from './components/ModalStatus';
 
 
@@ -11,7 +10,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [deletedExpanded, setDeletedExpanded] = useState(false);
-  const [popoverId, setPopoverId] = useState('');
+
 
   useEffect(() => {
     async function loadTransactions() {
@@ -61,7 +60,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
   const deletedTransactions = transactions.filter((transaction) => transaction.is_deleted);
 
   return (
-    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-0 m-0" onClick={onClose}>
       <div className="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-700/50 bg-[#1e293b]/95 shadow-2xl backdrop-blur-xl" onClick={(event) => event.stopPropagation()}>
         <header className="border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50 px-4 py-4 sm:px-6 lg:px-8 sm:py-5">
           <div className="flex items-start justify-between gap-4">
@@ -102,8 +101,6 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
                   transaction={transaction}
                   setTransactions={setTransactions}
                   isDeleted={false}
-                  openPopoverId={popoverId}
-                  setOpenPopoverId={setPopoverId}
                 />
               ))
             )}
@@ -133,8 +130,6 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
                     transaction={transaction}
                     setTransactions={setTransactions}
                     isDeleted={true}
-                    openPopoverId={popoverId}
-                    setOpenPopoverId={setPopoverId}
                   />
                 ))}
               </div>

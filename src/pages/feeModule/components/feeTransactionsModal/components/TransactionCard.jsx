@@ -6,14 +6,16 @@ import { sendWhatsAppMessage } from '../../../../utils/sendWhatsAppMessage';
 import { transactionWhatsappMessage } from '../../../../utils/watsappMessages';
 import { usePrintableTransaction } from './printableTransaction';
 
-function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverId, setOpenPopoverId }) {
+function TransactionCard({ transaction, setTransactions, isDeleted }) {
   const getTransactionHTML = usePrintableTransaction();
-  
-  const [expanded, setExpanded] = useState(false);
-  const isPopoverOpen = openPopoverId === `${transaction.id}-popover`;
+
 
   const [isRestoreButtonLoading, setRestoreButtonLoading] = useState(false);
   const [isSoftDeleteButtonLoading, setSoftDeleteButtonLoading] = useState(false);
+
+  const [expanded, setExpanded] = useState(false);
+  const [isPaidMonthPopoverOpen, setPopoverId] = useState(false);
+
 
   const handleSoftDelete = async (id) => {
     setSoftDeleteButtonLoading(true)
@@ -80,7 +82,6 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
   };
 
   const handleWhatsappMessage = async (transaction) => {
-    setMessageButtonLoading(true)
     try {
       const whatsappMessage = transactionWhatsappMessage(transaction)
       sendWhatsAppMessage(transaction.phone, whatsappMessage)
@@ -88,13 +89,11 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
     } catch (error) {
       console.error("Error generating WhatsApp message:", error);
       showAlert(500, error);
-    } finally {
-      setMessageButtonLoading(false)
     }
   };
 
   const handlePrint = (transaction) => {
-    
+
 
     const html = getTransactionHTML(transaction);
 
@@ -111,7 +110,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
   };
 
   return (
-    <article className={`transaction-card overflow-hidden rounded-xl border shadow-lg ${isDeleted ? 'border-slate-700/40 bg-[#172033] opacity-80' : 'border-[#2d3748] bg-[#1a2436]'}`}>
+    <article className={`transaction-card overflow-visible rounded-xl border shadow-lg ${isDeleted ? 'border-slate-700/40 bg-[#172033] opacity-80' : 'border-[#2d3748] bg-[#1a2436]'}`}>
       <div className="border-b border-[#2d3748]/60 p-4 sm:p-5">
         <div className="mb-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex-1 space-y-2">
@@ -194,7 +193,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
                   className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-600/20 px-3 py-2 text-xs font-medium text-emerald-300 transition-all hover:bg-emerald-600/30 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <i className="fab fa-whatsapp text-base" />
-                  <span className="hidden sm:inline">"WhatsApp"</span>
+                  <span className="hidden sm:inline">WhatsApp</span>
                 </button>
 
                 <button type="button" onClick={() => handlePrint(transaction)} className="inline-flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-600/20 px-3 py-2 text-xs font-medium text-violet-300 transition-all hover:bg-violet-600/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500">
@@ -244,7 +243,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
             <svg className={`h-4 w-4 text-slate-400 transition-transform ${expanded ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
-            <span className="text-sm font-medium text-slate-300">Sibling Details & Fee Breakdown</span>
+            <span className="text-sm font-medium text-slate-300">Fee Breakdown</span>
             <span className="text-xs text-slate-500">({transaction.siblings.length} student{transaction.siblings.length > 1 ? 's' : ''})</span>
           </div>
           <span className="hidden text-xs text-slate-500 sm:inline">Click to {expanded ? 'collapse' : 'expand'}</span>
@@ -257,8 +256,6 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
             const monthlyTotal = sibling.fees.monthly?.total || 0;
             const oneTimeTotal = sibling.fees.oneTime?.reduce((sum, fee) => sum + fee.amount, 0) || 0;
             const studentTotal = monthlyTotal + oneTimeTotal;
-            const monthPopoverId = `${transaction.id}-${index}`;
-            const isSiblingPopoverOpen = isPopoverOpen && openPopoverId === monthPopoverId;
 
             return (
               <div key={`${sibling.studentName}-${index}`} className="rounded-xl border border-[#2d3748] bg-[#151d2e] p-4">
@@ -290,7 +287,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
                 <div className="mt-3 space-y-2">
                   {sibling.fees.monthly && (
                     <div className="relative flex items-center justify-between gap-3 rounded-lg border border-indigo-500/20 bg-indigo-500/10 p-2.5">
-                      <button type="button" onClick={() => setOpenPopoverId(isSiblingPopoverOpen ? '' : monthPopoverId)} className="group flex flex-1 items-center gap-2 text-left focus:outline-none">
+                      <button type="button" onClick={() => setPopoverId(true)} className="group flex flex-1 items-center gap-2 text-left focus:outline-none">
                         <div className="flex items-center gap-2">
                           <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/20 transition-colors group-hover:bg-indigo-500/30">
                             <svg className="h-4 w-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,7 +301,13 @@ function TransactionCard({ transaction, setTransactions, isDeleted, openPopoverI
                         </div>
                       </button>
                       <div className="text-sm font-bold text-indigo-200">₹{sibling.fees.monthly.total}</div>
-                      <TransactionPopover months={sibling.fees.monthly.months} isOpen={isSiblingPopoverOpen} onClose={() => setOpenPopoverId('')} />
+
+                      {isPaidMonthPopoverOpen && (
+                        <TransactionPopover
+                          months={sibling.fees.monthly.months}
+                          onClose={() => setPopoverId(false)}
+                        />
+                      )}
                     </div>
                   )}
 

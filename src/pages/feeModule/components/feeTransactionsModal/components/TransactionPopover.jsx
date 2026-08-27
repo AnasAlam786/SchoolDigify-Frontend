@@ -1,6 +1,5 @@
 
-function TransactionPopover({ months, isOpen, onClose }) {
-  if (!isOpen) return null;
+function TransactionPopover({ months, onClose }) {
 
   return (
     <div className="absolute left-0 top-full z-[9999] mt-2 w-64 rounded-xl border border-indigo-600 bg-[#0f1a2c] shadow-2xl shadow-indigo-900/30 sm:w-72" style={{ animation: 'popoverFadeIn 0.2s ease-out' }}>
