@@ -130,7 +130,7 @@ export default function StudentsList() {
     }
 
     const openTransactionModal = (studentSessionId, Phone) => {
-        setTransactionModalStudent({ studentSessionId, studentPhone });
+        setTransactionModalStudent({ studentSessionId, phone: Phone });
         setTransactionModalOpen(true);
     }
 

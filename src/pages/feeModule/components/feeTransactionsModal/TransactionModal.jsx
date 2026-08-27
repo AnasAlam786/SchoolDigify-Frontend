@@ -1,21 +1,68 @@
 import { useEffect, useState } from 'react';
+import { apiGet } from '../../../../api/api';
 
 import TransactionCard from './components/TransactionCard';
 import TransactionPopover from './components/TransactionPopover';
+import TransactionModalSkeletonLoader from './components/ModalStatus';
 
 
-export default function TransactionModal({ transactions, onClose }) {
+export default function TransactionModal({ transactionModalStudent, onClose }) {
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [deletedExpanded, setDeletedExpanded] = useState(false);
   const [popoverId, setPopoverId] = useState('');
 
-  console.log(transactions)
+  useEffect(() => {
+    async function loadTransactions() {
+      const studentSessionId = transactionModalStudent?.studentSessionId;
+      const phone = transactionModalStudent?.phone;
 
-  const activeTransactions = transactions.filter((transaction) => !transaction.isDeleted);
-  const deletedTransactions = transactions.filter((transaction) => transaction.isDeleted);
+      if (!studentSessionId) {
+        setTransactions([]);
+        setError('Student session not found.');
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+      setError('');
+
+      try {
+        const queryParams = new URLSearchParams({
+          student_session_id: studentSessionId,
+        });
+        if (phone) queryParams.append('phone', phone);
+
+        const response = await apiGet(`/api/get_fee_transactions?${queryParams.toString()}`);
+        const payload = await response.json();
+
+        console.log(payload)
+
+        if (!response.ok) {
+          throw new Error(payload?.error || payload?.message || 'Failed to fetch transactions.');
+        }
+
+        setTransactions(payload.transactions || payload.data || []);
+      } catch (fetchError) {
+        console.error('Failed to fetch fee transactions:', fetchError);
+        setTransactions([]);
+        setError(fetchError.message || 'Unable to load transactions.');
+        showAlert(500, fetchError)
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadTransactions();
+  }, [transactionModalStudent]);
+
+  const activeTransactions = transactions.filter((transaction) => !transaction.is_deleted);
+  const deletedTransactions = transactions.filter((transaction) => transaction.is_deleted);
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
-      <div className="max-h-[90vh] w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-700/50 bg-[#1e293b]/95 shadow-2xl backdrop-blur-xl" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
+      <div className="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-700/50 bg-[#1e293b]/95 shadow-2xl backdrop-blur-xl" onClick={(event) => event.stopPropagation()}>
         <header className="border-b border-slate-700/50 bg-gradient-to-r from-slate-800/50 to-slate-900/50 px-4 py-4 sm:px-6 lg:px-8 sm:py-5">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
@@ -30,7 +77,16 @@ export default function TransactionModal({ transactions, onClose }) {
           </div>
         </header>
 
-        <main className="custom-scrollbar flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+        <main className="custom-scrollbar min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+          {loading && <TransactionModalSkeletonLoader />}
+
+          {!loading && error && (
+            <div className="py-12 text-center">
+              <p className="text-sm text-rose-300">{error}</p>
+            </div>
+          )}
+
+          {!loading && !error && <>
           <section className="space-y-3 sm:space-y-4">
             {activeTransactions.length === 0 ? (
               <div className="py-12 text-center">
@@ -44,11 +100,8 @@ export default function TransactionModal({ transactions, onClose }) {
                 <TransactionCard
                   key={transaction.id}
                   transaction={transaction}
+                  setTransactions={setTransactions}
                   isDeleted={false}
-                  onSoftDelete={onSoftDelete}
-                  onRestore={onRestore}
-                  onMessage={onMessage}
-                  onPrint={onPrint}
                   openPopoverId={popoverId}
                   setOpenPopoverId={setPopoverId}
                 />
@@ -78,11 +131,8 @@ export default function TransactionModal({ transactions, onClose }) {
                   <TransactionCard
                     key={transaction.id}
                     transaction={transaction}
+                    setTransactions={setTransactions}
                     isDeleted={true}
-                    onSoftDelete={onSoftDelete}
-                    onRestore={onRestore}
-                    onMessage={onMessage}
-                    onPrint={onPrint}
                     openPopoverId={popoverId}
                     setOpenPopoverId={setPopoverId}
                   />
@@ -90,6 +140,7 @@ export default function TransactionModal({ transactions, onClose }) {
               </div>
             )}
           </section>
+          </>}
         </main>
 
         <footer className="border-t border-slate-700/50 bg-slate-900/30 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">

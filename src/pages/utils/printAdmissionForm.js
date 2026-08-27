@@ -1,7 +1,7 @@
 import { apiGet } from "../../api/api";
 
 export async function printAdmissionForm(studentId) {
-
+    
     if(!studentId){ showAlert(400, "Student not found!")}
     try {
         const response = await apiGet(
