@@ -108,7 +108,6 @@ export default function StudentFeeCard({ student, onViewDetails, onPayFees, onVi
               src={getStudentImage(student)} loading="lazy"
               alt={student?.STUDENTS_NAME || 'Student'}
               className="h-16 w-16 rounded-2xl border border-slate-600 object-cover shadow-lg shadow-slate-900/50"
-              loading="lazy"
             />
             <div className="absolute -bottom-2 -right-2 rounded-full border border-[#3A3A3A] bg-[#111111] px-2 py-0.5 text-[10px] font-semibold tracking-[0.18em] text-gray-200">
               Roll: {student?.ROLL || '—'}
