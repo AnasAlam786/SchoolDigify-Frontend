@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiPost } from '../../../../../api/api';
+import { apiPost } from '../../../../api/api';
 export default function FeeDrawerFooter({
   students,
   setStudents,

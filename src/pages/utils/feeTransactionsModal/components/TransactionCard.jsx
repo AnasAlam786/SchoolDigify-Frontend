@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import TransactionPopover from './TransactionPopover';
-import { apiPost } from '../../../../../api/api';
+import { apiPost } from '../../../../api/api';
 import { Loader2, Trash2, RotateCcw } from "lucide-react";
-import { sendWhatsAppMessage } from '../../../../utils/sendWhatsAppMessage';
-import { transactionWhatsappMessage } from '../../../../utils/watsappMessages';
+import { sendWhatsAppMessage } from '../../../utils/sendWhatsAppMessage';
+import { transactionWhatsappMessage } from '../../../utils/watsappMessages';
 import { usePrintableTransaction } from './printableTransaction';
 
 function TransactionCard({ transaction, setTransactions, isDeleted }) {

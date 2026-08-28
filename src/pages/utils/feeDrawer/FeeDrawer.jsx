@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiGet } from '../../../../api/api';
+import { apiGet } from '../../../api/api';
 import { DrawerLoader, SetupFeeSessionUI } from './components/DrawerStatus';
 import FeeDrawerFooter from './components/FeeDrawerFooter';
 import FeeDrawerHeader from './components/FeeDrawerHeader';

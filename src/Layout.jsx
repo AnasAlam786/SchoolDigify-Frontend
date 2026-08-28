@@ -21,6 +21,12 @@ function Layout() {
           permissionName: PERMISSIONS.STUDENT_LIST
         },
         {
+          label: "Fees",
+          route: "/fees",
+          icon: "fas fa-file-invoice-dollar",
+          permissionName: PERMISSIONS.VIEW_FEE_DATA
+        },
+        {
           label: "Add Student",
           route: "/admission",
           icon: "fas fa-user-plus icon-cyan",

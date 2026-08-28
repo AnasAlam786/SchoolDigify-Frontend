@@ -33,6 +33,7 @@ export default function TitleManager() {
         "/promote_and_tc": "Promote & TC",
         "/add_staff": "Add Staff",
         "/show_staff":"Staff List",
+        "/fees":"Fee Management",
       };
 
       title = titles[pathname] || "SchoolDigify";

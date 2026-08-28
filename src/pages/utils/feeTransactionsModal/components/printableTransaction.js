@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AuthContext } from "../../../../../auth/authProvider";
+import { AuthContext } from "../../../../auth/authProvider";
 
 export function usePrintableTransaction() {
   const { sessionData } = useContext(AuthContext);
@@ -311,16 +311,6 @@ export function usePrintableTransaction() {
           </div>
 
         </div>
-
-        <script>
-          window.onload = function () {
-            window.print();
-          };
-
-          window.onafterprint = function () {
-            window.close();
-          };
-        </script>
       </body>
       </html>
     `);

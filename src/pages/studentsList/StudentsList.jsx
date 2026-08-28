@@ -11,9 +11,9 @@ import SkeletonLoader from "./components/PageStatus";
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
 import { DEFAULT_FILTERS, matchesSearch, matchesFilters, sortStudents } from "./components/StudentsFilter";
 
-import FeeDrawer from "../feeModule/components/feeDrawer/FeeDrawer";
-import FeeSessionSetupModal from "../feeModule/components/feeSessionSetup/FeeSessionSetupModal";
-import TransactionModal from '../feeModule/components/feeTransactionsModal/TransactionModal';
+import FeeDrawer from "../utils/feeDrawer/FeeDrawer";
+import FeeSessionSetupModal from "../utils/feeSessionSetup/FeeSessionSetupModal";
+import TransactionModal from '../utils/feeTransactionsModal/TransactionModal';
 
 import usePermission from "../../hooks/usePermission";
 
