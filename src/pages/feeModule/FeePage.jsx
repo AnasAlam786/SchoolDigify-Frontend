@@ -5,11 +5,12 @@ import { apiGet } from '../../api/api';
 
 
 function FeePage() {
-  console.log("FeePage rendered");
   const [activeTab, setActiveTab] = useState('students');
   
 
   const [studentsData, setStudentsData] = useState([]);
+  const [totalDiscountBySchool, setTotalDiscountBySchool] = useState(0);
+  
   
   const [isStudentsDataLoading, setStudentsDataLoading] = useState(null);
   const [studentsDataError, setStudentsDataError] = useState(null);
@@ -30,8 +31,10 @@ function FeePage() {
         }
 
         const studentsFeeData = payload.students_fee_data || [];
+        const totalDiscountBySchool = payload.total_discount_given_by_school || 0
 
-        setStudentsData(studentsFeeData);
+        setTotalDiscountBySchool(totalDiscountBySchool)
+        setStudentsData(studentsFeeData);        
 
       } catch (error) {
         console.error('Failed to fetch fee data:', error);
@@ -76,11 +79,16 @@ function FeePage() {
         </div>
 
         <div className={activeTab === 'students' ? 'block' : 'hidden'}>
-          <StudentsTab students={studentsData} />
+          <StudentsTab 
+            students={studentsData} 
+            totalDiscountBySchool={totalDiscountBySchool}
+            isLoading={isStudentsDataLoading}
+            error={studentsDataError}
+          />
         </div>
 
         <div className={activeTab === 'dashboard' ? 'block' : 'hidden'}>
-          <DashboardTab students={studentsData} />
+          <DashboardTab students={studentsData} totalDiscountBySchool={totalDiscountBySchool}/>
         </div>
       </div>
     </div>

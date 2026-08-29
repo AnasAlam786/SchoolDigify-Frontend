@@ -1,5 +1,7 @@
 import boyImage from '../../../assets/no-student-boy-image.png';
 import girlImage from '../../../assets/no-student-girl-image.png';
+import { memo } from 'react';
+
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {
   style: 'currency',
@@ -15,13 +17,13 @@ function getStudentImage(student) {
   if (student?.IMAGE) {
     return student.IMAGE.startsWith('http')
       ? student.IMAGE
-      : `https://lh3.googleusercontent.com/d/${student.IMAGE}=s200`;
+      : `https://lh3.googleusercontent.com/d/${student.IMAGE}=s50`;
   }
 
   if (student?.photo) {
     return student.photo.startsWith('http')
       ? student.photo
-      : `https://lh3.googleusercontent.com/d/${student.photo}=s200`;
+      : `https://lh3.googleusercontent.com/d/${student.photo}=s50`;
   }
 
   return student?.GENDER?.toLowerCase() === 'female' ? girlImage : boyImage;
@@ -56,12 +58,10 @@ function getStatusStyles(status) {
   }
 }
 
-export default function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions }) {
+function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions }) {
   const statusStyles = getStatusStyles(student?.feeStatus || 'Due');
 
-  const discountAmount = student?.discount || 0
-  const actualPaidAmount = student?.actualPaidAmount || 0
-  const totalSettledAmount = discountAmount + actualPaidAmount;
+  const totalSettledAmount = student?.totalSettledAmount || 0
 
   const totalDueAmount = student?.dueAmount || 0
   const totalPayableAmount = student?.totalPayable || 0
@@ -157,10 +157,10 @@ export default function StudentFeeCard({ student, onViewDetails, onPayFees, onVi
             <div className="h-2 overflow-hidden rounded-full bg-[#2A2A2A]">
               <div
                 className={`h-full rounded-full ${student?.feeStatus === 'Paid'
-                    ? 'bg-emerald-400'
-                    : student?.feeStatus === 'Partially Paid'
-                      ? 'bg-amber-400'
-                      : 'bg-rose-400'
+                  ? 'bg-emerald-400'
+                  : student?.feeStatus === 'Partially Paid'
+                    ? 'bg-amber-400'
+                    : 'bg-rose-400'
                   }`}
                 style={{ width: `${progress}%` }}
               />
@@ -221,3 +221,5 @@ export default function StudentFeeCard({ student, onViewDetails, onPayFees, onVi
     </article>
   );
 }
+
+export default memo(StudentFeeCard);

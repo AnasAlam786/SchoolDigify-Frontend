@@ -10,8 +10,7 @@ export const fetchClasses = async () => {
     }
 
     return data.classes;
-        
-
+      
     return [];
   } catch (error) {
     showAlert(400, error )
