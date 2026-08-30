@@ -35,7 +35,7 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
     fetchClasses().then(setClasses);
   }, []);
 
-  
+
   let filteredStudents = useMemo(() => {
     return filterAndSortStudents(students, filters, classes);
   }, [students, filters]);
@@ -171,46 +171,60 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
               <h3 className="text-lg font-semibold text-white">Sorting</h3>
             </div>
 
-            <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30">
-              <div className="text-xs text-gray-400 mb-2">Sort By</div>
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3">
+
+              {/* Wrapper making the entire box clickable */}
+              <div className="relative flex-1 bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-lg px-3 py-2.5 flex items-center justify-between cursor-pointer hover:border-amber-500/50 transition-colors group">
+
+                {/* Selected Value Text Display */}
+                <span className="text-base text-white truncate pr-4">
+                  {sortOptions.find(opt => opt.value === filters.sortBy)?.label || 'Select option'}
+                </span>
+
+                {/* Dropdown Arrow Icon */}
+                <svg className="w-4 h-4 text-gray-400 group-hover:text-amber-400 transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+
+                {/* Invisible Native Select covering the whole container for native dropdown functionality */}
                 <select
                   value={filters.sortBy}
                   onChange={(e) => updateFilter('sortBy', e.target.value)}
-                  className="flex-1 appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-base focus:outline-none focus:ring-0 cursor-pointer text-white pr-8"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 >
                   {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option key={option.value} value={option.value} className="bg-gray-900 text-white">
                       {option.label}
                     </option>
                   ))}
                 </select>
-
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg hover:from-amber-500/30 hover:to-orange-500/30 transition-all"
-                  onClick={onSortToggle}
-                >
-                  <div className="transform transition-transform duration-300">
-                    {filters.sortDir === 'asc' ? (
-                      <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    )}
-                  </div>
-                </button>
               </div>
+
+              {/* Sort Direction Toggle Button */}
+              <button
+                type="button"
+                className="flex items-center justify-center w-11 h-11 bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg hover:from-amber-500/30 hover:to-orange-500/30 transition-all flex-shrink-0"
+                onClick={onSortToggle}
+              >
+                <div className="transform transition-transform duration-300">
+                  {filters.sortDir === 'asc' ? (
+                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                </div>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
       {/* Mobile Filter Section */}
-      <div className="lg:hidden p-4 space-y-4">
+      <div className="lg:hidden mt-5 mb-4">
         <div className="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/50">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-2 h-6 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full" />
@@ -230,48 +244,63 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
             </div>
 
             {/* Class Filter Mobile */}
-            <div>
-              <div className="text-xs text-gray-400 mb-1 ml-1">Class Filter</div>
-              <select
-                value={filters.classFilter}
-                onChange={(e) => updateFilter('classFilter', e.target.value)}
-                className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-sm focus:outline-none cursor-pointer text-white"
-                style={{
-                  backgroundImage:
-                    "url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239ca3af%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "right 1rem center",
-                  backgroundSize: ".65rem auto",
-                }}
-              >
-                <option value="All">All Classes</option>
-                {classes.map(cls => (
-                  <option key={cls.id} value={cls.id}>
-                    {cls.class_name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Sorting Mobile */}
-            <div>
-              <div className="text-xs text-gray-400 mb-1 ml-1">Sort By</div>
-              <div className="flex items-center gap-3">
+            <div className="mb-3">
+              <div className="relative bg-gray-900/80 backdrop-blur-md border border-gray-700/60 rounded-xl px-4 pt-2 pb-1.5 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                  Class Filter
+                </label>
                 <select
-                  value={filters.sortBy}
-                  onChange={(e) => updateFilter('sortBy', e.target.value)}
-                  className="flex-1 appearance-none bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-sm focus:outline-none cursor-pointer text-white"
+                  value={filters.classFilter}
+                  onChange={(e) => updateFilter('classFilter', e.target.value)}
+                  className="w-full appearance-none bg-transparent pt-0.5 pb-1 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
                 >
-                  {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                  <option value="All" className="bg-gray-900 text-gray-300">All Classes</option>
+                  {classes.map(cls => (
+                    <option key={cls.id} value={cls.id} className="bg-gray-900 text-gray-100">
+                      {cls.class_name}
                     </option>
                   ))}
                 </select>
 
+                {/* Custom Dropdown Arrow */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Sorting Mobile */}
+            <div className="mb-3">
+              <div className="flex items-center gap-3">
+                <div className="relative flex-1 bg-gray-900/80 backdrop-blur-md border border-gray-700/60 rounded-xl px-4 pt-2 pb-1.5 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                  <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                    Sort By
+                  </label>
+                  <select
+                    value={filters.sortBy}
+                    onChange={(e) => updateFilter('sortBy', e.target.value)}
+                    className="w-full appearance-none bg-transparent pt-0.5 pb-1 pr-6 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
+                  >
+                    {sortOptions.map((option) => (
+                      <option key={option.value} value={option.value} className="bg-gray-900 text-gray-100">
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Custom Dropdown Arrow */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+
                 <button
                   type="button"
-                  className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg hover:from-amber-500/30 hover:to-orange-500/30 transition-all"
+                  className="flex items-center justify-center w-12 h-[52px] bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-xl hover:from-amber-500/30 hover:to-orange-500/30 transition-all shrink-0"
                   onClick={onSortToggle}
                 >
                   {filters.sortDir === 'asc' ? (
@@ -302,7 +331,7 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
         </div>
 
         {/* Mobile Stats */}
-        <div className="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-4 border border-gray-800/70 text-center">
+        <div className=" mt-4 bg-gray-900/40 backdrop-blur-xl rounded-2xl p-4 border border-gray-800/70 text-center">
           <div className="text-sm text-gray-400 mb-2">Showing</div>
           <div className="text-2xl font-bold text-white">
             <span className="text-blue-400">{filteredStudents.length}</span>
@@ -314,7 +343,7 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
       </div>
 
       {/* Summary Stats */}
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 p-5">
+      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
           <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Total Collected</p>
           <p className="mt-2 text-2xl font-bold text-emerald-300">₹{summary.totalSettledAmount.toLocaleString('en-IN')}</p>
@@ -334,7 +363,7 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
       </section>
 
       {/* Students Grid */}
-      <section className="px-5 pb-5">
+      <section className="pb-5 mt-6">
         {filteredStudents.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-[#3A3A3A] bg-[#1A1A1A] px-6 py-16 text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#111111] text-gray-300">

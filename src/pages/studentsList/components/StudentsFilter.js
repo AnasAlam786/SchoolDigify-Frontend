@@ -19,7 +19,7 @@ export const GLOBAL_FIELDS = [
 ];
 
 export const fieldOptions = [
-    { value: "all", label: "All Fields" },
+    { value: "all", label: "All" },
     { value: "STUDENTS_NAME", label: "Name" },
     { value: "FATHERS_NAME", label: "Father" },
     { value: "SR", label: "SR No" },

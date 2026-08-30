@@ -7,7 +7,7 @@ function NoStudentsState({
 
     const { hasPermission, PERMISSIONS } = usePermission()
     return (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-card rounded-2xl border border-white/5 m-10">
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-card rounded-2xl border border-white/5 m-0 sm:m-10">
             <div className="w-24 h-24 mb-6 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center animate-gentle-bounce">
                 <i className="fas fa-user-slash text-4xl text-indigo-300"></i>
             </div>

@@ -75,7 +75,6 @@ export default function StudentFilters({
                                 </div>
 
                                 <div className="relative">
-                                    <div className="text-xs text-gray-400 absolute -top-5 left-0">Class</div>
                                     <select
                                         value={studentFilters.classView}
                                         onChange={(e) => updateFilter("classView", e.target.value)}
@@ -162,7 +161,7 @@ export default function StudentFilters({
 
                     <div
                         id="advanced-filters-section"
-                        className="grid grid-cols-2 gap-6"
+                        className="grid grid-cols-2 gap-3"
                         style={{ display: desktopAdvancedOpen ? "grid" : "none" }}
                     >
                         <div className="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/70">
@@ -172,79 +171,113 @@ export default function StudentFilters({
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
+
                                 <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30 hover:border-purple-500/30 transition-colors">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                                                <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    <div className="flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="hidden sm:flex w-9 h-9 rounded-lg bg-purple-500/10 border border-purple-500/20 items-center justify-center flex-shrink-0">
+                                                <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                             </div>
-                                            <div>
-                                                <div className="text-sm font-medium text-white">RTE</div>
-                                                <div className="text-xs text-gray-400">Students</div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="text-xs text-gray-400 mb-0.5">RTE</div>
+                                                <span className="text-sm font-medium text-white truncate block">
+                                                    {studentFilters.filterRTE ? 'RTE Students Only' : 'All Students'}
+                                                </span>
                                             </div>
                                         </div>
-                                        <label className="relative inline-flex items-center cursor-pointer">
+
+                                        <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                             <input
                                                 type="checkbox"
                                                 checked={studentFilters.filterRTE}
                                                 onChange={(e) => updateFilter("filterRTE", e.target.checked)}
                                                 className="sr-only peer"
                                             />
-                                            <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500" />
+                                            <div className="w-11 h-6 bg-gray-800 border border-gray-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-gray-400 peer-checked:after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-600 peer-checked:border-purple-500" />
                                         </label>
                                     </div>
                                 </div>
 
                                 <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30 hover:border-purple-500/30 transition-colors">
-                                    <div className="mb-1">
-                                        <div className="text-xs text-gray-400 mb-1">PEN Status</div>
+                                    <div className="relative flex items-center justify-between cursor-pointer group">
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <div className="text-xs text-gray-400 mb-1">PEN Status</div>
+                                            <span className="text-sm font-medium text-white truncate block">
+                                                {studentFilters.filterPEN === 'present' ? 'PEN Present' : studentFilters.filterPEN === 'missing' ? 'PEN Missing' : 'Any Status'}
+                                            </span>
+                                        </div>
+
+                                        <div className="w-7 h-7 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors flex-shrink-0 pointer-events-none">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+
                                         <select
                                             value={studentFilters.filterPEN}
                                             onChange={(e) => updateFilter("filterPEN", e.target.value)}
-                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         >
-                                            <option value="any" >
-                                                Any Status
-                                            </option>
-                                            <option value="present" >
-                                                PEN Present
-                                            </option>
-                                            <option value="missing">
-                                                PEN Missing
-                                            </option>
+                                            <option value="any" className="bg-gray-900 text-white">Any Status</option>
+                                            <option value="present" className="bg-gray-900 text-white">PEN Present</option>
+                                            <option value="missing" className="bg-gray-900 text-white">PEN Missing</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30 hover:border-purple-500/30 transition-colors">
-                                    <div className="mb-1">
-                                        <div className="text-xs text-gray-400 mb-1">Gender</div>
+                                    <div className="relative flex items-center justify-between cursor-pointer group">
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <div className="text-xs text-gray-400 mb-1">Gender</div>
+                                            <span className="text-sm font-medium text-white truncate block">
+                                                {studentFilters.filterGender === 'male' ? 'Male' : studentFilters.filterGender === 'female' ? 'Female' : studentFilters.filterGender === 'other' ? 'Other' : 'Any Gender'}
+                                            </span>
+                                        </div>
+
+                                        <div className="w-7 h-7 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors flex-shrink-0 pointer-events-none">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+
                                         <select
                                             value={studentFilters.filterGender}
                                             onChange={(e) => updateFilter("filterGender", e.target.value)}
-                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         >
-                                            <option value="any">Any Gender</option>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                            <option value="other">Other</option>
+                                            <option value="any" className="bg-gray-900 text-white">Any Gender</option>
+                                            <option value="male" className="bg-gray-900 text-white">Male</option>
+                                            <option value="female" className="bg-gray-900 text-white">Female</option>
+                                            <option value="other" className="bg-gray-900 text-white">Other</option>
                                         </select>
                                     </div>
                                 </div>
 
                                 <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30 hover:border-purple-500/30 transition-colors">
-                                    <div className="mb-1">
-                                        <div className="text-xs text-gray-400 mb-1">Admission Type</div>
+                                    <div className="relative flex items-center justify-between cursor-pointer group">
+                                        <div className="flex-1 min-w-0 pr-4">
+                                            <div className="text-xs text-gray-400 mb-1">Admission Type</div>
+                                            <span className="text-sm font-medium text-white truncate block">
+                                                {studentFilters.filterAdmission === 'new' ? 'New Admission' : studentFilters.filterAdmission === 'old' ? 'Old Student' : 'Any Admission'}
+                                            </span>
+                                        </div>
+
+                                        <div className="w-7 h-7 flex items-center justify-center text-gray-400 group-hover:text-purple-400 transition-colors flex-shrink-0 pointer-events-none">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+
                                         <select
                                             value={studentFilters.filterAdmission}
                                             onChange={(e) => updateFilter("filterAdmission", e.target.value)}
-                                            className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                         >
-                                            <option value="any">Any Admission</option>
-                                            <option value="new">New Admission</option>
-                                            <option value="old">Old Student</option>
+                                            <option value="any" className="bg-gray-900 text-white">Any Admission</option>
+                                            <option value="new" className="bg-gray-900 text-white">New Admission</option>
+                                            <option value="old" className="bg-gray-900 text-white">Old Student</option>
                                         </select>
                                     </div>
                                 </div>
@@ -252,60 +285,74 @@ export default function StudentFilters({
                         </div>
 
                         <div className="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/70">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className="w-2 h-8 bg-gradient-to-b from-amber-500 to-orange-400 rounded-full" />
-                                <h3 className="text-lg font-semibold text-white">Sorting</h3>
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-1.5 h-6 bg-gradient-to-b from-amber-500 to-orange-400 rounded-full" />
+                                    <h3 className="text-base font-semibold text-white tracking-wide">Sorting & Filtering</h3>
+                                </div>
+                                <span className="text-[11px] font-medium text-gray-400 uppercase tracking-wider">Preferences</span>
                             </div>
 
-                            <div className="space-y-4">
-                                <div className="bg-gray-900/50 rounded-xl p-4 border border-gray-700/30">
-                                    <div className="text-xs text-gray-400 mb-2">Sort By</div>
-                                    <div className="flex items-center gap-3">
-                                        <select
-                                            value={studentFilters.sortBy}
-                                            onChange={(e) => updateFilter("sortBy", e.target.value)}
-                                            className="flex-1 appearance-none bg-gray-900/80 backdrop-blur-sm border-0 text-base focus:outline-none focus:ring-0 cursor-pointer text-white pr-8"
-                                        >
-                                            {sortOptions.map((option) => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </option>
-                                            ))}
-                                        </select>
+                            <div className="space-y-3">
+                                <div className="relative flex items-center bg-gray-900/70 border border-gray-700/40 rounded-xl px-4 py-3 hover:border-amber-500/40 transition-all group">
+                                    <div className="flex-1 min-w-0 pr-4">
+                                        <div className="text-[10px] uppercase tracking-wider font-semibold text-gray-400 mb-0.5">Sort By</div>
+                                        <span className="text-sm font-medium text-white truncate block">
+                                            {sortOptions.find(opt => opt.value === studentFilters.sortBy)?.label || 'Select option'}
+                                        </span>
+                                    </div>
 
+                                    <div className="flex items-center gap-2.5 pl-3 border-l border-gray-800 flex-shrink-0">
                                         <button
                                             type="button"
                                             id="sort-dir-toggle"
-                                            className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-lg"
+                                            className="flex items-center justify-center w-9 h-9 bg-amber-500/10 border border-amber-500/20 rounded-lg hover:bg-amber-500/20 transition-all text-amber-400"
                                             onClick={onSortToggle}
+                                            title="Toggle Direction"
                                         >
                                             <div className="transform transition-transform duration-300" id="sort-dir-icon">
                                                 {studentFilters.sortDir === "asc" ? (
-                                                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
                                                     </svg>
                                                 ) : (
-                                                    <svg className="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                                                     </svg>
                                                 )}
                                             </div>
                                         </button>
+
+                                        <div className="w-7 h-7 flex items-center justify-center text-gray-400 group-hover:text-amber-400 transition-colors pointer-events-none">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
                                     </div>
+
+                                    <select
+                                        value={studentFilters.sortBy}
+                                        onChange={(e) => updateFilter("sortBy", e.target.value)}
+                                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                    >
+                                        {sortOptions.map((option) => (
+                                            <option key={option.value} value={option.value} className="bg-gray-900 text-white">
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
 
-                                <div id="active-filters" className="min-h-[50px] bg-gradient-to-r from-gray-900/40 
-                                    to-gray-900/20 border border-gray-700/30 rounded-xl p-3 flex items-center gap-2 
-                                    backdrop-blur-sm flex-wrap"
+                                <div id="active-filters" className="min-h-[44px] bg-gray-900/30 border border-gray-800/60 rounded-xl px-3.5 py-2.5 flex items-center gap-2 backdrop-blur-sm flex-wrap"
                                     style={{ display: hasActiveTags ? "flex" : "none" }}>
                                     {activeTags?.length ? (
                                         activeTags.map((tag) => (
-                                            <span key={tag} className="rounded-full bg-gray-800 px-3 py-1 text-sm text-gray-300">
+                                            <span key={tag} className="inline-flex items-center rounded-lg bg-gray-800/80 border border-gray-700/50 px-2.5 py-1 text-xs font-medium text-gray-300 shadow-sm">
                                                 {tag}
                                             </span>
                                         ))
                                     ) : (
-                                        <div className="text-sm text-gray-400 italic">No active filters</div>
+                                        <div className="text-xs text-gray-500 italic">No active filters applied</div>
                                     )}
                                 </div>
                             </div>
@@ -338,7 +385,7 @@ export default function StudentFilters({
                                         className="appearance-none bg-transparent border-0 pl-1 pr-5 py-1 text-xs focus:outline-none focus:ring-0 cursor-pointer text-white"
                                     >
                                         {fieldOptions.map((option) => (
-                                            <option key={option.value} value={option.value}>
+                                            <option key={option.value} value={option.value} className="bg-[#111827] text-gray-100 py-3 px-4">
                                                 {option.label}
                                             </option>
                                         ))}
@@ -346,21 +393,31 @@ export default function StudentFilters({
                                 </div>
                             </div>
 
-                            <div>
-                                <div className="text-xs text-gray-400 mb-1 ml-1">Class Filter</div>
+                            <div className="relative bg-gray-900/80 backdrop-blur-md border border-gray-700/60 rounded-xl px-4 pt-2 pb-1.5 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                                <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                                    Class Filter
+                                </label>
                                 <select
                                     value={studentFilters.classView}
                                     onChange={(e) => updateFilter("classView", e.target.value)}
-                                    className="w-full appearance-none bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl px-4 py-3 text-sm focus:outline-none cursor-pointer text-white"
+                                    className="w-full appearance-none bg-transparent pt-0.5 pb-1 pr-6 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
                                 >
-                                    <option value="All">All Classes</option>
+                                    <option value="All" className="bg-gray-900 text-gray-300 py-2.5 px-3">All Classes</option>
                                     {classes.map(cls => (
-                                        <option key={cls.id} value={cls.id}>
+                                        <option key={cls.id} value={cls.id} className="bg-gray-900 text-gray-100 py-2.5 px-3">
                                             {cls.class_name}
                                         </option>
                                     ))}
                                 </select>
+
+                                {/* Custom Dropdown Arrow */}
+                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400">
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -405,15 +462,16 @@ export default function StudentFilters({
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
-                                <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
+                                {/* RTE Filter */}
+                                <div className="bg-gray-900/50 rounded-xl p-3.5 border border-gray-700/40 shadow-inner">
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center">
                                                 <svg className="w-4 h-4 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
-                                            <span className="text-sm font-medium text-white">RTE</span>
+                                            <span className="text-sm font-medium text-gray-100">RTE</span>
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
                                             <input
@@ -423,51 +481,81 @@ export default function StudentFilters({
                                                 className="sr-only peer"
                                             />
                                             <div className="w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer 
-                                            peer-checked:after:translate-x-full peer-checked:after:border-white 
-                                            after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white 
-                                            after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500" />
+      peer-checked:after:translate-x-full peer-checked:after:border-white 
+      after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white 
+      after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500" />
                                         </label>
                                     </div>
                                 </div>
 
-                                <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
-                                    <div className="text-xs text-gray-400 mb-1">PEN Status</div>
-                                    <select
-                                        value={studentFilters.filterPEN}
-                                        onChange={(e) => updateFilter("filterPEN", e.target.value)}
-                                        className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
-                                    >
-                                        <option value="any">Any PEN</option>
-                                        <option value="present">Present</option>
-                                        <option value="missing">Missing</option>
-                                    </select>
+                                {/* PEN Status Filter */}
+                                <div className="relative bg-gray-900/50 rounded-xl px-4 pt-2.5 pb-2 border border-gray-700/40 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                                        PEN Status
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            value={studentFilters.filterPEN}
+                                            onChange={(e) => updateFilter("filterPEN", e.target.value)}
+                                            className="w-full appearance-none bg-transparent pt-0.5 pb-0.5 pr-8 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
+                                        >
+                                            <option value="any" className="bg-[#111827] text-gray-100 py-3 px-4">Any PEN</option>
+                                            <option value="present" className="bg-[#111827] text-gray-100 py-3 px-4">Present</option>
+                                            <option value="missing" className="bg-[#111827] text-gray-100 py-3 px-4">Missing</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1 text-gray-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
-                                    <div className="text-xs text-gray-400 mb-1">Gender</div>
-                                    <select
-                                        value={studentFilters.filterGender}
-                                        onChange={(e) => updateFilter("filterGender", e.target.value)}
-                                        className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
-                                    >
-                                        <option value="any">Any Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
+                                {/* Gender Filter */}
+                                <div className="relative bg-gray-900/50 rounded-xl px-4 pt-2.5 pb-2 border border-gray-700/40 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                                        Gender
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            value={studentFilters.filterGender}
+                                            onChange={(e) => updateFilter("filterGender", e.target.value)}
+                                            className="w-full appearance-none bg-transparent pt-0.5 pb-0.5 pr-8 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
+                                        >
+                                            <option value="any" className="bg-[#111827] text-gray-100 py-3 px-4">Any Gender</option>
+                                            <option value="male" className="bg-[#111827] text-gray-100 py-3 px-4">Male</option>
+                                            <option value="female" className="bg-[#111827] text-gray-100 py-3 px-4">Female</option>
+                                            <option value="other" className="bg-[#111827] text-gray-100 py-3 px-4">Other</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1 text-gray-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="bg-gray-900/50 rounded-lg p-3 border border-gray-700/30">
-                                    <div className="text-xs text-gray-400 mb-1">Admission</div>
-                                    <select
-                                        value={studentFilters.filterAdmission}
-                                        onChange={(e) => updateFilter("filterAdmission", e.target.value)}
-                                        className="w-full appearance-none bg-transparent border-0 text-sm focus:outline-none focus:ring-0 cursor-pointer text-white"
-                                    >
-                                        <option value="any">Any Admission</option>
-                                        <option value="new">New</option>
-                                        <option value="old">Old</option>
-                                    </select>
+                                {/* Admission Filter */}
+                                <div className="relative bg-gray-900/50 rounded-xl px-4 pt-2.5 pb-2 border border-gray-700/40 shadow-inner focus-within:ring-2 focus-within:ring-indigo-500/50 focus-within:border-indigo-500/80 transition-all">
+                                    <label className="block text-[11px] font-semibold uppercase tracking-wider text-gray-400 select-none">
+                                        Admission
+                                    </label>
+                                    <div className="relative">
+                                        <select
+                                            value={studentFilters.filterAdmission}
+                                            onChange={(e) => updateFilter("filterAdmission", e.target.value)}
+                                            className="w-full appearance-none bg-transparent pt-0.5 pb-0.5 pr-8 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
+                                        >
+                                            <option value="any" className="bg-[#111827] text-gray-100 py-3 px-4">Any Admission</option>
+                                            <option value="new" className="bg-[#111827] text-gray-100 py-3 px-4">New</option>
+                                            <option value="old" className="bg-[#111827] text-gray-100 py-3 px-4">Old</option>
+                                        </select>
+                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-1 text-gray-400">
+                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
