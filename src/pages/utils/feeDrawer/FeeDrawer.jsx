@@ -93,6 +93,33 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
                     </div>
                 </div>
 
+                {/* Student Selector Bar - Sticky at top */}
+                {!feeDrawerLoading && !isFeeSessionSetupRequired && students.length > 0 && (
+                    <div className="flex-shrink-0 bg-gray-900/95 px-3 pt-3 pb-2 backdrop-blur-md border-b border-gray-800/50">
+                        <div className="flex flex-wrap items-center gap-2 rounded-[16px] bg-slate-800/80 p-[6px]">
+                            {students.map((student, index) => {
+                                const indicatorColors = ['bg-blue-500', 'bg-green-500', 'bg-amber-500', 'bg-purple-500'];
+                                const isActive = index === currentStudentIndex;
+                                return (
+                                    <button
+                                        key={student.student_session_id || student.id || student.name || index}
+                                        type="button"
+                                        onClick={() => setCurrentStudentIndex(index)}
+                                        className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all ${students.length <= 4 ? 'flex-1' : 'flex-[1_1_calc(25%-6px)]'
+                                            } ${isActive
+                                                ? 'border-sky-500/30 bg-sky-500/15 text-sky-300 shadow-sm'
+                                                : 'border-transparent bg-transparent text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                                            }`}
+                                    >
+                                        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${indicatorColors[index % indicatorColors.length]}`} />
+                                        <span className="truncate">{student.name || 'Student'}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                )}
+
                 <div className='flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-slate-700'>
 
                     {feeDrawerLoading ? (

@@ -42,13 +42,26 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
 
 
   const summary = useMemo(() => {
-    const totalStudents = students.length;
-    const totalSettledAmount = students.reduce((sum, student) => sum + (student.totalSettledAmount || 0), 0);
-    const totalOutstanding = students.reduce((sum, student) => sum + (student.dueAmount || 0), 0);
+    const totalStudents = filteredStudents.length;
+
+    const totalSettledAmount = filteredStudents.reduce(
+      (sum, student) => sum + (student.totalSettledAmount || 0), 0
+    );
+
+    const totalOutstanding = filteredStudents.reduce(
+      (sum, student) => sum + (student.dueAmount || 0), 0
+    );
+
     const totalDiscount = totalDiscountBySchool;
 
-    return { totalStudents, totalSettledAmount, totalOutstanding, totalDiscount };
-  }, [students]);
+    return {
+      totalStudents,
+      totalSettledAmount,
+      totalOutstanding,
+      totalDiscount,
+    };
+  }, [filteredStudents, totalDiscountBySchool]);
+
 
   const openStudentDetails = useCallback((student) => {
     setSelectedStudent(student);
@@ -88,7 +101,7 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
     <>
       {/* Desktop Filter Section */}
       <div className="hidden lg:block">
-        <div className="p-6 space-y-6">
+        <div className="p-6 sm:space-y-6">
           <div className="flex items-center gap-6">
             {/* Search and Class Filter */}
             <div className="flex-1 bg-gray-900/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/70">

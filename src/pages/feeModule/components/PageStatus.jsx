@@ -114,7 +114,7 @@ function SkeletonLoader() {
       </div>
 
       {/* Mobile Filter Skeleton */}
-      <div className="lg:hidden p-4 space-y-4 animate-pulse">
+      <div className="lg:hidden space-y-4 animate-pulse mt-5">
         <div className="bg-gray-900/40 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/50">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-2 h-6 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full opacity-30" />
@@ -140,7 +140,7 @@ function SkeletonLoader() {
       </div>
 
       {/* Summary Stats Skeleton */}
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 p-5 animate-pulse">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4 animate-pulse">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
             <div className="h-3 bg-gray-700 rounded w-24 opacity-30" />
@@ -150,7 +150,7 @@ function SkeletonLoader() {
       </div>
 
       {/* Students Grid Skeleton */}
-      <div className="px-5 pb-5">
+      <div className="pb-5">
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3 animate-pulse">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-5 space-y-4">

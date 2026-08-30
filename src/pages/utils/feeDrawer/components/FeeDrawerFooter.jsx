@@ -73,6 +73,10 @@ export default function FeeDrawerFooter({
       return;
     }
 
+    const studentOrder = students.map(
+      student => student.student_session_id
+    );
+
     try {
       setFeesSubmitting(true);
       const response = await apiPost('/api/pay_fee', {
@@ -97,7 +101,17 @@ export default function FeeDrawerFooter({
       }
 
       const studentsFeeData = result.students_fee_data || [];
-      setStudents(studentsFeeData);
+
+      // Preserve the order that existed before payment
+      const orderedStudents = studentOrder
+        .map(id =>
+          studentsFeeData.find(
+            student => student.student_session_id === id
+          )
+        )
+        .filter(Boolean);
+
+      setStudents(orderedStudents);
       showAlert(200, "Fees paid successfully!")
     } catch (error) { console.error(error.message || 'Payment failed'); }
     finally { setFeesSubmitting(false); }

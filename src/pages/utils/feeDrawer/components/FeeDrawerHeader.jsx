@@ -40,25 +40,7 @@ export default function FeeDrawerHeader({
 
     return (
         <div className="flex-shrink-0 border-b border-gray-800 bg-gray-900">
-
-            <div className="m-3 flex rounded-[16px] bg-slate-800/80 p-[6px]">
-                {students.map((student, index) => (
-                    <button
-                        key={student.student_session_id || student.id || student.name || index}
-                        type="button"
-                        onClick={() => setCurrentStudentIndex(index)}
-                        className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition-all 
-                            ${index === currentStudentIndex
-                                ? 'border-sky-500/30 bg-sky-500/15 text-sky-300 shadow-sm'
-                                : 'border-transparent bg-transparent text-slate-400 hover:bg-slate-800 hover:text-slate-200'
-                            }`}
-                    >
-                        <span className={`h-2.5 w-2.5 rounded-full ${indicatorColors[index % indicatorColors.length]}`} />
-                        <span className="truncate">{student.name || 'Student'}</span>
-                    </button>
-                ))}
-            </div>
-
+            {/* Grand Total Due Card */}
             <div className="border border-red-700/30 bg-gradient-to-r from-red-900/25 to-red-800/10 px-4 py-4 shadow-sm sm:px-6 sm:py-5">
                 <div className="flex items-start justify-between gap-4">
                     <div className="flex min-w-0 items-start gap-3">
@@ -77,6 +59,7 @@ export default function FeeDrawerHeader({
                 </div>
             </div>
 
+            {/* Current Student Card */}
             <div className="mt-4 rounded-2xl bg-gradient-to-r from-gray-800 to-gray-700 p-4 m-4">
                 <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
