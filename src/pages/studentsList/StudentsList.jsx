@@ -120,25 +120,25 @@ export default function StudentsList() {
     }, []);
 
 
-    const openFeeDrawer = (student) => {
+    const openFeeDrawer = useCallback((student) => {
 
         const studentSessionId = student?.student_session_id || student?.id;
         const studentPhone = student?.PHONE;
         setFeeDrawerStudent({ studentSessionId, studentPhone });
 
         setFeeDrawerOpen(true);
-    }
+    }, []);
 
-    const openTransactionModal = (studentSessionId, Phone) => {
+    const openTransactionModal =  useCallback((studentSessionId, Phone) => {
         setTransactionModalStudent({ studentSessionId, phone: Phone });
         setTransactionModalOpen(true);
-    }
+    }, []);
 
-    const closeStudentDetails = () => {
+    const closeStudentDetails = useCallback(() => {
         setDetailModalOpen(false);
         setSelectedStudent(null);
         setSelectedPhone("");
-    };
+    }, []);
 
     let mainContent;
 
@@ -208,15 +208,7 @@ export default function StudentsList() {
 
             {feeSessionSetup && (
                 <FeeSessionSetupModal
-                    feeStructure={feeSessionSetup.feeStructure}
-                    studentSessionId={feeSessionSetup.studentSessionId}
                     onClose={() => setFeeSessionSetup(null)}
-                    onSubmit={async (payload) => {
-                        const response = await apiPost('/api/setup_fee_session', payload);
-                        const result = await response.json();
-                        if (!response.ok) throw new Error(result?.error || result?.message || 'Unable to save fee data.');
-                        setFeeSessionSetup(null);
-                    }}
                 />
             )}
         </div>
