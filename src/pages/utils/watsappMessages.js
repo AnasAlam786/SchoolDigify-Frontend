@@ -1,3 +1,6 @@
+
+
+
 export function transactionWhatsappMessage(data) {
     let message = "✅ *Fee Payment Confirmation*\n\n";
 
@@ -25,9 +28,40 @@ export function transactionWhatsappMessage(data) {
     return message;
 }
 
+export function feeDemandMessage(
+    data, schoolName = "School Administration"
+) {
+    // ---------------------------------------------------------
+    // 1. Validate input
+    // ---------------------------------------------------------
 
-export function feeDemandMessage(data) {
-    const student = data[0];
+    if (!Array.isArray(data) || data.length === 0) {
+        return null;
+    }
+
+    // Safely determine whether a fee is due.
+    const isDue = (fee) =>
+        String(fee?.status || "").toUpperCase() === "DUE";
+
+    // Safely format INR amounts.
+    const formatAmount = (value) =>
+        Number(value || 0).toLocaleString("en-IN");
+
+    // ---------------------------------------------------------
+    // 2. Keep only students who actually have outstanding dues
+    // ---------------------------------------------------------
+
+    const studentsWithDue = data.filter(
+        (student) => Number(student?.total_due_amount || 0) > 0
+    );
+
+    if (studentsWithDue.length === 0) {
+        return null;
+    }
+
+    // ---------------------------------------------------------
+    // 3. Date
+    // ---------------------------------------------------------
 
     const today = new Date().toLocaleDateString("en-GB", {
         day: "2-digit",
@@ -35,67 +69,149 @@ export function feeDemandMessage(data) {
         year: "numeric",
     });
 
-    const { name, class: className, rollNo, phone, total_due_amount: totalDue,
-        total_due_terms: totalTerms,
-    } = student;
+    // ---------------------------------------------------------
+    // 4. Family totals
+    // ---------------------------------------------------------
 
-    const dueMonths = student.monthlyFees
-        .filter((fee) => fee.status === "due")
-        .map((fee) => fee.period_name);
-
-    const otherDueFees = student.otherFees.filter(
-        (fee) => fee.status === "due"
+    const totalOutstanding = studentsWithDue.reduce(
+        (sum, student) =>
+            sum + Number(student?.total_due_amount || 0),
+        0
     );
 
-    let message = `📌 *Fee Due Notice*
+    const totalPendingTerms = studentsWithDue.reduce(
+        (sum, student) =>
+            sum + Number(student?.total_due_terms || 0),
+        0
+    );
 
-        📅 *Date:* ${today}
+    // ---------------------------------------------------------
+    // 5. Generate each student's section
+    // ---------------------------------------------------------
 
-        Dear Parent/Guardian,
+    const studentSections = studentsWithDue.map((student, index) => {
+        const name = student?.name || "Student";
+        const className = student?.class || "—";
+        const rollNo = student?.rollNo || "—";
 
-        This is to inform you regarding the *pending school fee* for your ward:
+        const monthlyFees = Array.isArray(student?.monthlyFees)
+            ? student.monthlyFees
+            : [];
 
-        👦 *Student Name:* ${name}
-        🏫 *Class:* ${className}
-        🎓 *Roll No:* ${rollNo}
-        📞 *Registered Mobile:* ${phone}
+        const otherFees = Array.isArray(student?.otherFees)
+            ? student.otherFees
+            : [];
 
-        ────────────────────
+        // -------------------------
+        // Monthly tuition dues
+        // -------------------------
 
-        💰 *Fee Summary (Academic Session 2025–26)*
+        const dueMonthlyFees = monthlyFees.filter(isDue);
 
-        🔴 *Total Due Amount:* ₹${totalDue}/-
-        📆 *Total Pending Months / Terms:* ${totalTerms}
+        let monthlySection = "";
 
-        ────────────────────
+        if (dueMonthlyFees.length > 0) {
+            monthlySection = `
+📚 *Tuition Fee Due*
+${dueMonthlyFees
+                    .map((fee) => {
+                        const period = fee?.period_name || "Fee Period";
+                        const amount = formatAmount(fee?.amount);
 
-        📚 *Monthly Tuition Fee (₹300 per month) – Due*
-        `;
+                        return `• ${period} — ₹${amount}/-`;
+                    })
+                    .join("\n")}`;
+        }
 
-    for (const month of dueMonths) {
-        message += `• ${month}\n`;
-    }
+        // -------------------------
+        // Other fee dues
+        // -------------------------
 
-    message += `\n🧾 *Other Due Fees*\n`;
+        const dueOtherFees = otherFees.filter(isDue);
 
-    for (const fee of otherDueFees) {
-        message += `• ${fee.fee_type} – ${fee.period_name}: ₹${fee.amount} (Due Date: ${fee.dueDate})\n`;
-    }
+        let otherFeesSection = "";
 
-    message += `
-        ────────────────────
+        if (dueOtherFees.length > 0) {
+            otherFeesSection = `
+🧾 *Other Fees Due*
+${dueOtherFees
+                    .map((fee) => {
+                        const feeType = fee?.fee_type || "Other Fee";
+                        const period = fee?.period_name
+                            ? ` — ${fee.period_name}`
+                            : "";
 
-        ⚠️ *Important Note:*
-        Kindly clear the pending dues at the earliest to avoid inconvenience related to examinations, results, or other academic activities.
+                        const amount = formatAmount(fee?.amount);
 
-        For any clarification, please contact the school office.
+                        const dueDate = fee?.dueDate
+                            ? `\n  Due Date: ${fee.dueDate}`
+                            : "";
 
-        🙏 Thank you for your cooperation.
+                        return `• ${feeType}${period} — ₹${amount}/-${dueDate}`;
+                    })
+                    .join("\n")}`;
+        }
 
-        Warm regards,
-        🏫 *School Administration*
-        `;
+        // -------------------------
+        // Student block
+        // -------------------------
+
+        return `*${index + 1}. ${name}*
+
+🏫 Class: ${className}
+🎓 Roll No.: ${rollNo}
+
+💰 *Outstanding: ₹${formatAmount(
+            student?.total_due_amount
+        )}/-*
+
+📆 Pending Months / Terms: ${student?.total_due_terms || 0
+            }
+${monthlySection}
+${otherFeesSection}`;
+    });
+
+    // ---------------------------------------------------------
+    // 6. Build final WhatsApp message
+    // ---------------------------------------------------------
+
+    const message = `🏫 *FEE DUE REMINDER*
+
+📅 *Date:* ${today}
+
+Dear Parent/Guardian,
+
+Greetings from the *${schoolName}*.
+
+This is a courteous reminder regarding the outstanding school fee dues for your ward${studentsWithDue.length > 1 ? "s" : ""}.
+
+━━━━━━━━━━━━━━━━━━━━
+
+${studentSections.join(
+        "\n\n━━━━━━━━━━━━━━━━━━━━\n\n"
+    )}
+
+━━━━━━━━━━━━━━━━━━━━
+💰 *TOTAL OUTSTANDING*
+*₹${formatAmount(totalOutstanding)}/-*
+
+📆 *TOTAL PENDING MONTHS / TERMS*
+*${totalPendingTerms}*
+
+━━━━━━━━━━━━━━━━━━━━
+
+⚠️ *Important*
+
+Kindly clear the outstanding dues at your earliest convenience so that the fee account remains up to date.
+
+If you have already made the payment, please disregard this reminder and share the payment receipt/details with the school office for verification.
+
+For any fee-related assistance, please contact the school office.
+
+Thank you for your cooperation.
+
+Warm regards,  
+🏫 *${schoolName}*`;
 
     return message.trim();
 }
-

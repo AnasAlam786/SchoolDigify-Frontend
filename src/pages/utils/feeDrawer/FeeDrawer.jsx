@@ -132,9 +132,7 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
                         <>
                             <FeeDrawerHeader
                                 students={students}
-                                currentStudentIndex={currentStudentIndex}
                                 currentStudentData={currentStudentData}
-                                setCurrentStudentIndex={setCurrentStudentIndex}
                             />
 
                             <FeeDrawerMiddle
