@@ -4,10 +4,16 @@ import Sidebar from './components/SideBar/SideBar.jsx';
 import { Outlet } from 'react-router-dom';
 import usePermission from './hooks/usePermission.js';
 // import routesData
+import { GraduationCap, Receipt, UserPlus,
+  TrendingUp, UserCheck, CalendarDays, FileEdit,
+  BarChart3, Contact, UserCog, FileText, Ticket
+} from "lucide-react";
 
 function Layout() {
-  const {PERMISSIONS} = usePermission()
+  const { PERMISSIONS } = usePermission()
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+
 
 
   const menuSections = [
@@ -17,25 +23,29 @@ function Layout() {
         {
           label: "Student List",
           route: "/student_list",
-          icon: "fas fa-user-graduate icon-purple",
+          icon: GraduationCap,
+          color: "text-blue-500",
           permissionName: PERMISSIONS.STUDENT_LIST
         },
         {
           label: "Fees",
           route: "/fees",
-          icon: "fas fa-file-invoice-dollar",
+          icon: Receipt,
+          color: "text-emerald-500",
           permissionName: PERMISSIONS.VIEW_FEE_DATA
         },
         {
           label: "Add Student",
           route: "/admission",
-          icon: "fas fa-user-plus icon-cyan",
+          icon: UserPlus,
+          color: "text-teal-500",
           permissionName: PERMISSIONS.ADMISSION
         },
         {
           label: "Promotion & TC",
           route: "/promote_and_tc",
-          icon: "fas fa-graduation-cap icon-yellow",
+          icon: TrendingUp,
+          color: "text-orange-500",
           permissionName: PERMISSIONS.PROMOTE_STUDENT
         }
       ]
@@ -46,25 +56,29 @@ function Layout() {
         {
           label: "Attendance",
           route: "/attendance",
-          icon: "fas fa-clipboard-check icon-purple",
+          icon: UserCheck,
+          color: "text-purple-500",
           permissionName: PERMISSIONS.ATTENDANCE
         },
         {
           label: "Overall Attendance",
           route: "/overall_attendance",
-          icon: "fas fa-calendar-alt icon-cyan",
+          icon: CalendarDays,
+          color: "text-indigo-500",
           permissionName: PERMISSIONS.OVERALL_ATTENDANCE
         },
         {
           label: "Update Marks",
           route: "/fillmarks",
-          icon: "fas fa-edit icon-pink",
+          icon: FileEdit,
+          color: "text-rose-500",
           permissionName: PERMISSIONS.FILL_MARKS
         },
         {
           label: "Show Marks",
           route: "/show_marks",
-          icon: "fas fa-chart-bar icon-blue",
+          icon: BarChart3,
+          color: "text-pink-500",
           permissionName: PERMISSIONS.SHOW_MARKS
         }
       ]
@@ -75,13 +89,15 @@ function Layout() {
         {
           label: "ID Cards",
           route: "/idcard",
-          icon: "fas fa-id-card icon-blue",
+          icon: Contact,
+          color: "text-cyan-500",
           permissionName: PERMISSIONS.IDCARD
         },
         {
           label: "Staff Module",
           route: "/show_staff",
-          icon: "fas fa-users icon-pink",
+          icon: UserCog,
+          color: "text-amber-500",
           permissionName: PERMISSIONS.SHOW_STAFF
         }
       ]
@@ -92,39 +108,41 @@ function Layout() {
         {
           label: "Question Papers",
           route: "/question-papers",
-          icon: "fas fa-file-alt icon-pink",
+          icon: FileText,
+          color: "text-sky-500",
           permissionName: PERMISSIONS.CREATE_PAPER
         },
         {
           label: "Admit & Scheme",
           route: "/admit_and_scheme",
-          icon: "fas fa-ticket-alt icon-cyan",
+          icon: Ticket,
+          color: "text-violet-500",
           permissionName: PERMISSIONS.ADMIT_CARD
         }
       ]
     }
   ];
 
-return (
-  <>
-    <NavBar
-      setSidebarOpen={setSidebarOpen}
-    />
-
-    <div className="flex h-screen"> 
-
-      <Sidebar
-        isSidebarOpen={isSidebarOpen}
+  return (
+    <>
+      <NavBar
         setSidebarOpen={setSidebarOpen}
-        menuSections={menuSections}
       />
 
-      <div className="main-content flex-1 overflow-auto">
-        <Outlet />
+      <div className="flex h-screen">
+
+        <Sidebar
+          isSidebarOpen={isSidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+          menuSections={menuSections}
+        />
+
+        <div className="main-content flex-1 overflow-auto">
+          <Outlet />
+        </div>
       </div>
-    </div>
-  </>
-);
+    </>
+  );
 }
 
 export default Layout

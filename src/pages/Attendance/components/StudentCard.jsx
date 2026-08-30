@@ -1,4 +1,15 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+import {
+  CalendarDays,
+  MessageCircle,
+  GraduationCap,
+  Hash,
+  Phone,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Loader2
+} from 'lucide-react';
 
 function StudentCard({ student, selectedDate, MarkAttendance, onOpenCalendar }) {
   const [loadingStatus, setLoadingStatus] = useState(null)
@@ -48,108 +59,123 @@ function StudentCard({ student, selectedDate, MarkAttendance, onOpenCalendar }) 
             <h3 className="text-lg font-semibold text-white leading-tight">
               {student.STUDENTS_NAME}
             </h3>
-            <p className="text-xs text-gray-400 leading-tight">
+            <p className="text-xs text-gray-400 mt-1 leading-tight">
               C/O {student.FATHERS_NAME}
             </p>
           </div>
         </div>
 
         <div className="flex gap-2">
+          {/* Calendar Button */}
           <button type="button"
             onClick={() => onOpenCalendar(student)}
-            className="w-10 h-10 bg-slate-800/90 hover:bg-slate-700 text-white rounded-xl
-            flex items-center justify-center shadow-lg transition">
-            <i className="fas fa-calendar-days"></i>
+            className="w-10 h-10 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl
+            flex items-center justify-center shadow-lg transition-colors duration-200">
+            <CalendarDays className="w-5 h-5" strokeWidth={2} />
           </button>
 
+          {/* WhatsApp / Message Button */}
           <button type="button"
-            // onClick={() => onOpenCalendar(student)}
-            className="student-message-btn w-10 h-10 bg-green-600/90 hover:bg-green-600 
-            text-white rounded-xl flex items-center justify-center shadow-lg transition">
-            <i className="fab fa-whatsapp"></i>
+            className="student-message-btn w-10 h-10 bg-green-600/90 hover:bg-green-500 
+            text-white rounded-xl flex items-center justify-center shadow-lg transition-colors duration-200">
+            <MessageCircle className="w-5 h-5 fill-white/10" strokeWidth={2} />
           </button>
         </div>
       </div>
 
       {/* DETAILS */}
-
-      <div className="flex gap-2 mb-5 text-sm">
-        <span className="bg-[#2A2A2A] px-3 py-1.5 rounded-lg">
-          <i className="fas fa-chalkboard-teacher mr-2"></i>
+      <div className="flex flex-wrap gap-2 mb-6 text-sm">
+        {/* Class Badge */}
+        <span className="flex items-center gap-2 bg-[#2A2A2A] text-gray-200 px-3 py-1.5 rounded-lg border border-white/5">
+          <GraduationCap className="w-4 h-4 text-gray-400" strokeWidth={2} />
           {student.CLASS}
         </span>
-        <span className="bg-[#2A2A2A] px-3 py-1.5 rounded-lg">
-          <i className="fas fa-hashtag"></i>
+
+        {/* Roll Badge */}
+        <span className="flex items-center gap-1.5 bg-[#2A2A2A] text-gray-200 px-3 py-1.5 rounded-lg border border-white/5">
+          <Hash className="w-4 h-4 text-gray-400" strokeWidth={2} />
           {student.ROLL}
         </span>
-        <a href="tel:7248151871" className="bg-[#2A2A2A] px-3 py-1.5 rounded-lg hover:bg-[#333]">
-          <i className="fas fa-phone text-blue-400 mr-2"></i>
-          <span className="text-white text-sm font-semibold">7248151871</span>
+
+        {/* Phone Badge */}
+        <a href="tel:7248151871"
+          className="flex items-center gap-2 bg-[#2A2A2A] px-3 py-1.5 rounded-lg border border-white/5 hover:bg-[#333] transition-colors">
+          <Phone className="w-4 h-4 text-blue-400" strokeWidth={2} />
+          <span className="text-white text-sm font-semibold tracking-wide">7248151871</span>
         </a>
       </div>
 
       {/* BUTTONS */}
-      <div className="pt-4 border-t border-[#333]">
+      <div className="pt-5 border-t border-[#333]">
         <div className="grid grid-cols-3 gap-3">
 
           {/* PRESENT */}
           <button
             disabled={isLoading('PRESENT')}
-            onClick={() =>
-              handleMarkAttendance(student.student_session_id, 'PRESENT')
-            }
+            onClick={() => handleMarkAttendance(student.student_session_id, 'PRESENT')}
             className={`attendance-option present-option ${presentSelected}
-              border border-green-600 text-green-500 bg-green-500/10 hover:bg-green-500/20
-              py-3 rounded-xl flex flex-col items-center gap-1 transition`} >
-
+              border text-green-500 py-3 rounded-xl flex flex-col items-center gap-1.5 transition-all duration-200
+              ${presentSelected
+                ? 'bg-green-500/20 border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.15)]'
+                : 'bg-green-500/5 border-green-500/30 hover:bg-green-500/10 hover:border-green-500/50'
+              }`}
+          >
             {isLoading('PRESENT') ? (
-              <i className="fas fa-spinner fa-spin text-lg"></i>
+              <Loader2 className="w-6 h-6 animate-spin" strokeWidth={2.5} />
             ) : (
-              <i className="fas fa-check-circle text-lg"></i>
+              <CheckCircle2 className="w-6 h-6" strokeWidth={2.5} />
             )}
-            {isLoading('PRESENT') ? 'Marking...' : 'Present'}
+            <span className="text-xs font-semibold tracking-wide uppercase">
+              {isLoading('PRESENT') ? 'Marking...' : 'Present'}
+            </span>
           </button>
 
           {/* ABSENT */}
           <button
             disabled={isLoading('ABSENT')}
-            onClick={() =>
-              handleMarkAttendance(student.student_session_id, 'ABSENT')
-            }
+            onClick={() => handleMarkAttendance(student.student_session_id, 'ABSENT')}
             className={`attendance-option absent-option ${absentSelected}
-              border border-red-600 text-red-400 bg-red-500/10 hover:bg-red-500/20
-              py-3 rounded-xl flex flex-col items-center gap-1 transition`} >
-            <i className="fas  text-lg"></i>
-
+              border text-red-400 py-3 rounded-xl flex flex-col items-center gap-1.5 transition-all duration-200
+              ${absentSelected
+                ? 'bg-red-500/20 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.15)]'
+                : 'bg-red-500/5 border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50'
+              }`}
+          >
             {isLoading('ABSENT') ? (
-              <i className="fas fa-spinner fa-spin text-lg"></i>
+              <Loader2 className="w-6 h-6 animate-spin" strokeWidth={2.5} />
             ) : (
-              <i className="fas fa-times-circle text-lg"></i>
+              <XCircle className="w-6 h-6" strokeWidth={2.5} />
             )}
-            {isLoading('ABSENT') ? 'Marking...' : 'Absent'}
+            <span className="text-xs font-semibold tracking-wide uppercase">
+              {isLoading('ABSENT') ? 'Marking...' : 'Absent'}
+            </span>
           </button>
 
-          {/* HALF */}
+          {/* HALF DAY */}
           <button
             disabled={isLoading('HALF_DAY')}
-            onClick={() =>
-              handleMarkAttendance(student.student_session_id, 'HALF_DAY')
-            }
+            onClick={() => handleMarkAttendance(student.student_session_id, 'HALF_DAY')}
             className={`attendance-option halfDay-option ${halfDaySelected}
-              border border-yellow-500 text-yellow-400 bg-yellow-400/10 hover:bg-yellow-400/20
-              py-3 rounded-xl flex flex-col items-center gap-1 transition`}>
+              border text-yellow-400 py-3 rounded-xl flex flex-col items-center gap-1.5 transition-all duration-200
+              ${halfDaySelected
+                ? 'bg-yellow-400/20 border-yellow-400 shadow-[0_0_15px_rgba(250,204,21,0.15)]'
+                : 'bg-yellow-400/5 border-yellow-400/30 hover:bg-yellow-400/10 hover:border-yellow-400/50'
+              }`}
+          >
             {isLoading('HALF_DAY') ? (
-              <i className="fas fa-spinner fa-spin text-lg"></i>
+              <Loader2 className="w-6 h-6 animate-spin" strokeWidth={2.5} />
             ) : (
-              <i className="fas fa-clock text-lg"></i>
+              <Clock className="w-6 h-6" strokeWidth={2.5} />
             )}
-            {isLoading('HALF_DAY') ? 'Marking...' : 'Half Day'}
+            <span className="text-xs font-semibold tracking-wide uppercase">
+              {isLoading('HALF_DAY') ? 'Marking...' : 'Half Day'}
+            </span>
           </button>
 
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default StudentCard

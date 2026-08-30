@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { sendWhatsAppMessage } from "../../utils/sendWhatsAppMessage";
 import boyImage from "../../../assets/no-student-boy-image.png";
 import girlImage from "../../../assets/no-student-girl-image.png";
+import { printAdmissionForm } from '../../utils/printAdmissionForm';
+
+
+import { Eye, Edit, Phone, MessageCircle, UserCircle, IndianRupee, Printer } from 'lucide-react';
 
 function normalizePhone(phone) {
     return phone ? String(phone).trim() : "";
@@ -20,7 +24,6 @@ function getImageUrl(student) {
 function StudentCard({ student, onViewDetails, onPayFees }) {
 
     const navigate = useNavigate();
-
     const phone = normalizePhone(student.PHONE);
     const imageUrl = getImageUrl(student);
 
@@ -42,7 +45,7 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
     };
 
     return (
-        <div className="student-card overflow-hidden">
+        <div className="student-card overflow-vissible">
             <div className="flex items-center justify-between px-3 py-0.5 bg-gray-800 bg-opacity-40 border-b border-gray-700">
                 <div className="flex space-x-1 p-1">
                     {student.is_RTE && (
@@ -60,14 +63,15 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                 </div>
 
                 <div className="flex items-center space-x-2">
+
                     <button
                         type="button"
-                        onClick={() => onViewDetails(student.id, phone)}
                         className="relative group p-1.5 hover:bg-gray-700 rounded-full"
+                        onClick={() => printAdmissionForm(student.id)}
                     >
-                        <i className="fas fa-eye text-blue-400 text-lg" />
-                        <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg">
-                            View
+                        <Printer className="text-amber-400" size={18} />
+                        <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+                            Print Admission Form
                         </span>
                     </button>
 
@@ -76,9 +80,9 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                         onClick={() => navigate(`/edit_student/${student.id}`)}
                         className="relative group p-1.5 hover:bg-gray-700 rounded-full"
                     >
-                        <i className="fas fa-edit text-green-400 text-lg" />
-                        <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg">
-                            Edit
+                        <Edit className="text-green-400" size={18} />
+                        <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+                            Edit Student
                         </span>
                     </button>
                 </div>
@@ -146,7 +150,7 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
 
                         <div className="flex items-center gap-2">
                             <a href={`tel:${phone}`} className="phone-badge flex items-center">
-                                <i className="fas fa-phone text-blue-400 mr-2" />
+                                <Phone className="text-blue-400 mr-2" size={16} />
                                 <span className="text-white text-sm font-semibold">{phone || "N/A"}</span>
                             </a>
 
@@ -155,7 +159,7 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                                 onClick={handleWhatsApp}
                                 className="flex items-center justify-center bg-green-500 rounded-full p-2"
                             >
-                                <i className="fab fa-whatsapp text-white" />
+                                <MessageCircle className="text-white" size={18} />
                             </button>
                         </div>
                     </div>
@@ -168,14 +172,14 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                     onClick={() => onViewDetails(student.id, phone)}
                     className="action-button bg-blue-800 bg-opacity-20 text-blue-400 hover:text-white hover:bg-[rgba(67,97,238,0.2)] rounded-bl-lg"
                 >
-                    <i className="fas fa-user-circle mr-2" /> Details
+                    <UserCircle className="mr-2 inline-block" size={18} /> Details
                 </button>
                 <button
                     type="button"
                     onClick={handlePayFees}
                     className="action-button bg-green-800 bg-opacity-20 text-green-400 hover:bg-[rgba(65,233,135,0.2)] hover:text-white rounded-br-lg"
                 >
-                    <i className="fa-solid fa-indian-rupee-sign mr-2" /> Pay Fees
+                    <IndianRupee className="mr-2 inline-block" size={16} /> Pay Fees
                 </button>
             </div>
         </div>
