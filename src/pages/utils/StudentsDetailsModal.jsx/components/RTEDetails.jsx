@@ -59,7 +59,7 @@ function RTEDetails({ student }) {
                                     className={`text-sm ${student.account_number ? "text-gray-300" : "text-gray-500"
                                         }`}
                                 >
-                                    {student.account_number ? "Bank Details Available" : "No Bank Details"}
+                                    {student.account_number ? "Bank Available" : "No Bank Details"}
                                 </span>
                             </div>
 
@@ -70,7 +70,7 @@ function RTEDetails({ student }) {
                                         }`}
                                 />
                                 <span className="text-xs">
-                                    Click to {open ? "collapse" : "expand"}
+                                    {open ? "collapse" : "expand"}
                                 </span>
                             </div>
                         </div>

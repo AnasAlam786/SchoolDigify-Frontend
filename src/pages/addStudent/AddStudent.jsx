@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import './style/AddStudent.css';
-import { apiGet, apiPost } from '../../api/api.js';
+import { apiGet, apiPost, apiPostFormData } from '../../api/api.js'
 
 import Header from './components/Header.jsx';
 import FormField from './components/FormField.jsx';

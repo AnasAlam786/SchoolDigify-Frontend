@@ -94,9 +94,9 @@ export default function DetailCard({
           <p className="text-sm text-gray-400 mb-1">{label}</p>
 
           <p
-            className={`font-medium truncate ${
-              hasValue ? valueColor : "text-gray-400"
-            }`}
+            className={`font-medium break-words whitespace-normal
+              ${ hasValue ? valueColor : "text-gray-400"}
+            `}
           >
             {hasValue ? value : "Not Provided"}
           </p>
