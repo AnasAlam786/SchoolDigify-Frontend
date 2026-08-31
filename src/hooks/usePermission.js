@@ -44,6 +44,7 @@ const PERMISSIONS = Object.freeze({
     // Fees
     PAY_FEES: "pay_fees",
     VIEW_FEE_DATA: "view_fee_data",
+    FEES_ANALYTICS: "fees_analytics",
 
     // Statistics
     STUDENTS_STATS: "students_stats",

@@ -5,9 +5,11 @@ import FeeDrawerFooter from './components/FeeDrawerFooter';
 import FeeDrawerHeader from './components/FeeDrawerHeader';
 import FeeDrawerMiddle from './components/FeeDrawerMiddle';
 
+
 const emptyStudent = { monthlyFees: [], otherFees: [], selectedFees: [] };
 
 export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession, setTransactionModalOpen }) {
+
     const [students, setStudents] = useState([]);
     const [feeDrawerLoading, setFeeDrawerLoading] = useState(false);
     const [currentStudentIndex, setCurrentStudentIndex] = useState(0);
@@ -70,7 +72,7 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
 
     return <>
 
-        <div className="fixed inset-0 z-40 transition-opacity">
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm">
             <div
                 className="fixed inset-0 bg-black/50 backdrop-blur-sm cursor-pointer"
                 onClick={onClose}
@@ -150,6 +152,7 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
                                 setNoFeeSelectedError={setNoFeeSelectedError}
 
                                 onViewTransactions={() => {
+                                    onClose()
                                     const studentSessionId = feeDrawerStudent.studentSessionId || feeDrawerStudent.student_session_id || feeDrawerStudent.id;
                                     const studentPhone = feeDrawerStudent.studentPhone || feeDrawerStudent.phone;
                                     setTransactionModalOpen(studentSessionId, studentPhone);

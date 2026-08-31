@@ -112,6 +112,11 @@ export default function FeeDrawerHeader({
                         </p>
 
                         <div className="mt-3 flex flex-wrap items-center gap-2">
+                            {currentStudentData?.isRTE && (
+                                <span className="bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-[2px] rounded">
+                                    RTE
+                                </span>
+                            )}
                             <span className="inline-flex items-center rounded-lg bg-blue-500/15 px-2.5 py-1 text-xs font-semibold tracking-wide text-blue-300 ring-1 ring-blue-500/30">
                                 Class: {currentStudentData?.class || '-'}
                             </span>

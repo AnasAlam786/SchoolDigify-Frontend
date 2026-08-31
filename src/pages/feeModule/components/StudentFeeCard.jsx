@@ -1,6 +1,7 @@
 import boyImage from '../../../assets/no-student-boy-image.png';
 import girlImage from '../../../assets/no-student-girl-image.png';
 import { memo } from 'react';
+import usePermission from "../../../hooks/usePermission";
 
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {
@@ -59,6 +60,8 @@ function getStatusStyles(status) {
 }
 
 function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions }) {
+  const { hasPermission, PERMISSIONS } = usePermission()
+
   const statusStyles = getStatusStyles(student?.feeStatus || 'Due');
 
   const totalSettledAmount = student?.totalSettledAmount || 0
@@ -98,6 +101,7 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
       onViewDetails(student);
     }
   };
+  console.log(student.isRTE)
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.8)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3A3A3A]">
@@ -127,6 +131,11 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-300">
+              {student?.isRTE && (
+                <span className="bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-[2px] rounded">
+                  RTE
+                </span>
+              )}
               <span className="rounded-full border border-[#3A3A3A] bg-[#111111] px-2 py-1">Class {student?.CLASS || '—'}</span>
               <span className="rounded-full border border-[#3A3A3A] bg-[#111111] px-2 py-1">SR #{student?.SR || '—'}</span>
             </div>
@@ -198,16 +207,20 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
             onClick={handlePayFees}
             className="flex-1 rounded-xl border border-[#3A3A3A] bg-[#2A2A2A] px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#333333] focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
           >
-            Pay Fees
+            {hasPermission(PERMISSIONS.PAY_FEES) ? "Pay Fees" : "View Fees"}
           </button>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleViewTransactions}
-              className="rounded-xl border border-[#3A3A3A] bg-[#202020] px-3 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:border-gray-500 hover:bg-[#2A2A2A]"
-            >
-              Transactions
-            </button>
+
+            {hasPermission(PERMISSIONS.PAY_FEES) && (
+              <button
+                type="button"
+                onClick={handleViewTransactions}
+                className="rounded-xl border border-[#3A3A3A] bg-[#202020] px-3 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:border-gray-500 hover:bg-[#2A2A2A]"
+              >
+                Transactions
+              </button>
+            )}
+
             <button
               type="button"
               onClick={handleViewDetails}

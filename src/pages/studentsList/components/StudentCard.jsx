@@ -4,6 +4,8 @@ import { sendWhatsAppMessage } from "../../utils/sendWhatsAppMessage";
 import boyImage from "../../../assets/no-student-boy-image.png";
 import girlImage from "../../../assets/no-student-girl-image.png";
 import { printAdmissionForm } from '../../utils/printAdmissionForm';
+import usePermission from "../../../hooks/usePermission";
+
 
 
 import { Eye, Edit, Phone, MessageCircle, UserCircle, IndianRupee, Printer } from 'lucide-react';
@@ -22,6 +24,8 @@ function getImageUrl(student) {
 }
 
 function StudentCard({ student, onViewDetails, onPayFees }) {
+
+    const { hasPermission, PERMISSIONS } = usePermission()
 
     const navigate = useNavigate();
     const phone = normalizePhone(student.PHONE);
@@ -75,16 +79,19 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                         </span>
                     </button>
 
-                    <button
-                        type="button"
-                        onClick={() => navigate(`/edit_student/${student.id}`)}
-                        className="relative group p-1.5 hover:bg-gray-700 rounded-full"
-                    >
-                        <Edit className="text-green-400" size={18} />
-                        <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
-                            Edit Student
-                        </span>
-                    </button>
+                    {hasPermission(PERMISSIONS.UPDATE_STUDENT) && (
+
+                        <button
+                            type="button"
+                            onClick={() => navigate(`/edit_student/${student.id}`)}
+                            className="relative group p-1.5 hover:bg-gray-700 rounded-full"
+                        >
+                            <Edit className="text-green-400" size={18} />
+                            <span className="absolute right-1/2 translate-x-1/2 -top-7 hidden group-hover:block bg-black text-white text-xs px-2 py-1 rounded shadow-lg whitespace-nowrap z-10">
+                                Edit Student
+                            </span>
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -174,12 +181,15 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                 >
                     <UserCircle className="mr-2 inline-block" size={18} /> Details
                 </button>
+
+
                 <button
                     type="button"
                     onClick={handlePayFees}
                     className="action-button bg-green-800 bg-opacity-20 text-green-400 hover:bg-[rgba(65,233,135,0.2)] hover:text-white rounded-br-lg"
                 >
-                    <IndianRupee className="mr-2 inline-block" size={16} /> Pay Fees
+                    <IndianRupee className="mr-2 inline-block" size={16} />
+                    {hasPermission(PERMISSIONS.PAY_FEES) ? "Pay Fees" : "View Fees"}
                 </button>
             </div>
         </div>

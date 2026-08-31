@@ -5,6 +5,7 @@ import FeeDrawer from '../../utils/feeDrawer/FeeDrawer';
 import TransactionModal from '../../utils/feeTransactionsModal/TransactionModal';
 import { fetchClasses } from "../../utils/fetchClasses";
 import { filterAndSortStudents } from './filter';
+import usePermission from "../../../hooks/usePermission";
 
 const sortOptions = [
   { value: 'class-roll', label: 'Class / Roll number' },
@@ -22,6 +23,8 @@ const initialFilters = {
 };
 
 export default function StudentsTab({ students = [], totalDiscountBySchool = 0, }) {
+  const { hasPermission, PERMISSIONS } = usePermission()
+
   const [filters, setFilters] = useState(initialFilters);
   const [isFeeDrawerOpen, setFeeDrawerOpen] = useState(false);
   const [feeDrawerStudent, setFeeDrawerStudent] = useState(null);
@@ -355,25 +358,29 @@ export default function StudentsTab({ students = [], totalDiscountBySchool = 0, 
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Total Collected</p>
-          <p className="mt-2 text-2xl font-bold text-emerald-300">₹{summary.totalSettledAmount.toLocaleString('en-IN')}</p>
-        </div>
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Outstanding</p>
-          <p className="mt-2 text-2xl font-bold text-red-300">₹{summary.totalOutstanding.toLocaleString('en-IN')}</p>
-        </div>
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Discount Given</p>
-          <p className="mt-2 text-2xl font-bold text-gray-200">₹{summary.totalDiscount.toLocaleString('en-IN')}</p>
-        </div>
-        <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Total students</p>
-          <p className="mt-2 text-2xl font-bold text-white">{summary.totalStudents}</p>
-        </div>
-      </section>
+      {hasPermission(PERMISSIONS.FEES_ANALYTICS) &&
+        (
+          <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Total Collected</p>
+              <p className="mt-2 text-2xl font-bold text-emerald-300">₹{summary.totalSettledAmount.toLocaleString('en-IN')}</p>
+            </div>
+            <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Outstanding</p>
+              <p className="mt-2 text-2xl font-bold text-red-300">₹{summary.totalOutstanding.toLocaleString('en-IN')}</p>
+            </div>
+            <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Discount Given</p>
+              <p className="mt-2 text-2xl font-bold text-gray-200">₹{summary.totalDiscount.toLocaleString('en-IN')}</p>
+            </div>
+            <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">Total students</p>
+              <p className="mt-2 text-2xl font-bold text-white">{summary.totalStudents}</p>
+            </div>
+          </section>
+        )}
+
+
 
       {/* Students Grid */}
       <section className="pb-5 mt-6">

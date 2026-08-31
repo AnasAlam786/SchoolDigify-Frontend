@@ -28,8 +28,11 @@ export function transactionWhatsappMessage(data) {
     return message;
 }
 
+
+
 export function feeDemandMessage(
-    data, schoolName = "School Administration"
+    data,
+    schoolName = "School Administration"
 ) {
     // ---------------------------------------------------------
     // 1. Validate input
@@ -39,16 +42,14 @@ export function feeDemandMessage(
         return null;
     }
 
-    // Safely determine whether a fee is due.
     const isDue = (fee) =>
         String(fee?.status || "").toUpperCase() === "DUE";
 
-    // Safely format INR amounts.
     const formatAmount = (value) =>
         Number(value || 0).toLocaleString("en-IN");
 
     // ---------------------------------------------------------
-    // 2. Keep only students who actually have outstanding dues
+    // 2. Students with pending fees
     // ---------------------------------------------------------
 
     const studentsWithDue = data.filter(
@@ -86,7 +87,7 @@ export function feeDemandMessage(
     );
 
     // ---------------------------------------------------------
-    // 5. Generate each student's section
+    // 5. Student sections
     // ---------------------------------------------------------
 
     const studentSections = studentsWithDue.map((student, index) => {
@@ -102,115 +103,78 @@ export function feeDemandMessage(
             ? student.otherFees
             : [];
 
-        // -------------------------
-        // Monthly tuition dues
-        // -------------------------
-
         const dueMonthlyFees = monthlyFees.filter(isDue);
-
-        let monthlySection = "";
-
-        if (dueMonthlyFees.length > 0) {
-            monthlySection = `
-📚 *Tuition Fee Due*
-${dueMonthlyFees
-                    .map((fee) => {
-                        const period = fee?.period_name || "Fee Period";
-                        const amount = formatAmount(fee?.amount);
-
-                        return `• ${period} — ₹${amount}/-`;
-                    })
-                    .join("\n")}`;
-        }
-
-        // -------------------------
-        // Other fee dues
-        // -------------------------
-
         const dueOtherFees = otherFees.filter(isDue);
 
-        let otherFeesSection = "";
+        let feeDetails = "";
 
-        if (dueOtherFees.length > 0) {
-            otherFeesSection = `
-🧾 *Other Fees Due*
-${dueOtherFees
-                    .map((fee) => {
-                        const feeType = fee?.fee_type || "Other Fee";
-                        const period = fee?.period_name
-                            ? ` — ${fee.period_name}`
-                            : "";
+        if (dueMonthlyFees.length > 0) {
+            feeDetails += `\n📚 *Tuition Fee*\n${dueMonthlyFees
+                .map((fee) => {
+                    const period = fee?.period_name || "Fee";
+                    const amount = formatAmount(fee?.amount);
 
-                        const amount = formatAmount(fee?.amount);
-
-                        const dueDate = fee?.dueDate
-                            ? `\n  Due Date: ${fee.dueDate}`
-                            : "";
-
-                        return `• ${feeType}${period} — ₹${amount}/-${dueDate}`;
-                    })
-                    .join("\n")}`;
+                    return `• ${period} — ₹${amount}/-`;
+                })
+                .join("\n")}`;
         }
 
-        // -------------------------
-        // Student block
-        // -------------------------
+        if (dueOtherFees.length > 0) {
+            feeDetails += `\n\n🧾 *Other Fee*\n${dueOtherFees
+                .map((fee) => {
+                    const feeType = fee?.fee_type || "Other Fee";
+                    const period = fee?.period_name
+                        ? ` (${fee.period_name})`
+                        : "";
+
+                    const amount = formatAmount(fee?.amount);
+
+                    return `• ${feeType}${period} — ₹${amount}/-`;
+                })
+                .join("\n")}`;
+        }
 
         return `*${index + 1}. ${name}*
 
-🏫 Class: ${className}
-🎓 Roll No.: ${rollNo}
+🏫 Class: ${className}  |  🎓 Roll No.: ${rollNo}
 
-💰 *Outstanding: ₹${formatAmount(
+💰 *Pending Fee: ₹${formatAmount(
             student?.total_due_amount
         )}/-*
 
-📆 Pending Months / Terms: ${student?.total_due_terms || 0
-            }
-${monthlySection}
-${otherFeesSection}`;
+📆 *Pending: ${student?.total_due_terms || 0} Month/Term*
+${feeDetails}`;
     });
 
     // ---------------------------------------------------------
-    // 6. Build final WhatsApp message
+    // 6. Final WhatsApp message
     // ---------------------------------------------------------
 
-    const message = `🏫 *FEE DUE REMINDER*
+    const message = `🏫 *${schoolName}*
+💰 *FEE PAYMENT REMINDER*
 
-📅 *Date:* ${today}
+📅 ${today}
 
-Dear Parent/Guardian,
+आपके बच्चे की कुछ *Fee अभी Pending* है।
 
-Greetings from the *${schoolName}*.
-
-This is a courteous reminder regarding the outstanding school fee dues for your ward${studentsWithDue.length > 1 ? "s" : ""}.
-
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━
 
 ${studentSections.join(
-        "\n\n━━━━━━━━━━━━━━━━━━━━\n\n"
+        "\n\n━━━━━━━━━━━━━━━━━━\n\n"
     )}
 
-━━━━━━━━━━━━━━━━━━━━
-💰 *TOTAL OUTSTANDING*
-*₹${formatAmount(totalOutstanding)}/-*
+━━━━━━━━━━━━━━━━━━
+💰 *Total Pending Fee: ₹${formatAmount(totalOutstanding)}/-*
+📆 *Total Pending: ${totalPendingTerms} Month/Term*
 
-📆 *TOTAL PENDING MONTHS / TERMS*
-*${totalPendingTerms}*
+━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━
+कृपया Pending Fee जल्द जमा कर दें। 🙏
 
-⚠️ *Important*
+अगर Fee पहले ही जमा कर दी है, तो कृपया *Payment Receipt/Details* School Office में भेज दें।
 
-Kindly clear the outstanding dues at your earliest convenience so that the fee account remains up to date.
+धन्यवाद।
 
-If you have already made the payment, please disregard this reminder and share the payment receipt/details with the school office for verification.
-
-For any fee-related assistance, please contact the school office.
-
-Thank you for your cooperation.
-
-Warm regards,  
 🏫 *${schoolName}*`;
 
     return message.trim();
