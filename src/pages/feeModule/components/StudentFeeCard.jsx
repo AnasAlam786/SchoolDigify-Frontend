@@ -101,7 +101,7 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
       onViewDetails(student);
     }
   };
-  console.log(student.isRTE)
+  console.log(student)
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.8)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3A3A3A]">

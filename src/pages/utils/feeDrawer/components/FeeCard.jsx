@@ -18,7 +18,7 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
     DUE: {
       container: isSelected
         ? 'border-blue-500 bg-slate-900/90 ring-1 ring-blue-500/50 shadow-xl shadow-blue-500/10'
-        : 'border-red-500/20 bg-red-950/10 hover:border-red-500/40 hover:bg-red-950/30',
+        : 'border-red-500/50 bg-red-950/20 hover:border-red-500/60 hover:bg-red-950/40',
       iconBox: isSelected
         ? 'bg-blue-500/20 text-blue-400 border-blue-400/30'
         : 'bg-red-500/10 text-red-400 border-red-500/20',
@@ -31,14 +31,20 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
     UPCOMING: {
       container: isSelected
         ? 'border-blue-500 bg-slate-900/90 ring-1 ring-blue-500/50 shadow-xl shadow-blue-500/10'
-        : 'border-slate-800 bg-slate-900/40 hover:border-slate-700 hover:bg-slate-900/70',
+        : 'border-dashed border-slate-700 bg-slate-800/30 hover:bg-slate-800/40',
+
       iconBox: isSelected
         ? 'bg-blue-500/20 text-blue-400 border-blue-400/30'
-        : 'bg-slate-800/80 text-slate-400 border-slate-700/60',
+        : 'bg-slate-700/40 text-slate-400 border-slate-600/50',
+
       badge: isSelected
         ? 'bg-blue-500/15 text-blue-300 border-blue-400/30'
-        : 'bg-slate-800/80 text-slate-400 border-slate-700/60',
-      amount: isSelected ? 'text-blue-300' : 'text-slate-200',
+        : 'bg-slate-700/40 text-slate-400 border-slate-600/50',
+
+      amount: isSelected
+        ? 'text-blue-300'
+        : 'text-slate-300',
+
       label: 'Upcoming'
     }
   };
@@ -46,7 +52,7 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
   const currentStyle = styles[statusUpper] || styles.UPCOMING;
 
   return (
-    
+
     <div
       className={`group relative flex flex-col justify-between w-full overflow-hidden rounded-2xl border  transition-all duration-200 backdrop-blur-md ${currentStyle.container
         } ${isPaid
@@ -104,7 +110,7 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
             Amount
           </span>
           <span className={`text-base font-extrabold tracking-tight ${currentStyle.amount}`}>
-            ₹{ fee.amount }
+            ₹{fee.amount}
           </span>
         </div>
       </div>

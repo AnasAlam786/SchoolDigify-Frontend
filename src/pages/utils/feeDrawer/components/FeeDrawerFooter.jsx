@@ -17,6 +17,7 @@ export default function FeeDrawerFooter({
   const [discount, setDiscount] = useState(0);
   const [paymentMode, setPaymentMode] = useState('cash');
   const [paymentDate, setPaymentDate] = useState('');
+  const [remark, setRemark] = useState('');
 
   const [paymentModeError, setPaymentModeError] = useState(null);
   const [paymentDateError, setPaymentDateError] = useState(null);
@@ -85,6 +86,7 @@ export default function FeeDrawerFooter({
       setFeesSubmitting(true);
       const response = await apiPost('/api/pay_fee', {
         payment_mode: paymentMode, payment_date: paymentDate,
+        remark: remark.trim(),
         discount: Number(discount || 0),
         total_amount: grandTotal, final_amount: finalAmount,
         new_fee_data: students,
@@ -155,21 +157,126 @@ export default function FeeDrawerFooter({
 
         <>
 
-          <div className="mb-4 border-t border-gray-700/50 pt-4">
-            <h4 className="mb-3 text-sm font-medium text-gray-300">
-              Payment Date <span className="text-red-500">*</span>
-            </h4>
-            <input value={paymentDate}
-              onChange={(event) => handlePaymentDateChange(event.target.value)}
-              type="date" aria-invalid={Boolean(paymentDateError)}
-              className={`w-full rounded-xl border bg-gray-800/60 px-4 py-3 text-sm text-white focus:border-blue-500 focus:outline-none 
-            ${paymentDateError ? 'border-red-500/60' : 'border-gray-700/50'}`}
-            />
-            {paymentDateError &&
-              <p role="alert" className="mt-2 text-xs text-red-300">
-                <i className="fas fa-circle-exclamation mr-2 text-red-400" />{paymentDateError}
+          {/* Payment Date Field */}
+          <div className="mb-5 border-t border-gray-700/40 pt-5">
+            <div className="mb-3 flex items-center justify-between">
+              <label
+                htmlFor="payment-date"
+                className="flex items-center gap-2 text-sm font-medium text-gray-200"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-blue-500/25 bg-blue-500/10 text-blue-400">
+                  <i className="fas fa-calendar-day text-xs" />
+                </span>
+
+                Payment Date
+                <span className="text-red-400">*</span>
+              </label>
+
+              {!paymentDateError && (
+                <span className="text-[11px] text-gray-500">
+                  Required
+                </span>
+              )}
+            </div>
+
+            <div
+              className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${paymentDateError
+                  ? "border-red-500/50 bg-red-950/10 focus-within:border-red-400 focus-within:ring-2 focus-within:ring-red-500/10"
+                  : "border-gray-700/60 bg-gray-800/50 hover:border-gray-600/80 focus-within:border-blue-500/60 focus-within:bg-gray-800/70 focus-within:ring-2 focus-within:ring-blue-500/10"
+                }`}
+            >
+              {/* Subtle accent */}
+              <div
+                className={`pointer-events-none absolute inset-y-0 left-0 w-0.5 transition-colors ${paymentDateError
+                    ? "bg-red-500"
+                    : "bg-blue-500/60 group-focus-within:bg-blue-400"
+                  }`}
+              />
+
+              <div className="flex items-center">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center text-gray-500 transition-colors group-focus-within:text-blue-400">
+                  <i className="fas fa-calendar-alt text-sm" />
+                </div>
+
+                <input
+                  id="payment-date"
+                  value={paymentDate}
+                  onChange={(event) =>
+                    handlePaymentDateChange(event.target.value)
+                  }
+                  type="date"
+                  aria-invalid={Boolean(paymentDateError)}
+                  aria-describedby={
+                    paymentDateError ? "payment-date-error" : undefined
+                  }
+                  className="h-12 w-full bg-transparent pr-4 text-sm font-medium text-white outline-none [color-scheme:dark] placeholder:text-gray-600"
+                />
+              </div>
+            </div>
+
+            {paymentDateError ? (
+              <p
+                id="payment-date-error"
+                role="alert"
+                className="mt-2 flex items-center gap-2 text-xs text-red-300"
+              >
+                <i className="fas fa-circle-exclamation text-red-400" />
+                {paymentDateError}
               </p>
-            }
+            ) : (
+              <p className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+                <i className="fas fa-info-circle text-gray-600" />
+                Select the date on which the payment was received.
+              </p>
+            )}
+          </div>
+
+          {/* Payment Remark Field */}
+          <div className="mb-4">
+            <div className="mb-3 flex items-center justify-between">
+              <label
+                htmlFor="payment-remark"
+                className="flex items-center gap-2 text-sm font-medium text-gray-200"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-blue-500/25 bg-blue-500/10 text-blue-400">
+                  <i className="fas fa-pen-to-square text-xs" />
+                </span>
+
+                Payment Remark
+                <span className="font-normal text-gray-500">(optional)</span>
+              </label>
+
+              <span className="text-[11px] text-gray-500">
+                {remark.length}/250
+              </span>
+            </div>
+
+            <div className="group relative overflow-hidden rounded-xl border border-gray-700/60 bg-gray-800/50 transition-all duration-200 hover:border-gray-600/80 focus-within:border-blue-500/60 focus-within:bg-gray-800/70 focus-within:ring-2 focus-within:ring-blue-500/10">
+              {/* Subtle accent */}
+              <div className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-blue-500/60 transition-colors group-focus-within:bg-blue-400" />
+
+              <div className="flex items-center">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center text-gray-500 transition-colors group-focus-within:text-blue-400">
+                  <i className="fas fa-comment-alt text-sm" />
+                </div>
+
+                <input
+                  id="payment-remark"
+                  type="text"
+                  value={remark}
+                  maxLength={250}
+                  onChange={(event) => setRemark(event.target.value)}
+                  placeholder="Add a note about this payment..."
+                  aria-label="Payment remark"
+                  className="h-12 w-full bg-transparent pr-4 text-sm font-medium text-white outline-none placeholder:text-gray-600"
+                />
+              </div>
+            </div>
+
+            <p className="mt-2 flex items-center gap-2 text-xs text-gray-500">
+              <i className="fas fa-info-circle text-gray-600" />
+              This note will appear with the payment transaction.
+            </p>
           </div>
 
           <div className="mb-4">

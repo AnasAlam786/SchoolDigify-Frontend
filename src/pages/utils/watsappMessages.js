@@ -1,33 +1,59 @@
-
-
-
 export function transactionWhatsappMessage(data) {
+    const paymentModeMap = {
+        cash: "Cash",
+        upi: "UPI",
+        online: "Online",
+        card: "Card",
+        cheque: "Cheque",
+        bank: "Bank Transfer",
+    };
+
+    const paymentMode =
+        paymentModeMap[String(data.payment_mode || "").toLowerCase()] ||
+        data.payment_mode ||
+        "—";
+
     let message = "✅ *Fee Payment Confirmation*\n\n";
 
     message += `📅 Payment Date: ${data.payment_date}\n`;
-    message += `💳 Payment Mode: ${data.payment_mode.charAt(0).toUpperCase() +
-        data.payment_mode.slice(1).toLowerCase()
-        }\n`;
-    message += `💰 Total Paid Amount: ₹${data.paid_amount}\n`;
+    message += `💳 Payment Mode: ${paymentMode}\n`;
     message += `🧾 Transaction No.: ${data.transaction_no}\n\n`;
-    message += "👨‍👩‍👧‍👦 *Student Details:*\n";
 
-    for (const sibling of data.siblings) {
-        message += `\n🔹 Name: ${sibling.studentName}\n`;
-        message += `   🏫 Class: ${sibling.className}\n`;
-        message += `   🎓 Roll No.: ${sibling.rollNo}\n`;
-        message += `   📌 ${sibling.fees.monthly.label}: ${sibling.fees.monthly.months.join(", ")} (₹${sibling.fees.monthly.total})\n`;
+    // Main payment information
+    message += `💰 *AMOUNT PAID: *\n`;
+    message += `_*₹${data.paid_amount} की फीस का भुगतान सफलतापूर्वक प्राप्त हो गया है।*_\n\n`;
+    message += "👨‍👩‍👧‍👦 *Student Details*\n";
 
-        for (const otFee of sibling.fees.oneTime || []) {
-            message += `   📌 ${otFee.name}: ₹${otFee.amount}\n`;
+    for (const [index, sibling] of data.siblings.entries()) {
+        message += `\n━━━━━━━━━━━━━━━━━━\n`;
+        message += `*${index + 1}. ${sibling.studentName}*\n\n`;
+
+        message += `🏫 Class: *${sibling.className}*\n`;
+        message += `🎓 Roll No.: *${sibling.rollNo}*\n`;
+
+        // Monthly Fee
+        if (sibling.fees?.monthly) {
+            const monthly = sibling.fees.monthly;
+
+            message += `\n📚 *${monthly.label}*\n`;
+            message += `• Months: _${monthly.months.join(", ")}_\n`;
+            message += `• Amount Paid: *₹${monthly.total}*\n`;
+        }
+
+        // One-time Fees
+        for (const otFee of sibling.fees?.oneTime || []) {
+            message += `\n🧾 *${otFee.name}*\n`;
+            message += `• Amount Paid: *₹${otFee.amount}*\n`;
         }
     }
 
-    message += "\nThank you for your timely payment!";
+    message += "\n━━━━━━━━━━━━━━━━━━\n";
+    message += `💰 *Total Amount Paid: ₹${data.paid_amount}*\n\n`;
+    message += "🙏 *Thank you for your payment.*\n";
+    message += "आपके सहयोग के लिए धन्यवाद।";
 
-    return message;
+    return message.trim();
 }
-
 
 
 export function feeDemandMessage(
@@ -108,42 +134,52 @@ export function feeDemandMessage(
 
         let feeDetails = "";
 
+        // Tuition Fee
         if (dueMonthlyFees.length > 0) {
-            feeDetails += `\n📚 *Tuition Fee*\n${dueMonthlyFees
-                .map((fee) => {
-                    const period = fee?.period_name || "Fee";
-                    const amount = formatAmount(fee?.amount);
+            feeDetails += `
+📚 *Tuition Fee*
+_${student?.total_due_terms || 0} Month(s) Pending_
 
-                    return `• ${period} — ₹${amount}/-`;
-                })
-                .join("\n")}`;
+${dueMonthlyFees
+    .map((fee) => {
+        const period = fee?.period_name || "Fee";
+        const amount = formatAmount(fee?.amount);
+
+        return `• ${period}  →  ₹${amount}`;
+    })
+    .join("\n")}
+`;
         }
 
+        // Other Fees
         if (dueOtherFees.length > 0) {
-            feeDetails += `\n\n🧾 *Other Fee*\n${dueOtherFees
-                .map((fee) => {
-                    const feeType = fee?.fee_type || "Other Fee";
-                    const period = fee?.period_name
-                        ? ` (${fee.period_name})`
-                        : "";
+            feeDetails += `
+🧾 *Other Fee*
 
-                    const amount = formatAmount(fee?.amount);
+${dueOtherFees
+    .map((fee) => {
+        const feeType = fee?.fee_type || "Other Fee";
 
-                    return `• ${feeType}${period} — ₹${amount}/-`;
-                })
-                .join("\n")}`;
+        const period = fee?.period_name
+            ? ` (${fee.period_name})`
+            : "";
+
+        const amount = formatAmount(fee?.amount);
+
+        return `• ${feeType}${period}  →  ₹${amount}`;
+    })
+    .join("\n")}
+`;
         }
 
         return `*${index + 1}. ${name}*
 
-🏫 Class: ${className}  |  🎓 Roll No.: ${rollNo}
-
+🏫 Class: *${className}*
+🎫 Roll No: *${rollNo}*
+${feeDetails}
 💰 *Pending Fee: ₹${formatAmount(
-            student?.total_due_amount
-        )}/-*
-
-📆 *Pending: ${student?.total_due_terms || 0} Month/Term*
-${feeDetails}`;
+    student?.total_due_amount
+)}*`;
     });
 
     // ---------------------------------------------------------
@@ -151,31 +187,33 @@ ${feeDetails}`;
     // ---------------------------------------------------------
 
     const message = `🏫 *${schoolName}*
-💰 *FEE PAYMENT REMINDER*
 
-📅 ${today}
+💰 *FEE REMINDER*
+📌 ${today}
 
-आपके बच्चे की कुछ *Fee अभी Pending* है।
+Dear Parent,
+
+कृपया ध्यान दें, आपके बच्चे की फीस अभी बकाया है।
 
 ━━━━━━━━━━━━━━━━━━
 
 ${studentSections.join(
-        "\n\n━━━━━━━━━━━━━━━━━━\n\n"
-    )}
-
-━━━━━━━━━━━━━━━━━━
-💰 *Total Pending Fee: ₹${formatAmount(totalOutstanding)}/-*
-📆 *Total Pending: ${totalPendingTerms} Month/Term*
+    "\n\n━━━━━━━━━━━━━━━━━━\n\n"
+)}
 
 ━━━━━━━━━━━━━━━━━━
 
-कृपया Pending Fee जल्द जमा कर दें। 🙏
+📊 *FAMILY FEE SUMMARY*
 
-अगर Fee पहले ही जमा कर दी है, तो कृपया *Payment Receipt/Details* School Office में भेज दें।
+👨‍👩‍👧‍👦 Students: *${studentsWithDue.length}*
+📌 Pending Months: *${totalPendingTerms}*
+💰 *TOTAL PENDING: ₹${formatAmount(totalOutstanding)}*
 
-धन्यवाद।
+━━━━━━━━━━━━━━━━━━
 
-🏫 *${schoolName}*`;
+⚠️ आपसे अनुरोध है कि कृपया अपने बच्चे की बाकी फीस जल्द से जल्द जमा करने का कष्ट करें।
+
+🙏 आपके सहयोग के लिए धन्यवाद।`;
 
     return message.trim();
 }
