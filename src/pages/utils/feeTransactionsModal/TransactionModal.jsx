@@ -59,6 +59,53 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
   const activeTransactions = transactions.filter((transaction) => !transaction.is_deleted);
   const deletedTransactions = transactions.filter((transaction) => transaction.is_deleted);
 
+  const handleExportSummary = () => {
+    const headers = [
+      'Transaction No', 'Payment Date', 'Student', 'Class', 'Roll No',
+      'Fee Type', 'Fee Item', 'Amount', 'Paid Amount', 'Discount',
+      'Payment Mode', 'Remark', 'Status'
+    ];
+    const rows = transactions.flatMap((transaction) => {
+      const students = transaction.siblings?.length ? transaction.siblings : [{}];
+
+      return students.flatMap((student) => {
+        const monthly = student.fees?.monthly;
+        const oneTimeFees = student.fees?.oneTime || [];
+        const feeRows = [
+          ...(monthly ? [{ type: 'Monthly', item: monthly.label, amount: monthly.total }] : []),
+          ...oneTimeFees.map((fee) => ({ type: 'One-time', item: fee.name, amount: fee.amount }))
+        ];
+
+        return (feeRows.length ? feeRows : [{ type: '', item: '', amount: '' }]).map((fee) => [
+          transaction.transaction_no,
+          transaction.payment_date,
+          student.studentName || '',
+          student.className || '',
+          student.rollNo || '',
+          fee.type,
+          fee.item,
+          fee.amount,
+          transaction.paid_amount ?? 0,
+          transaction.discount ?? 0,
+          transaction.payment_mode || '',
+          transaction.remark || '',
+          transaction.is_deleted ? 'Deleted' : 'Active'
+        ]);
+      });
+    });
+    const csv = [headers, ...rows]
+      .map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(','))
+      .join('\r\n');
+    const blobUrl = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    const downloadLink = document.createElement('a');
+    downloadLink.href = blobUrl;
+    downloadLink.download = `fee-transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    downloadLink.remove();
+    URL.revokeObjectURL(blobUrl);
+  };
+
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-0 m-0" onClick={onClose}>
       <div className="flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-700/50 bg-[#1e293b]/95 shadow-2xl backdrop-blur-xl" onClick={(event) => event.stopPropagation()}>
@@ -141,7 +188,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
         <footer className="border-t border-slate-700/50 bg-slate-900/30 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
             <p className="text-center text-xs text-slate-500 sm:text-left">💡 <span className="font-medium text-slate-400">Tip:</span> Click on monthly fees to view detailed breakdown</p>
-            <button type="button" className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-sky-600 to-sky-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-900/30 transition-all hover:from-sky-500 hover:to-sky-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 sm:w-auto">
+            <button type="button" onClick={handleExportSummary} disabled={loading || transactions.length === 0} className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-sky-600 to-sky-700 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-sky-900/30 transition-all hover:from-sky-500 hover:to-sky-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>

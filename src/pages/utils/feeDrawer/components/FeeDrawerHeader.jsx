@@ -23,14 +23,14 @@ export default function FeeDrawerHeader({
 
         if (Array.isArray(student?.monthlyFees)) {
             for (const fee of student.monthlyFees) {
-                if (fee.status.toLowerCase() !== 'paid') {
+                if (fee.status.toLowerCase() == 'due') {
                     total += Number(fee.amount || 0);
                 }
             }
         }
         if (Array.isArray(student?.otherFees)) {
             for (const fee of student.otherFees) {
-                if (fee.status.toLowerCase() !== 'paid') {
+                if (fee.status.toLowerCase() == 'due') {
                     total += Number(fee.amount || 0);
                 }
             }

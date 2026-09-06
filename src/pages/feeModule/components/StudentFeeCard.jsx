@@ -2,6 +2,7 @@ import boyImage from '../../../assets/no-student-boy-image.png';
 import girlImage from '../../../assets/no-student-girl-image.png';
 import { memo } from 'react';
 import usePermission from "../../../hooks/usePermission";
+import { CreditCard, Receipt, ChevronRight } from "lucide-react";
 
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {
@@ -82,7 +83,13 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
   const totalTuitionFee = student?.totalTuitionFee || 0
 
 
-  const progress = Math.min(100, Math.max(0, ((totalSettledAmount || 0) / Math.max(totalPayableAmount || 1, 1)) * 100));
+  // Calculate exact percentages relative to the sum of Paid + Due + Upcoming (100% full width)
+  const exactTotal = totalSettledAmount + totalDueAmount + upcomingAmount;
+  const safeTotal = exactTotal > 0 ? exactTotal : 1;
+  
+  const settledProgress = (totalSettledAmount / safeTotal) * 100;
+  const dueProgress = (totalDueAmount / safeTotal) * 100;
+  const upcomingProgress = (upcomingAmount / safeTotal) * 100;
 
   const handlePayFees = () => {
     if (typeof onPayFees === 'function') {
@@ -101,7 +108,6 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
       onViewDetails(student);
     }
   };
-  console.log(student)
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_12px_30px_-18px_rgba(0,0,0,0.8)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3A3A3A]">
@@ -121,23 +127,36 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
-                <h3 className="truncate text-lg font-semibold text-white">{student?.STUDENTS_NAME || 'Student Name'}</h3>
-                <p className="mt-1 truncate text-sm text-gray-400">C/O: {student?.FATHERS_NAME || 'Not available'}</p>
+                <h3
+                  onClick={handleViewDetails}
+                  className="group/title inline-flex items-center gap-1.5 truncate text-lg font-semibold text-white cursor-pointer transition-all duration-150 active:scale-[0.98] hover:text-indigo-400"
+                >
+                  <span className="truncate underline-offset-4 hover:underline">{student?.STUDENTS_NAME || 'Student Name'}</span>
+                  <svg
+                    className="h-4 w-4 shrink-0 text-indigo-400 transition-transform duration-200 group-hover/title:translate-x-0.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </h3>
+                <p className="truncate text-gray-400">C/O: {student?.FATHERS_NAME || 'Not available'}</p>
               </div>
               <span className={`inline-flex items-center gap-2 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] ${statusStyles.badge}`}>
                 <span className={`h-1.5 w-1.5 rounded-full ${statusStyles.dot}`} />
                 {student?.feeStatus || 'Due'}
               </span>
             </div>
-
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-gray-300">
+            <div className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
+              <span>Class: {student?.CLASS || "—"}</span>
+              <span className="h-3 w-px bg-white/15" />
+              <span className="tabular-nums">SR: #{student?.SR || "—"}</span>
               {student?.isRTE && (
-                <span className="bg-yellow-500 text-gray-900 text-[9px] font-bold px-1.5 py-[2px] rounded">
+                <span className="ml-1 rounded border border-amber-400/30 px-1.5 py-0.5 text-[10px] font-semibold text-amber-300">
                   RTE
                 </span>
               )}
-              <span className="rounded-full border border-[#3A3A3A] bg-[#111111] px-2 py-1">Class {student?.CLASS || '—'}</span>
-              <span className="rounded-full border border-[#3A3A3A] bg-[#111111] px-2 py-1">SR #{student?.SR || '—'}</span>
             </div>
           </div>
         </div>
@@ -160,22 +179,43 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
 
           <div className="mt-4">
             <div className="mb-2 flex items-center justify-between text-xs text-gray-400">
-              <span>Paid {formatCurrency(totalSettledAmount)}</span>
-              <span>{Math.round(progress)}%</span>
+              <span>Payment Progress</span>
+              <span>{Math.round((totalSettledAmount / Math.max(totalPayableAmount, 1)) * 100)}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-[#2A2A2A]">
+            
+            {/* Exactly 3 segments making up 100% of the bar width: Paid -> Due -> Upcoming */}
+            <div className="h-2.5 flex overflow-hidden rounded-full bg-[#2A2A2A]">
               <div
-                className={`h-full rounded-full ${student?.feeStatus === 'Paid'
-                  ? 'bg-emerald-400'
-                  : student?.feeStatus === 'Partially Paid'
-                    ? 'bg-amber-400'
-                    : 'bg-rose-400'
-                  }`}
-                style={{ width: `${progress}%` }}
+                className="h-full bg-emerald-400 transition-all duration-300 first:rounded-l-full"
+                style={{ width: `${settledProgress}%` }}
+                title={`Paid: ${formatCurrency(totalSettledAmount)}`}
+              />
+              <div
+                className="h-full bg-rose-500 transition-all duration-300"
+                style={{ width: `${dueProgress}%` }}
+                title={`Current Due: ${formatCurrency(totalDueAmount)}`}
+              />
+              <div
+                className="h-full bg-zinc-600 transition-all duration-300 last:rounded-r-full"
+                style={{ width: `${upcomingProgress}%` }}
+                title={`Upcoming: ${formatCurrency(upcomingAmount)}`}
               />
             </div>
-            <div className="mt-2 text-right text-[11px] text-gray-400">
-              {formatCurrency(totalSettledAmount)} / {formatCurrency(totalPayableAmount)}
+
+            {/* Legend indicators */}
+            <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[10px] text-gray-400">
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <span>Paid ({formatCurrency(totalSettledAmount)})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-rose-500" />
+                <span>Due ({formatCurrency(totalDueAmount)})</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-zinc-600" />
+                <span>Upcoming ({formatCurrency(upcomingAmount)})</span>
+              </div>
             </div>
           </div>
         </div>
@@ -201,34 +241,30 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
 
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-2 border-t border-[#2A2A2A] pt-4">
+        <div className="flex items-center gap-2 pt-3">
           <button
             type="button"
             onClick={handlePayFees}
-            className="flex-1 rounded-xl border border-[#3A3A3A] bg-[#2A2A2A] px-3 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#333333] focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl 
+              bg-green-400 px-3 py-2.5 text-sm font-semibold text-neutral-950 
+              transition-colors hover:bg-green-300 focus:outline-none focus-visible:ring-2 
+              focus-visible:ring-green-400/50"
           >
-            {hasPermission(PERMISSIONS.PAY_FEES) ? "Pay Fees" : "View Fees"}
+            <CreditCard className="h-4 w-4" />
+            {hasPermission(PERMISSIONS.PAY_FEES) ? "Pay fees" : "View fees"}
           </button>
-          <div className="flex items-center gap-2">
 
-            {hasPermission(PERMISSIONS.PAY_FEES) && (
-              <button
-                type="button"
-                onClick={handleViewTransactions}
-                className="rounded-xl border border-[#3A3A3A] bg-[#202020] px-3 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:border-gray-500 hover:bg-[#2A2A2A]"
-              >
-                Transactions
-              </button>
-            )}
-
+          {hasPermission(PERMISSIONS.PAY_FEES) && (
             <button
               type="button"
-              onClick={handleViewDetails}
-              className="rounded-xl border border-[#3A3A3A] bg-[#202020] px-3 py-2.5 text-sm font-medium text-gray-200 transition-colors hover:border-gray-500 hover:bg-[#2A2A2A]"
+              onClick={handleViewTransactions}
+              aria-label="View transactions"
+              className="flex items-center justify-center rounded-xl bg-yellow-400
+  p-2.5 text-neutral-900 transition-colors hover:bg-yellow-300"
             >
-              Details
+              <Receipt className="h-4 w-4" />
             </button>
-          </div>
+          )}
         </div>
       </div>
     </article>

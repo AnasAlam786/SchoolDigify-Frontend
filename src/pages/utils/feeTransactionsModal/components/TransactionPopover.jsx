@@ -1,8 +1,57 @@
 
-function TransactionPopover({ months, onClose }) {
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
-  return (
-    <div className="absolute left-0 top-full z-[9999] mt-2 w-64 rounded-xl border border-indigo-600 bg-[#0f1a2c] shadow-2xl shadow-indigo-900/30 sm:w-72" style={{ animation: 'popoverFadeIn 0.2s ease-out' }}>
+function TransactionPopover({ months, anchorElement, onClose }) {
+  const popoverRef = useRef(null);
+  const [position, setPosition] = useState(null);
+
+  useLayoutEffect(() => {
+    if (!anchorElement) return undefined;
+
+    const updatePosition = () => {
+      const anchorRect = anchorElement.getBoundingClientRect();
+      const width = Math.min(288, window.innerWidth - 24);
+      const left = Math.min(
+        Math.max(12, anchorRect.left),
+        window.innerWidth - width - 12
+      );
+      const spaceBelow = window.innerHeight - anchorRect.bottom - 12;
+      const showAbove = spaceBelow < 240 && anchorRect.top > spaceBelow;
+
+      setPosition({
+        left,
+        top: showAbove ? Math.max(12, anchorRect.top - 8) : anchorRect.bottom + 8,
+        transform: showAbove ? 'translateY(-100%)' : 'none',
+        width,
+      });
+    };
+
+    updatePosition();
+    window.addEventListener('resize', updatePosition);
+    document.addEventListener('scroll', updatePosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      document.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [anchorElement]);
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (!popoverRef.current?.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [onClose]);
+
+  if (!position) return null;
+
+  return createPortal(
+    <div ref={popoverRef} className="fixed z-[10000] max-w-[calc(100vw-24px)] rounded-xl border border-indigo-600 bg-[#0f1a2c] shadow-2xl shadow-indigo-900/30" style={{ ...position, animation: 'popoverFadeIn 0.2s ease-out' }}>
       <div className="p-4">
         <div className="mb-3 flex items-center justify-between">
           <h4 className="text-sm font-semibold text-indigo-200">Months Covered</h4>
@@ -23,7 +72,8 @@ function TransactionPopover({ months, onClose }) {
           ))}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

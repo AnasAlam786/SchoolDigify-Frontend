@@ -1,19 +1,7 @@
 function DrawerLoader() {
     return (
-        <aside className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-sm">
-            <div className="relative flex h-full w-full flex-col bg-gray-900 shadow-2xl md:w-[800px] animate-pulse">
-
-                <div className="flex-shrink-0 border-b border-gray-800 bg-gray-900 p-4">
-                    <div className="mb-4 flex items-center justify-between">
-                        <div className="h-7 w-28 rounded-lg bg-slate-800"></div>
-                        <div className="h-8 w-8 rounded-full bg-slate-800"></div>
-                    </div>
-                    <div className="mb-2 flex rounded-[16px] bg-slate-800/80 p-[6px]">
-                        <div className="h-9 w-full rounded-xl bg-slate-700/60"></div>
-                    </div>
-                </div>
-
-                <div className="custom-scrollbar flex flex-1 flex-col overflow-y-auto space-y-4">
+        <div className="flex h-full animate-pulse flex-col bg-gray-900">
+            <div className="custom-scrollbar flex flex-1 flex-col space-y-4 overflow-y-auto">
 
                     <div className="border-b border-slate-800/60 bg-slate-900/60">
                         <div className="border border-red-900/20 bg-red-950/10 p-4 sm:p-5">
@@ -128,17 +116,8 @@ function DrawerLoader() {
                         </div>
                     </div>
 
-                </div>
-
-                <div className="border-t border-gray-800 bg-gray-900 p-6">
-                    <div className="flex flex-col gap-3 sm:flex-row">
-                        <div className="h-12 flex-1 rounded-xl bg-slate-800"></div>
-                        <div className="h-12 flex-1 rounded-xl bg-blue-900/40 border border-blue-700/30"></div>
-                    </div>
-                </div>
-
             </div>
-        </aside>
+        </div>
     )
 }
 
