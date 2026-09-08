@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apiGet } from '../../../api/api';
-import { DrawerLoader, SetupFeeSessionUI } from './components/DrawerStatus';
+import { DrawerLoader, SetupFeeSessionUI, RteStudentUI } from './components/DrawerStatus';
 import FeeDrawerFooter from './components/FeeDrawerFooter';
 import FeeDrawerHeader from './components/FeeDrawerHeader';
 import FeeDrawerMiddle from './components/FeeDrawerMiddle';
@@ -129,6 +129,9 @@ export default function FeeDrawer({ feeDrawerStudent, onClose, onSetupFeeSession
 
                     ) : isFeeSessionSetupRequired ? (
                         <SetupFeeSessionUI onSetup={setup} />
+
+                    ) : currentStudentData.isRTE ? (
+                        <RteStudentUI />
 
                     ) : (
                         <>

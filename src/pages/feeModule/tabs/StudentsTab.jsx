@@ -154,27 +154,15 @@ export default function StudentsTab({
         <div className="px-6 pt-5 pb-2">
           <div
             className="
-              relative
-              overflow-hidden
-              rounded-2xl
-              border
-              border-[#2A2A2A]
-              bg-[#1A1A1A]
+              relative overflow-hidden rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A]
               shadow-[0_14px_40px_-24px_rgba(0,0,0,0.9)]
             "
           >
             {/* Subtle top highlight */}
             <div
               className="
-                pointer-events-none
-                absolute
-                inset-x-0
-                top-0
-                h-px
-                bg-gradient-to-r
-                from-transparent
-                via-white/10
-                to-transparent
+                pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent
+                via-white/10 to-transparent
               "
             />
 
@@ -189,22 +177,12 @@ export default function StudentsTab({
                   {/* Search icon */}
                   <div
                     className="
-                      pointer-events-none
-                      absolute
-                      inset-y-0
-                      left-0
-                      flex
-                      items-center
-                      pl-4
-                      text-gray-500
+                      pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500
                     "
                   >
                     <svg
-                      className="h-[18px] w-[18px]"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      className="h-[18px] w-[18px]" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" strokeWidth="1.8"
                     >
                       <circle cx="11" cy="11" r="6.5" />
                       <path d="M16 16L20 20" strokeLinecap="round" />
@@ -212,65 +190,32 @@ export default function StudentsTab({
                   </div>
 
                   <input
-                    type="text"
-                    value={filters.search}
+                    type="text" value={filters.search}
                     onChange={(e) => updateFilter("search", e.target.value)}
                     placeholder="Search students by name, father name, SR number..."
                     aria-label="Search students"
                     className="
-                      h-12
-                      w-full
-                      rounded-xl
-                      border
-                      border-[#2A2A2A]
-                      bg-[#111111]
-                      pl-11
-                      pr-11
-                      text-[14px]
-                      font-medium
-                      text-white
-                      placeholder:text-gray-600
-                      outline-none
-                      transition-all
-                      duration-200
-                      hover:border-[#363636]
-                      focus:border-[#4A4A4A]
-                      focus:bg-[#131313]
-                      focus:ring-4
-                      focus:ring-white/[0.035]
+                      h-12 w-full rounded-xl border border-[#2A2A2A] bg-[#111111]
+                      pl-11 pr-11 text-[14px] font-medium text-white placeholder:text-gray-600 outline-none
+                      transition-all duration-200 hover:border-[#363636] focus:border-[#4A4A4A] focus:bg-[#131313]
+                      focus:ring-4 focus:ring-white/[0.035]
                     "
                   />
 
                   {/* Clear search */}
                   {filters.search && (
                     <button
-                      type="button"
-                      onClick={clearSearch}
+                      type="button" onClick={clearSearch}
                       aria-label="Clear search"
                       className="
-                        absolute
-                        inset-y-0
-                        right-2
-                        my-auto
-                        flex
-                        h-8
-                        w-8
-                        items-center
-                        justify-center
-                        rounded-lg
-                        text-gray-500
-                        transition
-                        hover:bg-white/[0.06]
-                        hover:text-gray-200
-                        active:scale-95
+                        absolute inset-y-0 right-2 my-auto flex h-8 w-8 items-center
+                        justify-center rounded-lg text-gray-500 transition hover:bg-white/[0.06]
+                        hover:text-gray-200 active:scale-95
                       "
                     >
                       <svg
-                        className="h-4 w-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                        className="h-4 w-4" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" strokeWidth="2"
                       >
                         <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
                       </svg>
@@ -281,16 +226,8 @@ export default function StudentsTab({
                 {/* Showing counter */}
                 <div
                   className="
-                    flex
-                    h-12
-                    min-w-[142px]
-                    items-center
-                    justify-center
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    px-4
+                    flex h-12 min-w-[142px] items-center justify-center rounded-xl border
+                    border-[#2A2A2A] bg-[#111111] px-4
                   "
                 >
                   <div className="text-center">
@@ -321,24 +258,12 @@ export default function StudentsTab({
                 {/* Filter label */}
                 <div
                   className="
-                    flex
-                    shrink-0
-                    items-center
-                    gap-2
-                    px-1
-                    text-[11px]
-                    font-semibold
-                    uppercase
-                    tracking-[0.14em]
-                    text-gray-600
+                    flex shrink-0 items-center gap-2 px-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-600
                   "
                 >
                   <svg
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
+                    className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="1.8"
                   >
                     <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
                   </svg>
@@ -348,22 +273,9 @@ export default function StudentsTab({
                 {/* Class */}
                 <div
                   className="
-                    group
-                    relative
-                    flex
-                    h-10
-                    min-w-[190px]
-                    items-center
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    transition-all
-                    duration-200
-                    hover:border-[#3A3A3A]
-                    focus-within:border-[#4A4A4A]
-                    focus-within:ring-4
-                    focus-within:ring-white/[0.025]
+                    group relative flex h-10 min-w-[190px] items-center rounded-xl border
+                    border-[#2A2A2A] bg-[#111111] transition-all duration-200 hover:border-[#3A3A3A]
+                    focus-within:border-[#4A4A4A] focus-within:ring-4 focus-within:ring-white/[0.025]
                   "
                 >
                   <div className="pointer-events-none px-3">
@@ -387,14 +299,7 @@ export default function StudentsTab({
                       updateFilter("classFilter", e.target.value)
                     }
                     aria-label="Filter by class"
-                    className="
-                      absolute
-                      inset-0
-                      h-full
-                      w-full
-                      cursor-pointer
-                      appearance-none
-                      opacity-0
+                    className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                     "
                   >
                     <option value="All">All Classes</option>
@@ -408,24 +313,13 @@ export default function StudentsTab({
 
                   <svg
                     className="
-                      pointer-events-none
-                      absolute
-                      right-3
-                      h-4
-                      w-4
-                      text-gray-500
-                      transition
-                      group-hover:text-gray-300
+                      pointer-events-none absolute right-3 h-4 w-4 text-gray-500 transition group-hover:text-gray-300
                     "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="1.8"
                   >
                     <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round"
                     />
                   </svg>
                 </div>
@@ -433,22 +327,9 @@ export default function StudentsTab({
                 {/* Sort */}
                 <div
                   className="
-                    group
-                    relative
-                    flex
-                    h-10
-                    min-w-[225px]
-                    items-center
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    transition-all
-                    duration-200
-                    hover:border-[#3A3A3A]
-                    focus-within:border-[#4A4A4A]
-                    focus-within:ring-4
-                    focus-within:ring-white/[0.025]
+                    group relative flex h-10 min-w-[225px] items-center rounded-xl border
+                    border-[#2A2A2A] bg-[#111111] transition-all duration-200 hover:border-[#3A3A3A] 
+                    focus-within:border-[#4A4A4A] focus-within:ring-4 focus-within:ring-white/[0.025]
                   "
                 >
                   <div className="pointer-events-none px-3">
@@ -465,14 +346,7 @@ export default function StudentsTab({
                     value={filters.sortBy}
                     onChange={(e) => updateFilter("sortBy", e.target.value)}
                     aria-label="Sort students"
-                    className="
-                      absolute
-                      inset-0
-                      h-full
-                      w-full
-                      cursor-pointer
-                      appearance-none
-                      opacity-0
+                    className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                     "
                   >
                     {sortOptions.map((option) => (
@@ -484,20 +358,14 @@ export default function StudentsTab({
 
                   <svg
                     className="
-                      pointer-events-none
-                      absolute right-3 h-4 w-4
-                      text-gray-500 transition
+                      pointer-events-none absolute right-3 h-4 w-4 text-gray-500 transition
                       group-hover:text-gray-300
                     "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
+                    viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="1.8"
                   >
                     <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round"
                     />
                   </svg>
                 </div>
@@ -513,54 +381,31 @@ export default function StudentsTab({
                   }
                   aria-label="Toggle sort direction"
                   className="
-                    flex
-                    h-10
-                    w-10
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    text-gray-400
-                    transition-all
-                    duration-200
-                    hover:border-[#3A3A3A]
-                    hover:bg-[#161616]
-                    hover:text-white
-                    active:scale-95
+                    flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border
+                    border-[#2A2A2A] bg-[#111111] text-gray-400 transition-all duration-200
+                    hover:border-[#3A3A3A] hover:bg-[#161616] hover:text-white active:scale-95
                   "
                 >
                   {filters.sortDir === "asc" ? (
                     <svg
                       className="h-[17px] w-[17px]"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                     >
                       <path d="M12 18V6" strokeLinecap="round" />
                       <path
-                        d="M7 11l5-5 5 5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M7 11l5-5 5 5" strokeLinecap="round" strokeLinejoin="round"
                       />
                       <path d="M5 20h14" strokeLinecap="round" opacity=".35" />
                     </svg>
                   ) : (
                     <svg
                       className="h-[17px] w-[17px]"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="1.8"
                     >
                       <path d="M12 6v12" strokeLinecap="round" />
                       <path
-                        d="M7 13l5 5 5-5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M7 13l5 5 5-5" strokeLinecap="round" strokeLinejoin="round"
                       />
                       <path d="M5 4h14" strokeLinecap="round" opacity=".35" />
                     </svg>
@@ -572,12 +417,7 @@ export default function StudentsTab({
                   {hasActiveFilters && (
                     <div className="flex items-center gap-2">
                       <span
-                        className="
-                          h-1.5
-                          w-1.5
-                          rounded-full
-                          bg-white
-                        "
+                        className="h-1.5 w-1.5 rounded-full bg-white "
                       />
 
                       <span className="text-[11px] font-medium text-gray-500">
@@ -588,41 +428,17 @@ export default function StudentsTab({
 
                   {/* Clear */}
                   <button
-                    type="button"
-                    onClick={clearFilters}
-                    disabled={!hasActiveFilters}
+                    type="button" onClick={clearFilters} disabled={!hasActiveFilters}
                     className="
-                      flex
-                      h-10
-                      items-center
-                      gap-2
-                      rounded-xl
-                      border
-                      border-[#2A2A2A]
-                      bg-[#111111]
-                      px-3.5
-                      text-[12px]
-                      font-medium
-                      text-gray-500
-                      transition-all
-                      duration-200
-                      hover:border-[#3A3A3A]
-                      hover:bg-[#161616]
-                      hover:text-gray-200
-                      active:scale-[0.98]
-                      disabled:cursor-default
-                      disabled:opacity-40
-                      disabled:hover:border-[#2A2A2A]
-                      disabled:hover:bg-[#111111]
-                      disabled:hover:text-gray-500
+                      flex h-10 items-center gap-2 rounded-xl border border-[#2A2A2A] 
+                      bg-[#111111] px-3.5 text-[12px] font-medium text-gray-500 transition-all 
+                      duration-200 hover:border-[#3A3A3A] hover:bg-[#161616] hover:text-gray-200 
+                      active:scale-[0.98] disabled:cursor-default disabled:opacity-40 disabled:hover:border-[#2A2A2A] disabled:hover:bg-[#111111] disabled:hover:text-gray-500
                     "
                   >
                     <svg
                       className="h-3.5 w-3.5"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                     >
                       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                     </svg>
@@ -642,12 +458,7 @@ export default function StudentsTab({
       <div className="lg:hidden px-4 pt-4">
         <div
           className="
-            overflow-hidden
-            rounded-2xl
-            border
-            border-[#2A2A2A]
-            bg-[#1A1A1A]
-            shadow-[0_14px_40px_-24px_rgba(0,0,0,0.9)]
+            overflow-hidden rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] shadow-[0_14px_40px_-24px_rgba(0,0,0,0.9)]
           "
         >
           <div className="p-4">
@@ -655,22 +466,12 @@ export default function StudentsTab({
             <div className="relative">
               <div
                 className="
-                  pointer-events-none
-                  absolute
-                  inset-y-0
-                  left-0
-                  flex
-                  items-center
-                  pl-4
-                  text-gray-500
+                  pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500
                 "
               >
                 <svg
-                  className="h-[18px] w-[18px]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
+                  className="h-[18px] w-[18px]" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="1.8"
                 >
                   <circle cx="11" cy="11" r="6.5" />
 
@@ -684,54 +485,23 @@ export default function StudentsTab({
                 onChange={(e) => updateFilter("search", e.target.value)}
                 placeholder="Search students..."
                 aria-label="Search students"
-                className="
-                  h-12
-                  w-full
-                  rounded-xl
-                  border
-                  border-[#2A2A2A]
-                  bg-[#111111]
-                  pl-11
-                  pr-11
-                  text-[14px]
-                  font-medium
-                  text-white
-                  placeholder:text-gray-600
-                  outline-none
-                  transition-all
-                  focus:border-[#4A4A4A]
-                  focus:ring-4
-                  focus:ring-white/[0.035]
+                className=" h-12 w-full rounded-xl border border-[#2A2A2A] bg-[#111111] pl-11 pr-11 text-[14px]
+                  font-medium text-white placeholder:text-gray-600 outline-none transition-all focus:border-[#4A4A4A]
+                  focus:ring-4 focus:ring-white/[0.035]
                 "
               />
 
               {filters.search && (
                 <button
-                  type="button"
-                  onClick={clearSearch}
+                  type="button" onClick={clearSearch}
                   aria-label="Clear search"
-                  className="
-                    absolute
-                    inset-y-0
-                    right-2
-                    my-auto
-                    flex
-                    h-8
-                    w-8
-                    items-center
-                    justify-center
-                    rounded-lg
-                    text-gray-500
-                    hover:bg-white/[0.06]
-                    hover:text-gray-200
+                  className=" absolute inset-y-0 right-2 my-auto flex h-8 w-8 items-center
+                    justify-center rounded-lg text-gray-500 hover:bg-white/[0.06] hover:text-gray-200
                   "
                 >
                   <svg
-                    className="h-4 w-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
+                    className="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" strokeWidth="2"
                   >
                     <path d="M6 6L18 18M18 6L6 18" strokeLinecap="round" />
                   </svg>
@@ -739,58 +509,6 @@ export default function StudentsTab({
               )}
             </div>
 
-            {/* Results */}
-            <div className="mt-3 flex items-center justify-between">
-              <div>
-                <div className="text-[10px] font-semibold uppercase tracking-[0.15em] text-gray-600">
-                  Results
-                </div>
-
-                <div className="mt-0.5 text-sm font-medium text-gray-300">
-                  <span className="font-bold text-white">
-                    {filteredStudents.length}
-                  </span>
-
-                  <span className="mx-1.5 text-gray-700">/</span>
-
-                  <span className="text-gray-500">{students.length}</span>
-
-                  <span className="ml-1 text-gray-600">students</span>
-                </div>
-              </div>
-
-              {hasActiveFilters && (
-                <button
-                  type="button"
-                  onClick={clearFilters}
-                  className="
-                    flex
-                    items-center
-                    gap-1.5
-                    rounded-lg
-                    px-2.5
-                    py-1.5
-                    text-[11px]
-                    font-medium
-                    text-gray-500
-                    transition
-                    hover:bg-white/[0.05]
-                    hover:text-gray-200
-                  "
-                >
-                  <svg
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                  >
-                    <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-                  </svg>
-                  Clear
-                </button>
-              )}
-            </div>
 
             {/* Divider */}
             <div className="my-3.5 h-px bg-[#242424]" />
@@ -799,17 +517,8 @@ export default function StudentsTab({
             <div className="grid grid-cols-[1fr_auto] gap-2.5">
               {/* Class */}
               <div
-                className="
-                  group
-                  relative
-                  h-12
-                  rounded-xl
-                  border
-                  border-[#2A2A2A]
-                  bg-[#111111]
-                  px-3
-                  transition
-                  focus-within:border-[#4A4A4A]
+                className="group relative h-12 rounded-xl border border-[#2A2A2A] bg-[#111111]
+                  px-3 transition focus-within:border-[#4A4A4A]
                 "
               >
                 <div className="pointer-events-none pt-1.5">
@@ -831,14 +540,7 @@ export default function StudentsTab({
                   value={filters.classFilter}
                   onChange={(e) => updateFilter("classFilter", e.target.value)}
                   aria-label="Filter by class"
-                  className="
-                    absolute
-                    inset-0
-                    h-full
-                    w-full
-                    cursor-pointer
-                    appearance-none
-                    opacity-0
+                  className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                   "
                 >
                   <option value="All">All Classes</option>
@@ -852,24 +554,12 @@ export default function StudentsTab({
 
                 <svg
                   className="
-                    pointer-events-none
-                    absolute
-                    right-3
-                    top-1/2
-                    h-3.5
-                    w-3.5
-                    -translate-y-1/2
-                    text-gray-500
+                    pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-500
                   "
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                 >
                   <path
-                    d="M6 9l6 6 6-6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -877,17 +567,7 @@ export default function StudentsTab({
               {/* Sort + Direction */}
               <div className="flex gap-2">
                 <div
-                  className="
-                    group
-                    relative
-                    h-12
-                    min-w-[128px]
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    px-3
-                    transition
+                  className=" group relative h-12 min-w-[128px] rounded-xl border border-[#2A2A2A] bg-[#111111] px-3 transition
                     focus-within:border-[#4A4A4A]
                   "
                 >
@@ -905,14 +585,7 @@ export default function StudentsTab({
                     value={filters.sortBy}
                     onChange={(e) => updateFilter("sortBy", e.target.value)}
                     aria-label="Sort students"
-                    className="
-                      absolute
-                      inset-0
-                      h-full
-                      w-full
-                      cursor-pointer
-                      appearance-none
-                      opacity-0
+                    className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                     "
                   >
                     {sortOptions.map((option) => (
@@ -924,24 +597,12 @@ export default function StudentsTab({
 
                   <svg
                     className="
-                      pointer-events-none
-                      absolute
-                      right-2.5
-                      top-1/2
-                      h-3.5
-                      w-3.5
-                      -translate-y-1/2
-                      text-gray-500
+                      pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-500
                     "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
                   >
                     <path
-                      d="M6 9l6 6 6-6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                      d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round"
                     />
                   </svg>
                 </div>
@@ -952,47 +613,29 @@ export default function StudentsTab({
                   aria-label="Toggle sort direction"
                   className="
                     flex h-12 w-11 shrink-0
-                    items-center justify-center
-                    rounded-xl
-                    border
-                    border-[#2A2A2A]
-                    bg-[#111111]
-                    text-gray-400
-                    transition
-                    hover:border-[#3A3A3A]
-                    hover:bg-[#161616]
-                    hover:text-white
+                    items-center justify-center rounded-xl border border-[#2A2A2A] bg-[#111111]
+                    text-gray-400 transition hover:border-[#3A3A3A] hover:bg-[#161616] hover:text-white
                     active:scale-95
                   "
                 >
                   {filters.sortDir === "asc" ? (
                     <svg
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      className="h-4 w-4" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" strokeWidth="1.8"
                     >
                       <path d="M12 18V6" strokeLinecap="round" />
                       <path
-                        d="M7 11l5-5 5 5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M7 11l5-5 5 5" strokeLinecap="round" strokeLinejoin="round"
                       />
                     </svg>
                   ) : (
                     <svg
-                      className="h-4 w-4"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
+                      className="h-4 w-4" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="1.8"
                     >
                       <path d="M12 6v12" strokeLinecap="round" />
                       <path
-                        d="M7 13l5 5 5-5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M7 13l5 5 5-5" strokeLinecap="round" strokeLinejoin="round"
                       />
                     </svg>
                   )}
@@ -1005,13 +648,7 @@ export default function StudentsTab({
         {/* Mobile stats */}
         <div
           className="
-            mt-3
-            rounded-2xl
-            border
-            border-[#2A2A2A]
-            bg-[#1A1A1A]
-            px-4
-            py-3
+            mt-3 rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] px-4 py-3
           "
         >
           <div className="grid grid-cols-2 divide-x divide-[#292929]">
@@ -1094,38 +731,17 @@ export default function StudentsTab({
         {filteredStudents.length === 0 ? (
           <div
             className="
-              rounded-3xl
-              border
-              border-dashed
-              border-[#3A3A3A]
-              bg-[#1A1A1A]
-              px-6
-              py-16
-              text-center
+              rounded-3xl border border-dashed border-[#3A3A3A] bg-[#1A1A1A] px-6 py-16 text-center
             "
           >
             <div
               className="
-                mx-auto
-                mb-4
-                flex
-                h-14
-                w-14
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-[#2A2A2A]
-                bg-[#111111]
-                text-gray-400
+                mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border
+                border-[#2A2A2A] bg-[#111111] text-gray-400
               "
             >
               <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.7"
-                className="h-6 w-6"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" className="h-6 w-6"
               >
                 <circle cx="11" cy="11" r="6" />
 
@@ -1143,34 +759,16 @@ export default function StudentsTab({
 
             {hasActiveFilters && (
               <button
-                type="button"
-                onClick={clearFilters}
+                type="button" onClick={clearFilters}
                 className="
-                  mt-5
-                  inline-flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-[#333333]
-                  bg-[#111111]
-                  px-4
-                  py-2.5
-                  text-sm
-                  font-medium
-                  text-gray-300
-                  transition
-                  hover:border-[#454545]
-                  hover:bg-[#181818]
-                  hover:text-white
+                  mt-5 inline-flex items-center gap-2 rounded-xl border border-[#333333] bg-[#111111]
+                  px-4 py-2.5 text-sm font-medium text-gray-300 transition hover:border-[#454545] 
+                  hover:bg-[#181818] hover:text-white
                 "
               >
                 <svg
-                  className="h-4 w-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
+                  className="h-4 w-4" viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" strokeWidth="1.8"
                 >
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>

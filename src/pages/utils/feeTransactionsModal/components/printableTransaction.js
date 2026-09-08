@@ -63,14 +63,9 @@ export function usePrintableTransaction() {
       return total + monthly + oneTime;
     }, 0);
 
-    const printWindow = window.open("", "_blank", "width=900,height=1000");
 
-    if (!printWindow) {
-      alert("Please allow pop-ups to print the receipt.");
-      return;
-    }
 
-    printWindow.document.write(`
+    const printWindowHTML = `
       <!DOCTYPE html>
       <html>
       <head>
@@ -291,7 +286,7 @@ export function usePrintableTransaction() {
 
             <div class="summary-row total">
               <span>Amount Paid</span>
-              <span>₹${((transaction.paid_amount ?? 0) - (transaction.discount ?? 0))}</span>
+              <span>₹${((totalFees ?? 0) - (transaction.discount ?? 0))}</span>
             </div>
           </div>
 
@@ -313,10 +308,12 @@ export function usePrintableTransaction() {
         </div>
       </body>
       </html>
-    `);
+    `;
 
-    printWindow.document.close();
+    return printWindowHTML;
+
   };
 
   return printTransaction;
+  
 }

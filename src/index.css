@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dark-select {
+  color-scheme: dark;
+}
+
+.dark-select option {
+  background: #1A1A1A;
+  color: #FFFFFF;
+}
+
+.dark-select option:hover,
+.dark-select option:focus,
+.dark-select option:checked {
+  background: #2A2A2A;
+  color: #FFFFFF;
+}

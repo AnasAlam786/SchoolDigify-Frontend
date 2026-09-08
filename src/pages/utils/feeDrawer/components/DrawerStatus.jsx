@@ -190,6 +190,83 @@ function SetupFeeSessionUI({ onSetup }) {
     </div>
   );
 }
+function RteStudentUI() {
+  return (
+    <div className="relative flex min-h-[420px] w-full h-full items-center justify-center overflow-hidden border border-slate-800/60 bg-slate-950/40 p-8 text-center backdrop-blur-md">
+      
+      {/* 1. Emerald Radial Gradient Backdrop */}
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.15),rgba(255,255,255,0))]" />
+      
+      {/* 2. Background Grid Pattern */}
+      <div 
+        className="absolute inset-0 -z-10 opacity-[0.04] mix-blend-overlay"
+        style={{
+          backgroundImage: `radial-gradient(#34d399 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
+        }}
+      />
+
+      {/* 3. Multi-Tiered Outer Glow Waves */}
+      <div className="absolute top-1/2 left-1/2 -z-10 h-[380px] w-[380px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-emerald-600/10 blur-[100px] animate-pulse" />
+      <div className="absolute top-1/2 left-1/2 -z-10 h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-teal-500/10 blur-[60px]" />
+
+      {/* Central Content Area */}
+      <div className="group relative flex max-w-md flex-col items-center justify-center">
+        
+        {/* Floating Animated Icon Housing */}
+        <div className="relative mb-8 flex items-center justify-center">
+          
+          {/* Animated Ambient Aura */}
+          <div className="absolute h-32 w-32 rounded-full bg-emerald-500/20 blur-2xl animate-pulse" />
+
+          {/* External Rotating Dashed Ring */}
+          <div className="absolute h-28 w-28 rounded-full border border-dashed border-emerald-500/30 animate-[spin_12s_linear_infinite]" />
+          
+          {/* Inner Counter-Rotating Gradient Ring */}
+          <div className="absolute h-24 w-24 rounded-full border border-teal-400/20 animate-[spin_8s_linear_infinite_reverse]" />
+
+          {/* Main Icon Container */}
+          <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-emerald-400/30 bg-gradient-to-b from-slate-800/90 to-slate-900/90 shadow-2xl shadow-emerald-500/20 transition-all duration-500 group-hover:scale-110 group-hover:border-emerald-400/60 group-hover:shadow-emerald-500/40">
+            <i className="fas fa-graduation-cap text-3xl text-emerald-400 transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6" />
+          </div>
+        </div>
+
+        {/* Content Typography */}
+        <div className="space-y-3 max-w-sm">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold tracking-wide">
+            <i className="fas fa-check-circle text-[10px]" />
+            <span>Govt. Sponsored</span>
+          </div>
+
+          <h3 className="bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-xl font-bold tracking-tight text-transparent">
+            Right to Education (RTE)
+          </h3>
+          
+          <p className="text-sm text-slate-400 leading-relaxed font-normal">
+            This student is enrolled under the RTE scheme. Fee collection and billing structures are exempted for this profile.
+          </p>
+        </div>
+
+        {/* Status Info Card */}
+        <div className="mt-8 flex items-center justify-between w-full rounded-xl border border-slate-800 bg-slate-900/60 px-4 py-3 backdrop-blur-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+              <i className="fas fa-shield-alt text-sm" />
+            </div>
+            <div className="text-left">
+              <p className="text-xs font-medium text-slate-200">Fee Exemption Active</p>
+              <p className="text-[11px] text-slate-400">100% tuition coverage applicable</p>
+            </div>
+          </div>
+          <span className="inline-flex items-center rounded-md bg-emerald-500/10 px-2 py-1 text-xs font-medium text-emerald-400 ring-1 ring-inset ring-emerald-500/20">
+            Active
+          </span>
+        </div>
+
+      </div>
+    </div>
+  );
+}
 
 
-export { DrawerLoader, SetupFeeSessionUI }
+export { DrawerLoader, SetupFeeSessionUI, RteStudentUI };
