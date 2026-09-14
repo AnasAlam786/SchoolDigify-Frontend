@@ -19,6 +19,10 @@ function FillMarks() {
     const [SubjectFetchingError, setSubjectFetchingError] = useState("");
 
     const [filters, setFilters] = useState({ classId: "", subjectId: "", examId: "", });
+    const [selectedExamInfo, setSelectedExamInfo] = useState({});
+    const [selectedSubjectInfo, setSelectedSubjectInfo] = useState({});
+
+
 
     useEffect(() => {
         fetchClassesAndExams();
@@ -39,8 +43,6 @@ function FillMarks() {
 
     async function fetchClassesAndExams() {
         try {
-            console.log(import.meta.env.VITE_API_URL)
-
             const response = await fetch(`${import.meta.env.VITE_API_URL}/api/fetchClassesAndExams`, {
                 credentials: "include",
             });
@@ -94,6 +96,10 @@ function FillMarks() {
         setStudentDataError("");
         setstudentDataLoading(true);
 
+        setStudentsData([])
+        setSelectedSubjectInfo({})
+        setSelectedExamInfo({})
+
         try {
 
             const params = new URLSearchParams({
@@ -113,16 +119,16 @@ function FillMarks() {
 
             if (!response.ok) {
                 throw new Error(data.error || "Failed to fetch marks");
+                
             }
 
             setStudentsData(data.students);
+            setSelectedSubjectInfo(data.subject)
+            setSelectedExamInfo(data.exam)
 
         } catch (err) {
-
             console.error(err);
-
             setStudentsData([]);
-
             setStudentDataError(
                 err.message || "Failed to load students"
             );
@@ -143,8 +149,8 @@ function FillMarks() {
         mainPageStates = (
             <MarksEntryContainer
                 studentsMarksData={StudentsData}
-                examId={filters.examId}
-                subjectId={filters.subjectId}
+                selectedExamInfo={selectedExamInfo}
+                selectedSubjectInfo={selectedSubjectInfo}
             />
         );
     }

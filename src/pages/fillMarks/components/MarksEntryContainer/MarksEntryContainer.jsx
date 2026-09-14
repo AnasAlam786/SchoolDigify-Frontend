@@ -1,26 +1,44 @@
 import { useEffect, useState } from "react";
-import { MarksEntryFormDesktop, MarksEntryFormMobile } from "./MarksEntryForm"
+import { MarksEntryFormDesktop, MarksEntryFormMobile } from "./MarksEntryForm";
 
-/* =========================
-   PARENT COMPONENT
-========================= */
-export default function MarksEntryContainer({ studentsMarksData, examId, subjectId }) {
+/* =========================================================
+   PARENT CONTAINER
+   ========================================================= */
+
+export default function MarksEntryContainer({
+    studentsMarksData,
+    selectedExamInfo,
+    selectedSubjectInfo,
+}) {
     const [marks, setMarks] = useState({});
     const [loading, setLoading] = useState({});
+    const [submitStatus, setSubmitStatus] = useState({});
 
-    /* ✅ initialize default marks from API */
+    /* -----------------------------------------
+       Initialize marks from API
+       ----------------------------------------- */
+
     useEffect(() => {
         if (!studentsMarksData) return;
 
         const initialMarks = {};
+
         studentsMarksData.forEach((student) => {
-            initialMarks[student.student_id] = student.score ?? "";
+            initialMarks[student.student_id] =
+                student.score ?? "";
         });
 
         setMarks(initialMarks);
     }, [studentsMarksData]);
 
-    const handleMarkChange = (studentId, value, type) => {
+
+    /* -----------------------------------------
+       Handle mark changes
+       ----------------------------------------- */
+
+    const handleMarkChange = (
+        studentId, value, type
+    ) => {
         if (type === "grading") {
             value = value.toUpperCase();
         }
@@ -29,15 +47,29 @@ export default function MarksEntryContainer({ studentsMarksData, examId, subject
             ...prev,
             [studentId]: value,
         }));
+
+        setSubmitStatus((prev) => ({
+            ...prev,
+            [studentId]: undefined,
+        }));
     };
+
+
+    /* -----------------------------------------
+       Submit marks
+       ----------------------------------------- */
 
     const handleSubmit = async (student) => {
         const studentId = student.student_id;
-        console.log(student)
 
         setLoading((prev) => ({
             ...prev,
             [studentId]: true,
+        }));
+
+        setSubmitStatus((prev) => ({
+            ...prev,
+            [studentId]: undefined,
         }));
 
         try {
@@ -52,27 +84,50 @@ export default function MarksEntryContainer({ studentsMarksData, examId, subject
                     body: JSON.stringify({
                         mark_id: student.mark_id,
                         student_id: studentId,
-                        exam_id: examId,
-                        subject_id: subjectId,
+                        exam_id: selectedExamInfo.id,
+                        subject_id: selectedSubjectInfo.id,
                         score: marks[studentId],
                     }),
                 }
             );
+
             const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(
-                    data.message || "Failed to update marks"
+                    data.message ||
+                        "Failed to update marks"
                 );
             }
 
-            alert(data.message);
+            setSubmitStatus((prev) => ({
+                ...prev,
+                [studentId]: "success",
+            }));
+
+            // Return button to normal after 2.5 seconds.
+            setTimeout(() => {
+                setSubmitStatus((prev) => ({
+                    ...prev,
+                    [studentId]: undefined,
+                }));
+            }, 2500);
+
         } catch (err) {
             console.error(err);
+            setSubmitStatus((prev) => ({
+                ...prev,
+                [studentId]: "error",
+            }));
 
-            alert(
-                err.message || "Failed to update marks"
-            );
+            // Return to normal after 3 seconds.
+            setTimeout(() => {
+                setSubmitStatus((prev) => ({
+                    ...prev,
+                    [studentId]: undefined,
+                }));
+            }, 3000);
+
         } finally {
             setLoading((prev) => ({
                 ...prev,
@@ -81,20 +136,27 @@ export default function MarksEntryContainer({ studentsMarksData, examId, subject
         }
     };
 
+
     return (
         <>
             <MarksEntryFormDesktop
                 studentsMarksData={studentsMarksData}
+                selectedSubjectInfo={selectedSubjectInfo}
+                selectedExamInfo={selectedExamInfo}
                 marks={marks}
                 loading={loading}
+                submitStatus={submitStatus}
                 onMarkChange={handleMarkChange}
                 handleSubmit={handleSubmit}
             />
 
             <MarksEntryFormMobile
                 studentsMarksData={studentsMarksData}
+                selectedSubjectInfo={selectedSubjectInfo}
+                selectedExamInfo={selectedExamInfo}
                 marks={marks}
                 loading={loading}
+                submitStatus={submitStatus}
                 onMarkChange={handleMarkChange}
                 handleSubmit={handleSubmit}
             />
