@@ -32,88 +32,95 @@ import AddStaff from "./pages/staffModule/addStaff/AddStaff.jsx";
 import EditStaff from "./pages/staffModule/editStaff/EditStaff.jsx";
 import FeePage from "./pages/feeModule/FeePage.jsx";
 
+import SchoolSetup from "./pages/setup/SchoolSetup.jsx";
+
 createRoot(document.getElementById("root")).render(
-    <AuthProvider>
-      <BrowserRouter>
-        <TitleManager />
+  <AuthProvider>
+    <BrowserRouter>
+      <TitleManager />
 
-        <Routes>
+      <Routes>
 
-          {/* Login */}
-          <Route path="/login" element={<LoginCheck> <Login /> </LoginCheck>} />
+        {/* Login */}
+        <Route path="/login" element={<LoginCheck> <Login /> </LoginCheck>} />
 
-          <Route element={<LoginRequired> <Layout /> </LoginRequired>} >
+        <Route element={<LoginRequired> <Layout /> </LoginRequired>} >
 
-            <Route path="/logout" element={<Logout />} />
+          <Route path="/logout" element={<Logout />} />
 
-            <Route
-              path="/idcard"
-              element={<PermissionRoute permission="idcard"> <IDCard /> </PermissionRoute>} />
+          <Route
+            path="/idcard"
+            element={<PermissionRoute permission="idcard"> <IDCard /> </PermissionRoute>} />
 
-            <Route
-              path="/fillmarks"
-              element={<PermissionRoute permission="fill_marks"> <FillMarks /> </PermissionRoute>} />
+          <Route
+            path="/fillmarks"
+            element={<PermissionRoute permission="fill_marks"> <FillMarks /> </PermissionRoute>} />
 
-            <Route
-              path="/question-papers"
-              element={<PermissionRoute permission="create_paper"> <Dashboard /> </PermissionRoute>} />
+          <Route
+            path="/question-papers"
+            element={<PermissionRoute permission="create_paper"> <Dashboard /> </PermissionRoute>} />
 
-            <Route
-              path="/question-papers/:paperId"
-              element={<PermissionRoute permission="create_paper"> <Editor /> </PermissionRoute>} />
+          <Route
+            path="/question-papers/:paperId"
+            element={<PermissionRoute permission="create_paper"> <Editor /> </PermissionRoute>} />
 
-            <Route
-              path="/admit_and_scheme"
-              element={<PermissionRoute permission="admit_card"> <AdmitAndScheme /> </PermissionRoute>} />
+          <Route
+            path="/admit_and_scheme"
+            element={<PermissionRoute permission="admit_card"> <AdmitAndScheme /> </PermissionRoute>} />
 
-            <Route
-              path="/attendance"
-              element={<PermissionRoute permission="attendance"> <Attendance /> </PermissionRoute>} />
+          <Route
+            path="/attendance"
+            element={<PermissionRoute permission="attendance"> <Attendance /> </PermissionRoute>} />
 
-            <Route
-              path="/show_marks"
-              element={<PermissionRoute permission="show_marks"> <ShowMarks /> </PermissionRoute>} />
+          <Route
+            path="/show_marks"
+            element={<PermissionRoute permission="show_marks"> <ShowMarks /> </PermissionRoute>} />
 
-            <Route
-              path="/admission"
-              element={<PermissionRoute permission="admission"> <AddStudent /> </PermissionRoute>} />
+          <Route
+            path="/admission"
+            element={<PermissionRoute permission="admission"> <AddStudent /> </PermissionRoute>} />
 
-            <Route
-              path="/student_list"
-              element={<PermissionRoute permission="student_list"> <StudentsList /> </PermissionRoute>} />
+          <Route
+            path="/student_list"
+            element={<PermissionRoute permission="student_list"> <StudentsList /> </PermissionRoute>} />
 
-            <Route
-              path="/edit_student/:studentID"
-              element={<PermissionRoute permission="update_student"> <EditStudent /> </PermissionRoute>} />
+          <Route
+            path="/edit_student/:studentID"
+            element={<PermissionRoute permission="update_student"> <EditStudent /> </PermissionRoute>} />
 
-            <Route
-              path="/promote_and_tc"
-              element={<PermissionRoute permission="promote_student"> <PromoteAndTC /> </PermissionRoute>} />
+          <Route
+            path="/promote_and_tc"
+            element={<PermissionRoute permission="promote_student"> <PromoteAndTC /> </PermissionRoute>} />
 
-            <Route
-              path="/show_staff"
-              element={<PermissionRoute permission="show_staff"> <ShowStaff /> </PermissionRoute>} />
+          <Route
+            path="/show_staff"
+            element={<PermissionRoute permission="show_staff"> <ShowStaff /> </PermissionRoute>} />
 
-            <Route
-              path="/add_staff"
-              element={<PermissionRoute permission="add_staff"> <AddStaff /> </PermissionRoute>} />
+          <Route
+            path="/add_staff"
+            element={<PermissionRoute permission="add_staff"> <AddStaff /> </PermissionRoute>} />
 
-            <Route
-              path="/edit_staff/:staffId"
-              element={<PermissionRoute permission="update_staff"> <EditStaff /> </PermissionRoute>} />
+          <Route
+            path="/edit_staff/:staffId"
+            element={<PermissionRoute permission="update_staff"> <EditStaff /> </PermissionRoute>} />
 
-            <Route
-              path="/fees"
-              element={<PermissionRoute permission="view_fee_data"> <FeePage /> </PermissionRoute>} />
+          <Route
+            path="/fees"
+            element={<PermissionRoute permission="view_fee_data"> <FeePage /> </PermissionRoute>} />
 
-          </Route>
+          <Route
+            path="/setup"
+            element={<PermissionRoute permission="school_setup"> <SchoolSetup /> </PermissionRoute>} />
 
-          {/* Default */}
-          <Route path="/" element={<Navigate to="/student_list" replace />} />
 
-        </Routes>
+        </Route>
 
-      </BrowserRouter>
-    </AuthProvider>
+        {/* Default */}
+        <Route path="/" element={<Navigate to="/student_list" replace />} />
+
+      </Routes>
+
+    </BrowserRouter>
+  </AuthProvider>
 
 );

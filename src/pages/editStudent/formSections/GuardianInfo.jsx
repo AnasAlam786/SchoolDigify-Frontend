@@ -61,7 +61,7 @@ function GuardianInfo({
                                         id="FATHERS_AADHAR"
                                         name="FATHERS_AADHAR"
                                         value={form.FATHERS_AADHAR}
-                                        onChange={(e) => handleInputChange("FATHERS_AADHAR", e.target.value)}
+                                        onChange={(event) => handleAadharChange('FATHERS_AADHAR')(event)}
                                         placeholder="XXXX XXXX XXXX"
                                         maxLength={14}
                                         className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all duration-300"
@@ -143,7 +143,7 @@ function GuardianInfo({
                                         id="MOTHERS_AADHAR"
                                         name="MOTHERS_AADHAR"
                                         value={form.MOTHERS_AADHAR}
-                                        onChange={(e) => handleInputChange("MOTHERS_AADHAR", e.target.value)}
+                                        onChange={(event) => handleAadharChange('MOTHERS_AADHAR')(event)}
                                         placeholder="XXXX XXXX XXXX"
                                         maxLength={14}
                                         className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all duration-300"

@@ -84,7 +84,6 @@ export default function UpdatePromotionModal({ oldStudentSessionID, promotedStud
 
       const rollsStr = data.available_rolls.join(', ');
       setAvailableRollNo(`Available rolls: ${rollsStr} `);
-      setFormValues(v => ({ ...v, promotedRoll: data.next_roll || '' }));
 
     } catch (err) {
       console.error(err)

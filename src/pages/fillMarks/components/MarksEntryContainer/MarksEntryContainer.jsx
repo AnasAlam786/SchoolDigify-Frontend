@@ -4,7 +4,7 @@ import { MarksEntryFormDesktop, MarksEntryFormMobile } from "./MarksEntryForm"
 /* =========================
    PARENT COMPONENT
 ========================= */
-export default function MarksEntryContainer({ studentsMarksData }) {
+export default function MarksEntryContainer({ studentsMarksData, examId, subjectId }) {
     const [marks, setMarks] = useState({});
     const [loading, setLoading] = useState({});
 
@@ -33,6 +33,7 @@ export default function MarksEntryContainer({ studentsMarksData }) {
 
     const handleSubmit = async (student) => {
         const studentId = student.student_id;
+        console.log(student)
 
         setLoading((prev) => ({
             ...prev,
@@ -50,6 +51,9 @@ export default function MarksEntryContainer({ studentsMarksData }) {
                     },
                     body: JSON.stringify({
                         mark_id: student.mark_id,
+                        student_id: studentId,
+                        exam_id: examId,
+                        subject_id: subjectId,
                         score: marks[studentId],
                     }),
                 }

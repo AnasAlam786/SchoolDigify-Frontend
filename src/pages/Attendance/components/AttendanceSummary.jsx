@@ -1,6 +1,6 @@
 import React from 'react'
 
-function AttendanceSummary({ summary, date, setAbsenteesModal }) {
+function AttendanceSummary({ summary, date, onOpenStudentList }) {
   const total = summary.total || 0
   const present = summary.present || 0
   const absent = summary.absent || 0
@@ -62,7 +62,13 @@ function AttendanceSummary({ summary, date, setAbsenteesModal }) {
 
             <div className="flex-1 text-center md:text-left">
               <div className="text-gray-400 text-xs md:text-sm">Total Students</div>
-              <div className="text-white font-extrabold text-2xl md:text-3xl mt-1">{total}</div>
+              <button
+                type="button"
+                onClick={() => onOpenStudentList?.('all')}
+                className="text-white font-extrabold text-2xl md:text-3xl mt-1 cursor-pointer hover:text-emerald-300 transition-colors"
+              >
+                {total}
+              </button>
               <div className="mt-3 flex flex-wrap items-center gap-3 justify-center md:justify-start">
                 <div className="flex items-center gap-2">
                   <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
@@ -97,7 +103,13 @@ function AttendanceSummary({ summary, date, setAbsenteesModal }) {
                   </div>
                   <div>
                     <div className="text-gray-400 text-xs">Present</div>
-                    <div className="text-white font-bold text-lg">{present}</div>
+                    <button
+                      type="button"
+                      onClick={() => onOpenStudentList?.('present')}
+                      className="text-white font-bold text-lg cursor-pointer hover:text-green-300 transition-colors"
+                    >
+                      {present}
+                    </button>
                   </div>
                 </div>
                 <div className="w-1/3">
@@ -117,9 +129,13 @@ function AttendanceSummary({ summary, date, setAbsenteesModal }) {
                   </div>
                   <div>
                     <div className="text-gray-400 text-xs">Absent</div>
-                    <div className="text-white font-bold text-lg cursor-pointer text-red-400" onClick={() => setAbsenteesModal(true)}>
+                    <button
+                      type="button"
+                      onClick={() => onOpenStudentList?.('absent')}
+                      className="text-white font-bold text-lg cursor-pointer text-red-400 hover:text-red-300 transition-colors"
+                    >
                       {absent}
-                    </div>
+                    </button>
                   </div>
                 </div>
                 <div className="w-1/3">
@@ -132,16 +148,24 @@ function AttendanceSummary({ summary, date, setAbsenteesModal }) {
 
             {/* Micro stats */}
             <div className="flex gap-3 flex-wrap mt-2">
-              <div className="px-3 py-2 bg-white/5 rounded-full flex items-center gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => onOpenStudentList?.('half_day')}
+                className="px-3 py-2 bg-white/5 rounded-full flex items-center gap-2 text-xs hover:bg-white/10 transition-colors"
+              >
                 <span className="inline-block w-2 h-2 rounded-full bg-warning"></span>
                 <span className="text-gray-300">{halfDay}</span>
                 <span className="text-gray-400">Half Day</span>
-              </div>
-              <div className="px-3 py-2 bg-white/5 rounded-full flex items-center gap-2 text-xs">
+              </button>
+              <button
+                type="button"
+                onClick={() => onOpenStudentList?.('unmarked')}
+                className="px-3 py-2 bg-white/5 rounded-full flex items-center gap-2 text-xs hover:bg-white/10 transition-colors"
+              >
                 <span className="inline-block w-2 h-2 rounded-full bg-neutral"></span>
                 <span className="text-gray-300">{notMarked}</span>
                 <span className="text-gray-400">Not Marked</span>
-              </div>
+              </button>
             </div>
           </div>
         </div>

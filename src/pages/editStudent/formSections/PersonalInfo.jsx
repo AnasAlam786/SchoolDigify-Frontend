@@ -140,7 +140,7 @@ function PersonalInfo({
                             id="AADHAAR"
                             name="AADHAAR"
                             value={form.AADHAAR}
-                            onChange={handleAadharChange('AADHAAR')}
+                            onChange={(event) => handleAadharChange('AADHAAR')(event)}
                             placeholder="XXXX XXXX XXXX"
                             maxLength={14}
                             className="w-full px-4 py-3 sm:py-3.5 bg-gray-800/70 border border-gray-700 rounded-lg sm:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300"

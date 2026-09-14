@@ -8,6 +8,7 @@ function MarksEntryFormDesktop({
     onMarkChange,
     handleSubmit,
 }) {
+    console.log(studentsMarksData)
     return (
         <div className="hidden lg:block">
             <div className="glass-card rounded-2xl overflow-hidden border border-white/5">

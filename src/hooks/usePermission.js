@@ -52,6 +52,9 @@ const PERMISSIONS = Object.freeze({
     // Administration
     CHANGE_SESSION: "change_session",
     CONTROL_ACCESS: "control_access",
+
+    // Setup
+    SCHOOL_SETUP: "school_setup",
 });
 
 export default function usePermission() {

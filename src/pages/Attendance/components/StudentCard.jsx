@@ -75,11 +75,11 @@ function StudentCard({ student, selectedDate, MarkAttendance, onOpenCalendar }) 
           </button>
 
           {/* WhatsApp / Message Button */}
-          <button type="button"
+          {/* <button type="button"
             className="student-message-btn w-10 h-10 bg-green-600/90 hover:bg-green-500 
             text-white rounded-xl flex items-center justify-center shadow-lg transition-colors duration-200">
             <MessageCircle className="w-5 h-5 fill-white/10" strokeWidth={2} />
-          </button>
+          </button> */}
         </div>
       </div>
 

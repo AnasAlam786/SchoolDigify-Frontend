@@ -124,7 +124,7 @@ export default function Dashboard() {
   else if (visiblePapers.length === 0) { mainContent = <NoPaperStatus setCreateModalOpen={setCreateModalOpen} /> }
   else {
     mainContent = (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
         {visiblePapers.map((paper) => (
           <QuestionPaperCard
             key={paper.id}

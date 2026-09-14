@@ -1,5 +1,7 @@
 export default function FeeCard({ fee, isSelected, onToggle }) {
 
+  console.log(fee.dueDate, fee)
+
   const statusUpper = (fee.status || '').toUpperCase();
   const isPaid = statusUpper === 'PAID';
   const isDue = statusUpper === 'DUE';

@@ -162,15 +162,43 @@ function AddStudent() {
   };
 
   const handleAadharChange = (field) => (event) => {
-    const raw = event.target.value.replace(/\D/g, '').slice(0, 12);
-    const formatted = raw.replace(/(\d{4})(\d{1,4})?(\d{1,4})?/, (_, a, b, c) => {
-      let result = a;
-      if (b) result += `-${b}`;
-      if (c) result += `-${c}`;
-      return result;
-    });
-    setForm((state) => ({ ...state, [field]: formatted }));
+    const rawValue = event.target.value;
+
+    if (!rawValue || rawValue.trim() === '') {
+      setForm((prev) => ({ ...prev, [field]: '' }));
+      return;
+    }
+
+    // If the field contains asterisks, we are in masked mode
+    if (rawValue.includes('*')) {
+      const asteriskCount = (rawValue.match(/\*/g) || []).length;
+      const digits = rawValue.replace(/\D/g, '').slice(-4);
+
+      if (asteriskCount === 0 && digits.length === 0) {
+        setForm((prev) => ({ ...prev, [field]: '' }));
+        return;
+      }
+
+      // Reconstruct mask: max 8 stars formatted as `****-****`, plus last digits
+      const activeStars = Math.max(0, Math.min(asteriskCount, 8));
+      const starPart = activeStars > 4
+        ? `****-${'*'.repeat(activeStars - 4)}`
+        : '*'.repeat(activeStars);
+
+      const formatted = [starPart, digits].filter(Boolean).join('-');
+
+      setForm((prev) => ({ ...prev, [field]: formatted }));
+      return;
+    }
+
+    // Normal typing mode: extract up to 12 digits and insert hyphens every 4 digits
+    const digits = rawValue.replace(/\D/g, '').slice(0, 12);
+    const formatted = digits.match(/.{1,4}/g)?.join('-') || '';
+
+    setForm((prev) => ({ ...prev, [field]: formatted }));
   };
+
+
 
   const runValidation = () => {
     const newErrors = {};

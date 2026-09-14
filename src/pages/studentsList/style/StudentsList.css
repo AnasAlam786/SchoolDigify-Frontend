@@ -151,8 +151,121 @@ input:checked + .slider:before {
   border-color: #4361ee;
 }
 
+.roll-gap-warning-wrap {
+  margin-top: 16px;
+  width: 100%;
+}
+
+.roll-gap-warning-card {
+  border-radius: 16px;
+  border: 1px solid rgba(255, 185, 70, 0.55);
+  background: linear-gradient(135deg, rgba(80, 40, 20, 0.96), rgba(35, 32, 44, 0.98));
+  box-shadow: 0 12px 30px rgba(255, 166, 0, 0.12);
+  padding: 14px 16px;
+  color: #ffeedd;
+  transition: all 260ms ease;
+}
+
+.roll-gap-warning-card:hover {
+  box-shadow: 0 14px 34px rgba(255, 166, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.roll-gap-warning-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.roll-gap-warning-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.roll-gap-warning-icon {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #ffd9a0;
+  background: rgba(255, 166, 0, 0.14);
+  border: 1px solid rgba(255, 206, 143, 0.4);
+}
+
+.roll-gap-warning-title {
+  font-size: clamp(15px, 2vw, 17px);
+  font-weight: 700;
+  color: #fff4df;
+  letter-spacing: 0.02em;
+}
+
+.roll-gap-warning-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 222, 195, 0.45);
+  color: #ffeedd;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 240ms ease;
+}
+
+.roll-gap-warning-close:hover {
+  color: #fff;
+  background: rgba(255, 185, 70, 0.22);
+  transform: rotate(90deg);
+}
+
+.roll-gap-warning-body {
+  margin-top: 12px;
+}
+
+.roll-gap-warning-message-row {
+  padding: 8px 0;
+}
+
+.roll-gap-warning-message {
+  color: #ffeedd;
+  font-size: clamp(13px, 2vw, 15px);
+  line-height: 1.6;
+}
+
+.roll-gap-warning-class {
+  color: #ffd08a;
+  font-weight: 800;
+}
+
+.roll-gap-warning-numbers {
+  color: #fff;
+  font-weight: 800;
+  background: rgba(255, 166, 0, 0.16);
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+
 @media (max-width:480px) {
   .students-grid {
     grid-template-columns: 1fr;
   }
+
+  .roll-gap-warning-card {
+    padding: 12px 13px;
+  }
+
+  .roll-gap-warning-head {
+    align-items: flex-start;
+  }
+
+  .roll-gap-warning-title-wrap {
+    align-items: flex-start;
+  }
 }
+

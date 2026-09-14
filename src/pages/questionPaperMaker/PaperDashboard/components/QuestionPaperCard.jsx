@@ -3,11 +3,8 @@ import { apiGet, apiPost } from '../../../../api/api';
 import { useNavigate } from 'react-router-dom';
 
 export default memo(function QuestionPaperCard({
-  paper,
-  isMyPaper,
-  removePaperFromState,
-  menuOpenId,
-  setMenuOpenId,
+  paper,isMyPaper, removePaperFromState,
+  menuOpenId, setMenuOpenId,
 }) {
   const navigate = useNavigate();
   console.log(paper)
@@ -41,12 +38,14 @@ export default memo(function QuestionPaperCard({
       const response = await apiGet(
         `/api/question-paper-PDF/${paperId}?fontSize=${fontSize}`
       );
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Failed to fetch paper.');
+        console.log(data)
+        throw new Error(data.error || 'Failed to fetch paper.');
       }
 
-      const data = await response.json();
+      
       const paperHTML = data.html;
 
       const newWindow = window.open('', '_blank');

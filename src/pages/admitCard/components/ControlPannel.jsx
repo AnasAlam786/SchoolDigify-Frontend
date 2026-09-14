@@ -43,13 +43,13 @@ function ControlPannel({
             id="classSelect"
             value={selectedClass}
             onChange={(event) => setSelectedClass(event.target.value)}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
+            className="w-full rounded-lg border border-gray-600 bg-gray-800/50  text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
           >
-            <option value="" hidden>
+            <option value="" hidden className="bg-[#1b1a1b] text-gray-400">
               {isClassesLoading ? 'Loading classes...' : 'Select Class'}
             </option>
             {classes.map((item) => (
-              <option key={item.id} value={item.id}>
+              <option key={item.id} value={item.id} className="bg-[#1b1a1b] text-white">
                 {item.class_name}
               </option>
             ))}

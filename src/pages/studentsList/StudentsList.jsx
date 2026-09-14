@@ -14,6 +14,7 @@ import { DEFAULT_FILTERS, matchesSearch, matchesFilters, sortStudents } from "./
 import FeeDrawer from "../utils/feeDrawer/FeeDrawer";
 import FeeSessionSetupModal from "../utils/feeSessionSetup/FeeSessionSetupModal";
 import TransactionModal from '../utils/feeTransactionsModal/TransactionModal';
+import RollNumberGapWarning from "./components/RollNumberGapWarning";
 
 import usePermission from "../../hooks/usePermission";
 
@@ -176,7 +177,12 @@ export default function StudentsList() {
 
 
 
-            {stats && hasPermission(PERMISSIONS.STUDENTS_STATS) && <StudentStatsSection stats={stats} />}
+            {stats && hasPermission(PERMISSIONS.STUDENTS_STATS) && (
+                <>
+                    <StudentStatsSection stats={stats} />
+                    <RollNumberGapWarning students={students} />
+                </>
+            )}
 
             <section className="mt-3">
                 {mainContent}

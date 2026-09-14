@@ -4,9 +4,10 @@ import Sidebar from './components/SideBar/SideBar.jsx';
 import { Outlet } from 'react-router-dom';
 import usePermission from './hooks/usePermission.js';
 // import routesData
-import { GraduationCap, Receipt, UserPlus,
+import {
+  GraduationCap, Receipt, UserPlus,
   TrendingUp, UserCheck, CalendarDays, FileEdit,
-  BarChart3, Contact, UserCog, FileText, Ticket
+  BarChart3, Contact, UserCog, FileText, Ticket, Settings
 } from "lucide-react";
 
 function Layout() {
@@ -120,7 +121,19 @@ function Layout() {
           permissionName: PERMISSIONS.ADMIT_CARD
         }
       ]
-    }
+    },
+    // {
+    //   title: "Setup",
+    //   items: [
+    //     {
+    //       label: "Setup",
+    //       route: "/setup",
+    //       icon: Settings,
+    //       color: "text-slate-500",
+    //       permissionName: PERMISSIONS.SCHOOL_SETUP
+    //     }
+    //   ]
+    // }
   ];
 
   return (

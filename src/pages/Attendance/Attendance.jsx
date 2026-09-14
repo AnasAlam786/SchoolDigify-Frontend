@@ -9,7 +9,7 @@ import StudentCard from './components/StudentCard'
 import AttendanceCalendar from './Modals/AttendanceCalendar'
 import MarkHoliday from './Modals/MarkHoliday'
 import ViewHoliday from './Modals/ViewHoliday'
-import AbsentStudentsList from './Modals/AbsentStudentsList'
+import StudentAttendanceList from './Modals/StudentAttendanceList'
 
 import { InitialState, SkeletonLoader, HolidayState } from './components/PageStatus'
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus"
@@ -34,7 +34,8 @@ function Attendance() {
   const [showMarkHolidayModal, setShowMarkHolidayModal] = useState(false)
   const [showViewHolidayModal, setShowViewHolidayModal] = useState(false)
   const [showCalendarModal, setShowCalendarModal] = useState(false)
-  const [showAbsenteesModal, setAbsenteesModal] = useState(false)
+  const [showStudentAttendanceModal, setShowStudentAttendanceModal] = useState(false)
+  const [attendanceCategory, setAttendanceCategory] = useState('all')
 
   const [selectedStudent, setSelectedStudent] = useState(null)
 
@@ -149,6 +150,13 @@ function Attendance() {
     setShowCalendarModal(true)
   }, [])
 
+  const selectedClassName = classes.find(cls => String(cls.id) === String(selectedClass))?.class_name || ''
+
+  const handleOpenCategoryModal = useCallback((category = 'all') => {
+    setAttendanceCategory(category)
+    setShowStudentAttendanceModal(true)
+  }, [])
+
   let mainPageState;
 
   if (loadingStudentsData) {
@@ -164,7 +172,7 @@ function Attendance() {
   } else {
     mainPageState = (
       <>
-        <AttendanceSummary summary={summary} date={selectedDate} setAbsenteesModal={setAbsenteesModal} />
+        <AttendanceSummary summary={summary} date={selectedDate} onOpenStudentList={handleOpenCategoryModal} />
 
         <section className="mb-10">
           <div className="grid gap-4 justify-center [grid-template-columns:repeat(auto-fit,minmax(0,420px))] max-[480px]:grid-cols-1">
@@ -227,11 +235,17 @@ function Attendance() {
         />
       )}
 
-      {showAbsenteesModal && (
-        <AbsentStudentsList
-          classID={selectedClass}
+      {showStudentAttendanceModal && (
+        <StudentAttendanceList
+          className={selectedClassName}
           date={selectedDate}
-          onClose={() => setAbsenteesModal(false)}
+          studentData={studentsData || []}
+          summary={summary}
+          category={attendanceCategory}
+          onClose={() => {
+            setShowStudentAttendanceModal(false)
+            setAttendanceCategory('all')
+          }}
         />
       )}
     </div>

@@ -143,10 +143,12 @@ function PersonalInfo({
                             id="AADHAAR"
                             name="AADHAAR"
                             value={form.AADHAAR}
-                            onChange={handleAadharChange('AADHAAR')}
-                            placeholder="XXXX XXXX XXXX"
+                            onChange={(event) => handleAadharChange('AADHAAR')(event)}
+                            placeholder="1111-2222-3333"
                             maxLength={14}
-                            className="w-full px-4 py-3 sm:py-3.5 bg-gray-800/70 border border-gray-700 rounded-lg sm:rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300"
+                            className="w-full px-4 py-3 sm:py-3.5 bg-gray-800/70 border border-gray-700 
+                                rounded-lg sm:rounded-xl text-white placeholder-gray-500 focus:outline-none 
+                                focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all duration-300"
                         />
                         <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
                             <i className="fas fa-id-card"></i>

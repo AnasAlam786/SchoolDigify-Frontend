@@ -18,6 +18,17 @@ export async function apiPost(path, body) {
     });
 }
 
+export async function apiPut(path, body) {
+    return fetch(`${API_BASE_URL}${path}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(body),
+    });
+}
+
 export async function apiPostFormData(path, formData) {
   return fetch(`${API_BASE_URL}${path}`, {
     method: "POST",

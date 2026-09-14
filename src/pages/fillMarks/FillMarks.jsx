@@ -140,7 +140,13 @@ function FillMarks() {
     else if (StudentsData === null) { mainPageStates = <InitialState />; }
     else if (StudentsData.length === 0) { mainPageStates = <NoStudentsState />; }
     else {
-        mainPageStates = <MarksEntryContainer studentsMarksData={StudentsData} />
+        mainPageStates = (
+            <MarksEntryContainer
+                studentsMarksData={StudentsData}
+                examId={filters.examId}
+                subjectId={filters.subjectId}
+            />
+        );
     }
 
 

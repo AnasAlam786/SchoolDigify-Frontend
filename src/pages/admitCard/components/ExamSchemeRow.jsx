@@ -85,7 +85,7 @@ function ExamSchemeRow({
               <input
                 type="text"
                 value={row.examName}
-                onChange={(e) => handleChange('index', 'examName', e.target.value )}
+                onChange={(e) => handleChange(index, 'examName', e.target.value )}
                 className="exam-name w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-2.5 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200"
                 placeholder="e.g. English"
               />
