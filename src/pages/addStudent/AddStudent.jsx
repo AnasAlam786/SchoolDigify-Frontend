@@ -350,10 +350,6 @@ function AddStudent() {
   };
 
 
-  const getClassName = (id) =>
-    classes.find(c => c.id === Number(id))?.class_name ?? "";
-
-
   return (
     <div className="max-w-6xl mx-auto sm:px-6 py-4">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#181818] via-[#141414] to-[#0f0f0f] border border-gray-800 shadow-xl">
@@ -440,7 +436,8 @@ function AddStudent() {
                   type="submit"
                   id="FormSubmit"
                   disabled={reviewSubmitBtn}
-                  className={`w-full md:w-full px-6 py-2.5 rounded-lg text-white font-semibold text-sm transition shadow-md flex items-center justify-center gap-2 ${reviewSubmitBtn
+                  className={`w-full md:w-full px-6 py-2.5 rounded-lg text-white font-semibold text-sm transition shadow-md flex items-center justify-center gap-2 
+                    ${reviewSubmitBtn
                     ? "bg-green-500 cursor-not-allowed opacity-80"
                     : "bg-green-600 hover:bg-green-500"
                     }`}
@@ -454,9 +451,7 @@ function AddStudent() {
                     >
                       <circle
                         className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
+                        cx="12" cy="12" r="10"
                         stroke="currentColor"
                         strokeWidth="4"
                       />

@@ -41,8 +41,7 @@ const defaultFormState = {
     role_name: "",
     assigned_classes_id: [],
     assigned_permissions_id: [],
-    imagePreview: "",
-    imageFile: null,
+    image: null,
 };
 
 function EditStaff() {
@@ -54,7 +53,7 @@ function EditStaff() {
     const [formData, setFormData] = useState(defaultFormState);
     const [allRoles, setRoles] = useState([]);
     const [allClasses, setClasses] = useState([]);
-    const [allPermissions, setPermissions] = useState([]);    
+    const [allPermissions, setPermissions] = useState([]);
 
     // Single state for all field errors: { [fieldName]: "Error Message" }
     const [fieldErrors, setFieldErrors] = useState({});
@@ -62,6 +61,7 @@ function EditStaff() {
     const [isPermissionsLoading, setPermissionsLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [permissionModalOpen, setPermissionModalOpen] = useState(false);
+    const [imageStatus, setImageStatus] = useState("unchanged");
 
     // Fetch initial setup data
     const loadStaffDetails = useCallback(async () => {
@@ -81,7 +81,7 @@ function EditStaff() {
             setRoles(data.roles || []);
             setPermissions(data.permissions || []);
             setClasses(data.classes || []);
-            handleFieldChange("staff_id", staffId)
+            setImageStatus("unchanged");
         } catch (error) {
             setStaffLoadingError(error.message || "An unexpected error occurred.");
         } finally {
@@ -127,19 +127,18 @@ function EditStaff() {
 
     // Image setter for ImageUploader component
     const handleImageChange = (imageData) => {
-        if (imageData instanceof File) {
-            const previewUrl = URL.createObjectURL(imageData);
+        if (imageData instanceof Blob) {
             setFormData((prev) => ({
                 ...prev,
-                imageFile: imageData,
-                imagePreview: previewUrl,
+                image: imageData,
             }));
+            setImageStatus("changed");
         } else if (typeof imageData === "string") {
             setFormData((prev) => ({
                 ...prev,
-                imagePreview: imageData,
-                imageFile: null,
+                image: null,
             }));
+            setImageStatus(imageData ? "unchanged" : "removed");
         }
     };
 
@@ -181,55 +180,100 @@ function EditStaff() {
         return { valid: Object.keys(errors).length === 0, errors };
     };
 
-    // Submit Staff Payload to API
+    const scrollToTop = () => {
+        document.querySelector(".main-content")?.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    };
+
     const handleSaveClick = async () => {
         const { valid } = validateForm();
+
         if (!valid) {
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            scrollToTop();
             return;
         }
 
         setIsSubmitting(true);
+
         try {
-            const mergedData = { ...defaultFormState, ...formData, };
+            const mergedData = {
+                ...defaultFormState, ...formData,
+            };
+
             const payload = new FormData();
+            payload.append("image_status", imageStatus);
 
-            Object.keys(mergedData).forEach((key) => {
-                const value = mergedData[key];
-
-                if (key === "imageFile" && value) {
-                    payload.append("image", value);
-                } else if (key === "signFile" && value) {
-                    payload.append("sign", value);
-                } else if (Array.isArray(value)) {
-                    payload.append(key, JSON.stringify(value));
-                } else if (key !== "imageFile" && key !== "signFile") {
-                    payload.append(key, value ?? "");
+            Object.entries(mergedData).forEach(([key, value]) => {
+                if (value === undefined || value === null) {
+                    return;
                 }
+
+                if (Array.isArray(value)) {
+                    payload.append(key, JSON.stringify(value));
+                    return;
+                }
+
+                if (value instanceof File) {
+                    payload.append(key, value);
+                    return;
+                }
+
+                payload.append(key, String(value));
             });
 
-            const response = await apiPostFormData("/api/update_staff_api", payload);
+            const response = await apiPostFormData(
+                "/api/update_staff_api", payload
+            );
+
             const resData = await response.json().catch(() => ({}));
 
             if (!response.ok) {
-                if (resData.errors && typeof resData.errors === "object" && !Array.isArray(resData.errors)) {
+                let message;
+
+                if (
+                    resData.errors &&
+                    typeof resData.errors === "object" &&
+                    !Array.isArray(resData.errors)
+                ) {
                     setFieldErrors(resData.errors);
+                    message = 
+                        resData.error || resData.message || "Please fix the errors.";
                 } else {
-                    const generalMsg =
+                    message =
                         resData.error || resData.message || "Failed to save staff record.";
-                    setFieldErrors({ api: generalMsg });
+
+                    setFieldErrors({ api: message, });
                 }
 
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                showAlert(400, message);
+
+                // Wait until React has processed the error state
+                requestAnimationFrame(() => {
+                    scrollToTop();
+                });
+
                 return { ok: false };
             }
 
             showAlert(200, "Staff Updated Successfully!");
+            return { ok: true };
+
         } catch (error) {
             console.error("Submit Staff Error:", error);
-            setFieldErrors({ api: error.message || "An error occurred while saving." });
-            window.scrollTo({ top: 0, behavior: "smooth" });
+
+            const message =
+                error?.message || "An error occurred while saving.";
+
+            setFieldErrors({ api: message, });
+            showAlert(400, message);
+            requestAnimationFrame(() => {
+                scrollToTop();
+            });
+
             return { ok: false };
+
         } finally {
             setIsSubmitting(false);
         }
@@ -320,7 +364,15 @@ function EditStaff() {
 
                         <div className="max-w-lg mx-auto">
                             <ImageUploader
-                                image={formData.imagePreview}
+                                image={
+                                    formData.image instanceof Blob
+                                        ? URL.createObjectURL(formData.image)
+                                        : typeof formData.image === "string" && formData.image.startsWith("data:image")
+                                            ? formData.image
+                                            : formData.image
+                                                ? `https://lh3.googleusercontent.com/d/${formData.image}`
+                                                : ""
+                                }
                                 setImage={handleImageChange}
                             />
                         </div>
@@ -328,7 +380,7 @@ function EditStaff() {
                 </div>
             </div>
 
-            
+
 
             {/* Dynamic Permission Modal */}
             {permissionModalOpen && (

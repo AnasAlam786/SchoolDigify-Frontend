@@ -17,110 +17,153 @@ function NoStaff({onResetFilters}) {
   )
 }
 
-// StaffPageSkeleton.jsx
-
-const StatsCardSkeleton = () => (
-  <div className="staff-card p-5 rounded-xl bg-gray-900 border border-gray-800">
-    <div className="flex justify-between items-center">
-      <div className="space-y-3 flex-1">
-        <div className="h-3 w-24 rounded bg-gray-700 animate-pulse"></div>
-        <div className="h-8 w-14 rounded bg-gray-700 animate-pulse"></div>
-      </div>
-
-      <div className="w-14 h-14 rounded-xl bg-gray-700 animate-pulse"></div>
-    </div>
-  </div>
-);
-
-const TableRowSkeleton = () => (
-  <tr className="border-b border-gray-800">
-    <td className="py-5">
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-gray-700 animate-pulse"></div>
-
-        <div className="space-y-2">
-          <div className="h-4 w-36 rounded bg-gray-700 animate-pulse"></div>
-          <div className="h-3 w-52 rounded bg-gray-800 animate-pulse"></div>
-        </div>
-      </div>
-    </td>
-
-    <td><div className="h-7 w-20 rounded-full bg-gray-700 animate-pulse"></div></td>
-    <td><div className="h-4 w-24 rounded bg-gray-700 animate-pulse"></div></td>
-    <td><div className="h-4 w-28 rounded bg-gray-700 animate-pulse"></div></td>
-    <td><div className="h-4 w-14 rounded bg-gray-700 animate-pulse"></div></td>
-    <td><div className="h-4 w-16 rounded bg-gray-700 animate-pulse"></div></td>
-
-    <td>
-      <div className="flex justify-end gap-2">
-        <div className="w-10 h-10 rounded-lg bg-gray-700 animate-pulse"></div>
-        <div className="w-10 h-10 rounded-lg bg-gray-700 animate-pulse"></div>
-      </div>
-    </td>
-  </tr>
-);
-
-const MobileCardSkeleton = () => (
-  <div className="rounded-xl border border-gray-800 bg-gray-900 p-4 mb-4">
-    <div className="flex items-center gap-3">
-      <div className="w-12 h-12 rounded-full bg-gray-700 animate-pulse"></div>
-
-      <div className="flex-1 space-y-2">
-        <div className="h-4 w-32 rounded bg-gray-700 animate-pulse"></div>
-        <div className="h-3 w-44 rounded bg-gray-800 animate-pulse"></div>
-      </div>
-    </div>
-
-    <div className="grid grid-cols-2 gap-4 mt-5">
-      {[...Array(4)].map((_, i) => (
-        <div key={i}>
-          <div className="h-3 w-16 rounded bg-gray-800 animate-pulse mb-2"></div>
-          <div className="h-4 w-20 rounded bg-gray-700 animate-pulse"></div>
-        </div>
-      ))}
-    </div>
-
-    <div className="flex gap-2 mt-5">
-      <div className="flex-1 h-10 rounded-lg bg-gray-700 animate-pulse"></div>
-      <div className="flex-1 h-10 rounded-lg bg-gray-700 animate-pulse"></div>
-    </div>
-  </div>
-);
 
 function SkeletonLoader() {
   return (
-    <div className="animate-pulse">
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {[...Array(4)].map((_, i) => (
-          <StatsCardSkeleton key={i} />
-        ))}
-      </div>
-
-      {/* Desktop */}
-      <div className="hidden md:block rounded-xl border border-gray-800 bg-gray-900 overflow-hidden">
-        <div className="p-6 border-b border-gray-800">
-          <div className="h-6 w-40 rounded bg-gray-700"></div>
+    <div className="w-full space-y-6 md:space-y-8 animate-pulse">
+      
+      {/* 1. Stats Grid Skeleton (Matching your 4-column metrics layout with color-coded hints) */}
+      <div className="stats-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        
+        {/* Total Staff Card */}
+        <div className="staff-card p-4 md:p-5 bg-gray-900/60 border border-gray-800/80 rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-3.5 w-20 bg-gray-800/90 rounded-md"></div>
+              <div className="h-7 w-10 bg-gray-800 rounded-md mt-1"></div>
+            </div>
+            <div className="bg-blue-500/10 p-3 rounded-xl w-11 h-11 md:w-12 md:h-12 border border-blue-500/20"></div>
+          </div>
         </div>
 
-        <table className="w-full">
-          <tbody>
-            {[...Array(8)].map((_, i) => (
-              <TableRowSkeleton key={i} />
-            ))}
-          </tbody>
-        </table>
+        {/* Teachers Card */}
+        <div className="staff-card p-4 md:p-5 bg-gray-900/60 border border-gray-800/80 rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-3.5 w-16 bg-gray-800/90 rounded-md"></div>
+              <div className="h-7 w-10 bg-gray-800 rounded-md mt-1"></div>
+            </div>
+            <div className="bg-purple-500/10 p-3 rounded-xl w-11 h-11 md:w-12 md:h-12 border border-purple-500/20"></div>
+          </div>
+        </div>
+
+        {/* Administrators Card */}
+        <div className="staff-card p-4 md:p-5 bg-gray-900/60 border border-gray-800/80 rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-3.5 w-24 bg-gray-800/90 rounded-md"></div>
+              <div className="h-7 w-6 bg-gray-800 rounded-md mt-1"></div>
+            </div>
+            <div className="bg-emerald-500/10 p-3 rounded-xl w-11 h-11 md:w-12 md:h-12 border border-emerald-500/20"></div>
+          </div>
+        </div>
+
+        {/* Support Staff Card */}
+        <div className="staff-card p-4 md:p-5 bg-gray-900/60 border border-gray-800/80 rounded-2xl shadow-lg relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-3.5 w-22 bg-gray-800/90 rounded-md"></div>
+              <div className="h-7 w-6 bg-gray-800 rounded-md mt-1"></div>
+            </div>
+            <div className="bg-amber-500/10 p-3 rounded-xl w-11 h-11 md:w-12 md:h-12 border border-amber-500/20"></div>
+          </div>
+        </div>
+
       </div>
 
-      {/* Mobile */}
-      <div className="md:hidden">
-        {[...Array(6)].map((_, i) => (
-          <MobileCardSkeleton key={i} />
-        ))}
-      </div>
+      {/* 2. Main Content Container Skeleton */}
+      <div className="staff-card p-4 md:p-6 bg-gray-900/60 border border-gray-800/80 rounded-2xl shadow-xl">
+        
+        {/* Title Header Skeleton */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+          <div className="h-6 w-32 bg-gray-800 rounded-md"></div>
+        </div>
+        
+        {/* Tabs Bar Skeleton */}
+        <div className="flex gap-4 mb-6 border-b border-gray-800/80 pb-3">
+          <div className="h-8 w-28 bg-gray-800 rounded-lg"></div>
+          <div className="h-8 w-28 bg-gray-800/50 rounded-lg"></div>
+        </div>
 
+        {/* Desktop Table View Skeleton */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-800/80">
+                <th className="pb-4 text-left"><div className="h-4 w-32 bg-gray-800 rounded-md"></div></th>
+                <th className="pb-4 text-left"><div className="h-4 w-16 bg-gray-800 rounded-md"></div></th>
+                <th className="pb-4 text-left"><div className="h-4 w-16 bg-gray-800 rounded-md"></div></th>
+                <th className="pb-4 text-left"><div className="h-4 w-16 bg-gray-800 rounded-md"></div></th>
+                <th className="pb-4 text-right"><div className="h-4 w-16 bg-gray-800 rounded-md ml-auto"></div></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-800/40">
+              {[...Array(8)].map((_, i) => (
+                <tr key={i} className="group">
+                  <td className="py-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-gray-800 border border-gray-700/50"></div>
+                      <div className="space-y-2">
+                        <div className="h-4 w-28 bg-gray-800 rounded-md"></div>
+                        <div className="h-3 w-40 bg-gray-800/60 rounded-md"></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="h-6 w-20 bg-gray-800/80 rounded-full"></div>
+                  </td>
+                  <td className="py-4">
+                    <div className="h-4 w-10 bg-gray-800 rounded-md"></div>
+                  </td>
+                  <td className="py-4">
+                    <div className="h-4 w-12 bg-gray-800 rounded-md"></div>
+                  </td>
+                  <td className="py-4 text-right">
+                    <div className="h-9 w-9 bg-gray-800 rounded-xl ml-auto"></div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View Skeleton (Mirrors your mobile stack layout) */}
+        <div className="md:hidden space-y-4">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="bg-gray-800/30 border border-gray-800/80 p-4 rounded-xl space-y-4">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-gray-800"></div>
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-28 bg-gray-800 rounded-md"></div>
+                    <div className="h-3 w-36 bg-gray-800/60 rounded-md"></div>
+                  </div>
+                </div>
+                <div className="h-5 w-16 bg-gray-800 rounded-full"></div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 pt-3 border-t border-gray-800/60">
+                <div className="space-y-1">
+                  <div className="h-3 w-12 bg-gray-800/70 rounded"></div>
+                  <div className="h-4 w-8 bg-gray-800 rounded"></div>
+                </div>
+                <div className="space-y-1">
+                  <div className="h-3 w-16 bg-gray-800/70 rounded"></div>
+                  <div className="h-4 w-12 bg-gray-800 rounded"></div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end">
+                <div className="h-9 w-24 bg-gray-800 rounded-lg"></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
     </div>
   );
 }
+
+
 export { SkeletonLoader, NoStaff }

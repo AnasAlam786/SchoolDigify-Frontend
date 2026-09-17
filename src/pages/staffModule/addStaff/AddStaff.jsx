@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import "../style/StaffForm.css";
 import { apiGet, apiPostFormData } from "../../../api/api.js";
 
@@ -52,6 +52,7 @@ const defaultFormState = {
 export default function AddStaff() {
   const [formData, setFormData] = useState(defaultFormState);
 
+
   // Loading state for initial data fetch
   const [isLoading, setIsLoading] = useState(true);
   const [staffLoadingError, setStaffLoadingError] = useState("");
@@ -80,7 +81,7 @@ export default function AddStaff() {
       setIsLoading(true);
       setStaffLoadingError(""); // Reset error state on retry
       try {
-        const response = await apiGet("/api/add_staff");
+        const response = await apiGet("/api/staff_form_metadata");
         const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
@@ -134,20 +135,22 @@ export default function AddStaff() {
     }
   };
 
-  // Image setter for ImageUploader component
   const handleImageChange = (imageData) => {
-    if (imageData instanceof File) {
+    if (imageData instanceof Blob) {
       const previewUrl = URL.createObjectURL(imageData);
-      setFormData((prev) => ({
-        ...prev,
+      setFormData((current) => ({
+        ...current,
         imageFile: imageData,
         imagePreview: previewUrl,
       }));
-    } else if (typeof imageData === "string") {
-      setFormData((prev) => ({
-        ...prev,
-        imagePreview: imageData,
+      return;
+    }
+
+    if (typeof imageData === "string") {
+      setFormData((current) => ({
+        ...current,
         imageFile: null,
+        imagePreview: imageData,
       }));
     }
   };
@@ -190,11 +193,18 @@ export default function AddStaff() {
     return { valid: Object.keys(errors).length === 0, errors };
   };
 
+  const scrollToTop = () => {
+    document.querySelector(".main-content")?.scrollTo({
+      top: 0, behavior: "smooth",
+    });
+  };
+
+
   // Triggered on header save button
   const handleSaveClick = () => {
     const { valid } = validateForm();
     if (!valid) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      scrollToTop()
       return;
     }
 
@@ -204,13 +214,13 @@ export default function AddStaff() {
       selectedPermissions: selectedPermissions,
     });
 
-
     setVerificationOpen(true);
   };
 
-  // Submit Staff Payload to API (Standardized FormData)
+
   const submitStaff = async () => {
     setIsSubmitting(true);
+
     try {
       const mergedData = { ...defaultFormState, ...formData };
       const payload = new FormData();
@@ -218,50 +228,56 @@ export default function AddStaff() {
       Object.keys(mergedData).forEach((key) => {
         const value = mergedData[key];
 
+        // Skip null or undefined values
+        if (value === null || value === undefined) return;
+
         // Handle Files
         if (key === "imageFile" && value) {
           payload.append("image", value);
-        } else if (key === "signFile" && value) {
-          payload.append("sign", value);
         }
-        // Handle JSON Arrays (Permissions, Classes, etc.)
+        // Handle JSON Arrays (like permissions or classes)
         else if (Array.isArray(value)) {
           payload.append(key, JSON.stringify(value));
         }
-        // Handle Regular Text/Number Inputs
-        else if (key !== "imageFile" && key !== "signFile") {
-          payload.append(key, value ?? "");
+        // Handle Standard Fields (strings, numbers, booleans)
+        else {
+          payload.append(key, value);
         }
       });
 
-      // Send payload. Do NOT set Content-Type header manually—
-      // fetch/axios handles multipart boundaries automatically when given a FormData object.
       const response = await apiPostFormData("/api/add_staff", payload);
       const resData = await response.json().catch(() => ({}));
 
-      console.log(resData)
-
       if (!response.ok) {
-        if (resData.errors && typeof resData.errors === "object" && !Array.isArray(resData.errors)) {
+        if (
+          resData.errors && typeof resData.errors === "object" && !Array.isArray(resData.errors)
+        ) {
           setFieldErrors(resData.errors);
         } else {
-          // General single error message string
           const generalMsg =
-            resData.error || resData.message || "Failed to save staff record.";
+            resData.error || resData.message ||
+            "Failed to save staff record.";
+
           setFieldErrors({ api: generalMsg });
         }
 
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return { ok: false };
+        scrollToTop();
+      } else {
+        // Handle success case (e.g., redirect or show success message)
+        return { ok: true, data: resData };
       }
 
-      return { ok: true, data: resData };
     } catch (error) {
       console.error("Submit Staff Error:", error);
-      showAlert(500, error.message);
-      setFieldErrors({ api: error.message || "An error occurred while saving." });
-      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      const message =
+        error?.message || "An error occurred while saving.";
+
+      showAlert(500, message);
+      setFieldErrors({ api: message });
+      scrollToTop();
       return { ok: false };
+
     } finally {
       setIsSubmitting(false);
     }

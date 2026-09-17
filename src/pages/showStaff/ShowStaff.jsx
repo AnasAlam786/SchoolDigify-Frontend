@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import Header from "./components/Header";
 import ControlPanel from "./components/ControlPanel";
@@ -11,8 +10,6 @@ import { apiGet } from "../../api/api";
 import { SkeletonLoader } from "./components/PageStatus";
 
 function ShowStaff () {
-  const navigate = useNavigate();
-
   const [teachers, setTeachers] = useState([]);
 
   const [stats, setStats] = useState({
@@ -56,6 +53,18 @@ function ShowStaff () {
     fetchStaff();
   }, []);
 
+  const handleDeleteSuccess = (staffId) => {
+    setTeachers(currentTeachers => currentTeachers.map(teacher => (
+      teacher.id === staffId ? { ...teacher, status: 'deleted' } : teacher
+    )));
+  };
+
+  const handleRestoreSuccess = (staffId) => {
+    setTeachers(currentTeachers => currentTeachers.map(teacher => (
+      teacher.id === staffId ? { ...teacher, status: 'active' } : teacher
+    )));
+  };
+
   const filteredTeachers = useMemo(() => {
     const search = searchValue.toLowerCase();
 
@@ -82,12 +91,7 @@ function ShowStaff () {
     setRoleFilter("");
   };
 
-  const handleDelete = (teacher) => {
-    console.log("Delete:", teacher);
 
-    // Your delete API
-    // deleteStaff(teacher.TeachersLogin.id)
-  };
 
   let mainContent = null;
   if (loading) {
@@ -108,6 +112,8 @@ function ShowStaff () {
         teachers={filteredTeachers}
         totalClasses={stats.total_classes}
         onResetFilters={resetFilters}
+        onDeleteSuccess={handleDeleteSuccess}
+        onRestoreSuccess={handleRestoreSuccess}
       />
     </>
     )
