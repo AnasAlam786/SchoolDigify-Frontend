@@ -3,6 +3,7 @@ import ExamSchemeRow from './ExamSchemeRow.jsx';
 
 function ControlPannel({
   classes,
+  classError,
   isClassesLoading,
 
   fetchHTMLPreview,
@@ -11,8 +12,9 @@ function ControlPannel({
 }) {
 
   const [selectedClass, setSelectedClass] = useState("");
-  const [exam, setExam] = useState("");
-  const [year, setYear] = useState("");
+  const [admitHeading, setAdmitHeading] = useState("");
+  const [schemeHeading, setSchemeHeading] = useState("");
+
   const [outputType, setOutputType] = useState('both');
   const [examScheme, setExamScheme] = useState(() => {
     try {
@@ -34,55 +36,69 @@ function ControlPannel({
 
 
 
+
   return (
     <div className="bg-[#1A1A1A] rounded-xl shadow-2xl p-4 sm:p-6 mb-6 border border-gray-700">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div>
           <label htmlFor="classSelect" className="block text-sm font-medium text-gray-300 mb-2">Select Class</label>
-          <select
-            id="classSelect"
-            value={selectedClass}
-            onChange={(event) => setSelectedClass(event.target.value)}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800/50  text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
-          >
-            <option value="" hidden className="bg-[#1b1a1b] text-gray-400">
-              {isClassesLoading ? 'Loading classes...' : 'Select Class'}
-            </option>
-            {classes.map((item) => (
-              <option key={item.id} value={item.id} className="bg-[#1b1a1b] text-white">
-                {item.class_name}
+          <div>
+            <select
+              id="classSelect"
+              value={selectedClass}
+              onChange={(event) => setSelectedClass(event.target.value)}
+              className={`w-full rounded-lg bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:outline-none transition-all duration-200 backdrop-blur-sm 
+                ${classError
+                  ? 'border border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30'
+                  : 'border border-gray-600 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                }`}
+            >
+              <option value="" hidden className="bg-[#1b1a1b] text-gray-400">
+                {isClassesLoading ? 'Loading classes...' : 'Select Class'}
               </option>
-            ))}
-          </select>
+
+              {classes.map((item) => (
+                <option
+                  key={item.id}
+                  value={item.id}
+                  className="bg-[#1b1a1b] text-white"
+                >
+                  {item.class_name}
+                </option>
+              ))}
+            </select>
+          </div>
           <p
-            className={`mt-2 text-xs ${HTMLFetchError ? "text-red-400" : "text-gray-400"
+            className={`mt-2 text-xs ${classError
+                ? "text-red-400 animate-pulse"
+                : "text-gray-400"
               }`}
           >
-            {HTMLFetchError
-              ? HTMLFetchError
+            {classError
+              ? classError
               : 'Select a class and click "Generate Preview"'}
           </p>
         </div>
 
         <div>
-          <label htmlFor="examInput" className="block text-sm font-medium text-gray-300 mb-2">Exam</label>
+          <label htmlFor="admitHeading" className="block text-sm font-medium text-gray-300 mb-2">Admit Heading</label>
           <input
-            id="examInput"
-            value={exam}
-            onChange={(event) => setExam(event.target.value)}
+            id="admitHeading"
+            value={admitHeading}
+            onChange={(event) => setAdmitHeading(event.target.value)}
             className="w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
-            placeholder="e.g. Half Yearly"
+            placeholder="e.g. Half Yearly 2026"
           />
         </div>
 
         <div>
-          <label htmlFor="yearInput" className="block text-sm font-medium text-gray-300 mb-2">Year</label>
+          <label htmlFor="Scheme Heading" className="block text-sm font-medium text-gray-300 mb-2">Scheme Heading</label>
           <input
-            id="yearInput"
-            value={year}
-            onChange={(event) => setYear(event.target.value)}
+            id="SchemeHeading"
+            value={schemeHeading}
+            onChange={(event) => setSchemeHeading(event.target.value)}
             className="w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
-            placeholder="e.g. 2025"
+            placeholder="e.g. Timing:- 8:30 to 11:30"
           />
         </div>
       </div>
@@ -146,7 +162,7 @@ function ControlPannel({
       <div className="mt-6 pt-6 border-t border-gray-700">
         <button
           type="button"
-          onClick={() => fetchHTMLPreview(selectedClass, exam, year, outputType, examScheme)}
+          onClick={() => fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme)}
           disabled={isHTMLloading}
           className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3.5 px-4 rounded-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-gray-900 shadow-lg hover:shadow-indigo-500/20 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
         >

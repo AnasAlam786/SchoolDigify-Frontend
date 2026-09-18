@@ -6,6 +6,7 @@ import Header from './components/Header.jsx';
 function AdmitAndScheme() {
   const [classes, setClasses] = useState([]);
   const [isClassesLoading, setIsClassesLoading] = useState(false);
+  const [classError, setClassError] = useState(null);
 
   const [previewHtml, setPreviewHtml] = useState('');
   const [HTMLFetchError, setHTMLFetchError] = useState("");
@@ -33,9 +34,18 @@ function AdmitAndScheme() {
   }, []);
 
 
-  async function fetchHTMLPreview(selectedClass, exam, year, outputType, examScheme) {
+  async function fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme) {
+    setClassError(null)
     if (!selectedClass) {
       setPreviewHtml("");
+      setClassError("Class Selection is mandatory")
+      showAlert(400, "Please select a class first");
+
+      document.querySelector(".main-content")?.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
       return;
     }
 
@@ -54,8 +64,8 @@ function AdmitAndScheme() {
           },
           body: JSON.stringify({
             class: selectedClass,
-            exam: exam,
-            year: year,
+            admitHeading: admitHeading,
+            schemeHeading: schemeHeading,
             outputType: outputType,
             examScheme: examScheme,
           }),
@@ -83,7 +93,9 @@ function AdmitAndScheme() {
     <>
       <Header />
       <ControlPannel
+        
         classes={classes}
+        classError={classError}
         isClassesLoading={isClassesLoading}
 
         fetchHTMLPreview={fetchHTMLPreview}

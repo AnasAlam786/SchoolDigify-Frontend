@@ -5,14 +5,60 @@ function ExamSchemeRow({
 }) {
 
   const canRemove = examScheme.length > 1
-  const blankExamRow = { date: '', day: '', examName: ''};
+  const blankExamRow = { date: '', day: '', examName: '' };
 
 
-  // Exam Form Button Handler
+  // Exam Form Input Handler
   const handleChange = (index, field, value) => {
     setExamScheme((rows) => {
       const next = [...rows];
-      next[index] = { ...next[index], [field]: value };
+
+      if (field === 'date') {
+        // Keep only numbers
+        let digits = value.replace(/\D/g, '').slice(0, 8);
+
+        // Automatically add /
+        if (digits.length > 4) {
+          digits = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+        } else if (digits.length > 2) {
+          digits = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+        }
+
+        next[index] = {
+          ...next[index],
+          date: digits,
+        };
+
+        // Calculate day when complete date is entered
+        if (digits.length === 10) {
+          const [day, month, year] = digits.split('/').map(Number);
+
+          const date = new Date(year, month - 1, day);
+
+          // Validate date
+          if (
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day
+          ) {
+            next[index].day = date.toLocaleDateString('en-US', {
+              weekday: 'long',
+            });
+          } else {
+            next[index].day = '';
+          }
+        } else {
+          next[index].day = '';
+        }
+
+        return next;
+      }
+
+      next[index] = {
+        ...next[index],
+        [field]: value,
+      };
+
       return next;
     });
   };
@@ -85,7 +131,7 @@ function ExamSchemeRow({
               <input
                 type="text"
                 value={row.examName}
-                onChange={(e) => handleChange(index, 'examName', e.target.value )}
+                onChange={(e) => handleChange(index, 'examName', e.target.value)}
                 className="exam-name w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-2.5 px-3 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200"
                 placeholder="e.g. English"
               />
