@@ -34,6 +34,7 @@ export function createDefaultSection(type = 'mcq', overrides = {}) {
 }
 
 export function normalizeSection(section) {
+
   const type = section?.type || 'mcq';
   const subQuestion = section?.subQuestion || [];
   const options = section?.options || [];
@@ -69,13 +70,18 @@ export function normalizeSection(section) {
           id: section?.id || generateQuestionId(),
           qText: section?.qText || QUESTION_TYPE_LABELS[type],
           marks: section?.marks || '',
-          items: (subQuestion || []).map((item) => item || ''),
+          items: (subQuestion || []).map((item) =>
+            typeof item === 'object'
+              ? item?.text || ''
+              : item || ''
+          ),
         }),
       };
   }
 }
 
 export function serializeSections(sections) {
+  console.log(sections)
   return sections.map((section) => {
     let subQuestion = [];
     let options = [];
@@ -106,6 +112,7 @@ export function serializeSections(sections) {
 }
 
 export function buildPaperPayload(meta, sections) {
+
   return {
     event: meta.event,
     subject: meta.subject,

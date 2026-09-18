@@ -135,7 +135,7 @@ export default function LoadingSkeleton() {
   return (
     <>
       <style>{shimmerStyle}</style>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 p-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
         {[...Array(4)].map((_, i) => (
           <SkeletonCard key={i} />
         ))}
