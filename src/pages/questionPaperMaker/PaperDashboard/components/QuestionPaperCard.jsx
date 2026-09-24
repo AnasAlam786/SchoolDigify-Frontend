@@ -7,7 +7,6 @@ export default memo(function QuestionPaperCard({
   menuOpenId, setMenuOpenId,
 }) {
   const navigate = useNavigate();
-  console.log(paper)
 
   const [loading, setLoading] = useState({
     downloadPDF: false,
@@ -41,7 +40,6 @@ export default memo(function QuestionPaperCard({
       const data = await response.json();
 
       if (!response.ok) {
-        console.log(data)
         throw new Error(data.error || 'Failed to fetch paper.');
       }
 

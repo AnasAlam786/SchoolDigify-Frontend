@@ -1,28 +1,28 @@
 import React from 'react'
 
-function NoPaperStatus({setCreateModalOpen}) {
-    return (
-        <div className="text-center py-16">
-            <div className="max-w-md mx-auto">
-                <div className="relative mb-6">
-                    <div className="w-32 h-32 mx-auto bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
-                        <i className="fas fa-file-alt text-6xl text-gray-600" />
-                    </div>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-2">No Papers Found</h3>
-                <p className="text-gray-400 mb-8">Try adjusting your filters or create a new paper.</p>
-                <button
-                    type="button"
-                    onClick={() => setCreateModalOpen(true)}
-                    className="group relative overflow-hidden bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
-                >
-                    <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                    <i className="fas fa-plus mr-2" />
-                    Create New Paper
-                </button>
-            </div>
+function NoPaperStatus({ setCreateModalOpen }) {
+  return (
+    <div className="text-center py-16">
+      <div className="max-w-md mx-auto">
+        <div className="relative mb-6">
+          <div className="w-32 h-32 mx-auto bg-gradient-to-br from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+            <i className="fas fa-file-alt text-6xl text-gray-600" />
+          </div>
         </div>
-    )
+        <h3 className="text-2xl font-bold text-white mb-2">No Papers Found</h3>
+        <p className="text-gray-400 mb-8">Try adjusting your filters or create a new paper.</p>
+        <button
+          type="button"
+          onClick={() => setCreateModalOpen(true)}
+          className="group relative overflow-hidden bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-semibold py-3 px-8 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
+          <i className="fas fa-plus mr-2" />
+          Create New Paper
+        </button>
+      </div>
+    </div>
+  )
 }
 
 
@@ -135,7 +135,7 @@ export default function LoadingSkeleton() {
   return (
     <>
       <style>{shimmerStyle}</style>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
+      <div className="w-full max-w-7xl mx-auto grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6 pt-5">
         {[...Array(4)].map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -144,4 +144,4 @@ export default function LoadingSkeleton() {
   );
 }
 
-export {NoPaperStatus, LoadingSkeleton }
+export { NoPaperStatus, LoadingSkeleton }

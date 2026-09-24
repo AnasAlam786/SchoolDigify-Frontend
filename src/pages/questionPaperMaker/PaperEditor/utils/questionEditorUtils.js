@@ -81,7 +81,6 @@ export function normalizeSection(section) {
 }
 
 export function serializeSections(sections) {
-  console.log(sections)
   return sections.map((section) => {
     let subQuestion = [];
     let options = [];

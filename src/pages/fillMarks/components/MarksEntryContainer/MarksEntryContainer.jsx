@@ -24,8 +24,8 @@ export default function MarksEntryContainer({
         const initialMarks = {};
 
         studentsMarksData.forEach((student) => {
-            initialMarks[student.student_id] =
-                student.score ?? "";
+            const studentKey = student.student_session_id
+            initialMarks[studentKey] = student.score ?? "";
         });
 
         setMarks(initialMarks);
@@ -37,7 +37,7 @@ export default function MarksEntryContainer({
        ----------------------------------------- */
 
     const handleMarkChange = (
-        studentId, value, type
+        studentSessionId, value, type
     ) => {
         if (type === "grading") {
             value = value.toUpperCase();
@@ -45,12 +45,12 @@ export default function MarksEntryContainer({
 
         setMarks((prev) => ({
             ...prev,
-            [studentId]: value,
+            [studentSessionId]: value,
         }));
 
         setSubmitStatus((prev) => ({
             ...prev,
-            [studentId]: undefined,
+            [studentSessionId]: undefined,
         }));
     };
 
@@ -60,16 +60,16 @@ export default function MarksEntryContainer({
        ----------------------------------------- */
 
     const handleSubmit = async (student) => {
-        const studentId = student.student_id;
+        const studentSessionId = student.student_session_id;
 
         setLoading((prev) => ({
             ...prev,
-            [studentId]: true,
+            [studentSessionId]: true,
         }));
 
         setSubmitStatus((prev) => ({
             ...prev,
-            [studentId]: undefined,
+            [studentSessionId]: undefined,
         }));
 
         try {
@@ -83,10 +83,10 @@ export default function MarksEntryContainer({
                     },
                     body: JSON.stringify({
                         mark_id: student.mark_id,
-                        student_id: studentId,
+                        student_session_id: studentSessionId,
                         exam_id: selectedExamInfo.id,
                         subject_id: selectedSubjectInfo.id,
-                        score: marks[studentId],
+                        score: marks[studentSessionId],
                     }),
                 }
             );
@@ -102,14 +102,14 @@ export default function MarksEntryContainer({
 
             setSubmitStatus((prev) => ({
                 ...prev,
-                [studentId]: "success",
+                [studentSessionId]: "success",
             }));
 
             // Return button to normal after 2.5 seconds.
             setTimeout(() => {
                 setSubmitStatus((prev) => ({
                     ...prev,
-                    [studentId]: undefined,
+                    [studentSessionId]: undefined,
                 }));
             }, 2500);
 
@@ -117,21 +117,21 @@ export default function MarksEntryContainer({
             console.error(err);
             setSubmitStatus((prev) => ({
                 ...prev,
-                [studentId]: "error",
+                [studentSessionId]: "error",
             }));
 
             // Return to normal after 3 seconds.
             setTimeout(() => {
                 setSubmitStatus((prev) => ({
                     ...prev,
-                    [studentId]: undefined,
+                    [studentSessionId]: undefined,
                 }));
             }, 3000);
 
         } finally {
             setLoading((prev) => ({
                 ...prev,
-                [studentId]: false,
+                [studentSessionId]: false,
             }));
         }
     };

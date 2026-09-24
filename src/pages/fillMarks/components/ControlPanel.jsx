@@ -4,7 +4,7 @@ function ControlPanel({
   classes = [], exams = [],
   subjects = [], filters, setFilters,
   submitFilters, SubjectFetchingError,
-  isStudentDataloading,
+  ExamFetchingError, isStudentDataloading,
 }) {
 
   const {hasPermission, PERMISSIONS} = usePermission()
@@ -32,6 +32,7 @@ function ControlPanel({
                   ...prev,
                   classId,
                   subjectId: "",
+                  examId: "",
                 }));
               }}
             >
@@ -45,7 +46,7 @@ function ControlPanel({
                   value={cls.id}
                   className="bg-[#1A1A1A] text-gray-100"
                 >
-                  {cls.className}
+                  {cls.class_name}
                 </option>
               ))}
             </select>
@@ -117,23 +118,26 @@ function ControlPanel({
           <div className="relative">
             <select
               value={filters.examId}
-
               onChange={(e) =>
                 setFilters(prev => ({
                   ...prev,
                   examId: e.target.value,
                 }))
               }
-
+              disabled={!filters.classId || !!ExamFetchingError}
               className="w-full bg-[#1A1A1A] border border-white/10 text-gray-100 text-base p-3 pl-4 
               rounded-lg focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all 
-              appearance-none cursor-pointer"
+              appearance-none cursor-pointer disabled:opacity-50"
             >
               <option value="" disabled>
-                Select Exam
+                {ExamFetchingError
+                  ? ExamFetchingError
+                  : filters.classId
+                    ? "Select Exam"
+                    : "Please Select Class First"}
               </option>
 
-              {exams.map((exam) => (
+              {!ExamFetchingError && exams.map((exam) => (
                 <option
                   key={exam.id}
                   value={exam.id}

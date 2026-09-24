@@ -6,7 +6,7 @@ export default function SelectionBar(
 
     const toggleSelectAll = () => {
         setSelectedIds((prev) => {
-            const allIds = filteredStudents.map((student) => student.student_id)
+            const allIds = filteredStudents.map((student) => student.student_session_id)
             if (allIds.length === 0) return new Set()
             const allSelected = allIds.every((id) => prev.has(id))
             if (allSelected) return new Set()
@@ -17,7 +17,7 @@ export default function SelectionBar(
     const selectedCount = selectedIds.size
     const displayedCount = filteredStudents.length
     const allSelected = displayedCount > 0 && filteredStudents.every(
-        (student) => selectedIds.has(student.student_id)
+        (student) => selectedIds.has(student.student_session_id)
     )
 
     return (

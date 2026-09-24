@@ -78,9 +78,9 @@ function ShowMarks() {
     try {
 
       const studentPayload = students
-        .filter((student) => studentIds.has(student.student_id))
+        .filter((student) => studentIds.has(student.student_session_id))
         .map((student) => ({
-          student_id: student.student_id,
+          student_session_id: student.student_session_id,
           STUDENTS_NAME: student.STUDENTS_NAME,
           FATHERS_NAME: student.FATHERS_NAME,
           CLASS: student.CLASS,
@@ -124,7 +124,7 @@ function ShowMarks() {
         throw new Error("studentIds must be a Set or an Array.");
       }
       const response = await apiPost('/api/bulk_download_results',
-        { student_ids: studentIDs, class_id: selectedClass }
+        { student_session_id: studentIDs, class_id: selectedClass }
       )
 
       const data = await response.json();

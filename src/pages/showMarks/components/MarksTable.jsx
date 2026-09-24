@@ -1,6 +1,47 @@
 import React from 'react'
 import usePermission from '../../../hooks/usePermission'
 
+const getOrderedExamNames = (student) => {
+  const marks = student?.marks || {}
+
+  if (Array.isArray(student?.exam_order) && student.exam_order.length > 0) {
+    return student.exam_order.filter((examName) => examName in marks)
+  }
+
+  return Object.keys(marks).sort((a, b) => {
+    const aOrder = marks[a]?.exam_display_order ?? Number.MAX_SAFE_INTEGER
+    const bOrder = marks[b]?.exam_display_order ?? Number.MAX_SAFE_INTEGER
+    return aOrder - bOrder
+  })
+}
+
+const getOrderedSubjects = (student, examNames) => {
+  const marks = student?.marks || {}
+  const firstExamName = examNames[0]
+  const firstExam = firstExamName ? marks[firstExamName] : null
+  const subjectMarks = firstExam?.subject_marks_dict || {}
+
+  if (Array.isArray(student?.subject_order) && student.subject_order.length > 0) {
+    return student.subject_order.filter((subject) => subject in subjectMarks)
+  }
+
+  return Object.keys(subjectMarks)
+}
+
+const formatPercentage = (value) => {
+  if (value === null || value === undefined || value === '' || value === '-' || value === '—') {
+    return '—'
+  }
+
+  const numericValue = Number(value)
+  if (!Number.isFinite(numericValue)) {
+    return '—'
+  }
+
+  const precision = Number.isInteger(numericValue) ? 0 : 2
+  return `${numericValue.toFixed(precision)}%`
+}
+
 function MarksTable(
   { students, selectedIds, setSelectedIds, handlePrintCertificate, handlePrintResult }) {
 
@@ -59,7 +100,6 @@ function MarksTable(
     )
   }
 
-
   const onToggleSelection = (studentId) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
@@ -76,35 +116,29 @@ function MarksTable(
     <div className="space-y-6">
       {students.map((student) => {
         const marks = student.marks || {}
-        const examNames = Object.keys(marks)
-        const firstExam = marks[examNames[0]]
-        const subjects = firstExam?.subject_marks_dict ? Object.keys(firstExam.subject_marks_dict) : []
+        const examNames = getOrderedExamNames(student)
+        const subjects = getOrderedSubjects(student, examNames)
         const gTotal = marks['G. Total'] || marks['Grand Total'] || null
-        const percentageValue = gTotal?.percentage ?? ''
-        const isSelected = selectedIds.has(student.student_id)
+        const percentageValue = gTotal?.percentage ?? 0
+        const isSelected = selectedIds.has(student.student_session_id)
 
         return (
           <div
-            key={student.student_id}
+            key={student.student_session_id}
             className="marks-card bg-[#1A1A1A] backdrop-blur-sm mt-6 border border-gray-800 shadow-xl 
                 hover:shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden">
-            {/* <!-- Student Header - Modern Design --> */}
             <div className="p-5 flex flex-col lg:flex-row lg:items-start justify-between gap-1 bg-[#1A1A1A]">
               <div className="flex-1">
-                {/* <!-- Student Info Row --> */}
                 <div className="flex items-start gap-4 mb-4">
-
-
-                  {/* <!-- Profile Icon --> */}
                   {hasPermission(PERMISSIONS.GET_RESULT) && (
                     <div className="relative mt-1">
                       <input
                         type="checkbox"
                         className="student-checkbox absolute opacity-0 w-6 h-6 cursor-pointer z-10"
                         value={student.student_id}
-                        id={`student-${student.student_id}`}
+                        id={`student-${student.student_session_id}`}
                         checked={isSelected}
-                        onChange={() => onToggleSelection(student.student_id)}
+                        onChange={() => onToggleSelection(student.student_session_id)}
                       />
 
                       <div className="w-6 h-6 md:w-7 md:h-7 rounded-lg border-2 border-gray-600 bg-[#1A1A1A]/70 
@@ -115,9 +149,7 @@ function MarksTable(
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24" >
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7">
-
-                          </path>
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
                     </div>
@@ -133,14 +165,12 @@ function MarksTable(
                     </div>
 
                     <div className="flex flex-wrap gap-3 mt-4">
-                      <div className="px-4 py-2.5 bg-gradient-to-r from-[#1A1A1A]/90 to-[#232323]/70 rounded-xl 
-                      border border-gray-700/60">
+                      <div className="px-4 py-2.5 bg-gradient-to-r from-[#1A1A1A]/90 to-[#232323]/70 rounded-xl border border-gray-700/60">
                         <p className="text-xs text-gray-300 mb-1">Roll</p>
                         <p className="text-sm md:text-base font-semibold text-white">{student.ROLL}</p>
                       </div>
 
-                      <div className="px-4 py-2.5 bg-gradient-to-r from-[#1A1A1A]/90 to-[#232323]/70 rounded-xl 
-                      border border-gray-700/60">
+                      <div className="px-4 py-2.5 bg-gradient-to-r from-[#1A1A1A]/90 to-[#232323]/70 rounded-xl border border-gray-700/60">
                         <p className="text-xs text-gray-300 mb-1">Class</p>
                         <p className="text-sm md:text-base font-semibold text-white">{student.CLASS}</p>
                       </div>
@@ -154,15 +184,12 @@ function MarksTable(
                 </div>
               </div>
 
-
               {hasPermission(PERMISSIONS.GET_RESULT) && (
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="button"
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 
-                      px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 transition-all 
-                      duration-200 shadow-lg hover:shadow-xl group"
-                    onClick={() => handlePrintResult(new Set([student.student_id]))}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:shadow-xl group"
+                    onClick={() => handlePrintResult(new Set([student.student_session_id]))}
                   >
                     <i className="fas fa-print text-sm group-hover:scale-110 transition-transform"></i>
                     <span>Print Result</span>
@@ -170,17 +197,14 @@ function MarksTable(
 
                   <button
                     type="button"
-                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white 
-                      py-3 px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 
-                      transition-all duration-200 shadow-lg hover:shadow-xl group"
-                    onClick={() => handlePrintCertificate(new Set([student.student_id]))}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:shadow-xl group"
+                    onClick={() => handlePrintCertificate(new Set([student.student_session_id]))}
                   >
                     <i className="fas fa-certificate text-sm group-hover:scale-110 transition-transform"></i>
                     <span>Print Certificate</span>
                   </button>
                 </div>
               )}
-
             </div>
 
             <div className="overflow-hidden border-t border-gray-800 bg-[#1A1A1A]">
@@ -190,8 +214,7 @@ function MarksTable(
                     <table className="min-w-full text-gray-200 border-collapse">
                       <thead>
                         <tr className="bg-[#1F1F1F] text-gray-200">
-                          <th className="py-4 px-4 md:px-6 text-left text-sm md:text-base font-semibold uppercase tracking-wider 
-                              border-b border-gray-700">
+                          <th className="py-4 px-4 md:px-6 text-left text-sm md:text-base font-semibold uppercase tracking-wider border-b border-gray-700">
                             <div className="flex items-center gap-2">
                               <i className="fas fa-book text-gray-300"></i>
                               <span>Subject</span>
@@ -205,8 +228,7 @@ function MarksTable(
                         {subjects.map((subject, index) => (
                           <tr
                             key={subject}
-                            className={`${index % 2 === 0 ? 'bg-[#202020]' : 'bg-[#1A1A1A]'} 
-                                hover:bg-[#2A2A2A] transition-colors duration-150`} >
+                            className={`${index % 2 === 0 ? 'bg-[#202020]' : 'bg-[#1A1A1A]'} hover:bg-[#2A2A2A] transition-colors duration-150`} >
                             <td className="py-4 px-2 lg:px-4 border-b border-gray-800 text-sm md:text-base font-medium">
                               <div className="flex items-center gap-3">
                                 <div className="w-2 h-2 rounded-full bg-blue-400"></div>
@@ -218,6 +240,7 @@ function MarksTable(
                               const mark = examData?.subject_marks_dict?.[subject] ?? ''
                               const isGrandTotal = examName.includes('G. Total') || examName.includes('Grand')
                               const isSummary = !isGrandTotal && (examName.includes('Total') || examName.includes('Grades'))
+
                               if (isGrandTotal) {
                                 return (
                                   <td key={`${subject}-${examName}`} className="py-4 px-2 border-b border-gray-800 text-center text-sm md:text-base font-bold bg-amber-950/40">
@@ -225,6 +248,7 @@ function MarksTable(
                                   </td>
                                 )
                               }
+
                               if (isSummary) {
                                 return (
                                   <td key={`${subject}-${examName}`} className="py-4 px-2 border-b border-gray-800 text-center text-sm md:text-base font-bold bg-teal-950/30">
@@ -232,6 +256,7 @@ function MarksTable(
                                   </td>
                                 )
                               }
+
                               return (
                                 <td key={`${subject}-${examName}`} className="py-4 px-2 border-b border-gray-800 text-center text-sm md:text-base font-semibold">
                                   <span className="text-lg text-green-300">{mark}</span>
@@ -253,6 +278,7 @@ function MarksTable(
                             const isGrandTotal = examName.includes('G. Total') || examName.includes('Grand')
                             const isSummary = !isGrandTotal && (examName.includes('Total') || examName.includes('Grades'))
                             const totalValue = examData?.exam_total ?? ''
+
                             if (isGrandTotal) {
                               return (
                                 <td key={`grand-total-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-black border-l border-amber-700/70 bg-amber-950/80">
@@ -262,6 +288,7 @@ function MarksTable(
                                 </td>
                               )
                             }
+
                             if (isSummary) {
                               return (
                                 <td key={`grand-total-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-bold border-l border-teal-700/60 bg-teal-950/50">
@@ -271,6 +298,7 @@ function MarksTable(
                                 </td>
                               )
                             }
+
                             return (
                               <td key={`grand-total-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-bold">
                                 <div className="inline-flex items-center gap-2 bg-green-950/50 px-3 py-2 rounded-lg border border-green-800">
@@ -292,29 +320,32 @@ function MarksTable(
                             const examData = marks[examName]
                             const isGrandTotal = examName.includes('G. Total') || examName.includes('Grand')
                             const isSummary = !isGrandTotal && (examName.includes('Total') || examName.includes('Grades'))
-                            const percentage = examData?.percentage ?? ''
+                            const percentageDisplay = formatPercentage(examData?.percentage)
+
                             if (isGrandTotal) {
                               return (
                                 <td key={`percentage-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-bold border-l border-amber-700/60 bg-amber-950/50">
                                   <div className="inline-flex items-center gap-2 bg-amber-950/60 px-3 py-2 rounded-lg border border-amber-700">
-                                    <span className="text-amber-200 text-lg">{percentage}%</span>
+                                    <span className="text-amber-200 text-lg">{percentageDisplay}</span>
                                   </div>
                                 </td>
                               )
                             }
+
                             if (isSummary) {
                               return (
                                 <td key={`percentage-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-bold border-l border-teal-800/50 bg-teal-950/40">
                                   <div className="inline-flex items-center gap-2 bg-teal-950/50 px-3 py-2 rounded-lg border border-teal-800">
-                                    <span className="text-teal-200 text-lg">{percentage}%</span>
+                                    <span className="text-teal-200 text-lg">{percentageDisplay}</span>
                                   </div>
                                 </td>
                               )
                             }
+
                             return (
                               <td key={`percentage-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-bold">
                                 <div className="inline-flex items-center gap-2 bg-blue-950/50 px-3 py-2 rounded-lg border border-blue-800">
-                                  <span className="text-blue-200 text-lg">{percentage}%</span>
+                                  <span className="text-blue-200 text-lg">{percentageDisplay}</span>
                                 </div>
                               </td>
                             )

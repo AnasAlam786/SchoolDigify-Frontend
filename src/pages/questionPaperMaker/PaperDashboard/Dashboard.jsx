@@ -24,7 +24,7 @@ const defaultFilters = {
 
 export default function Dashboard() {
 
-  const {hasPermission, PERMISSIONS} = usePermission()
+  const { hasPermission, PERMISSIONS } = usePermission()
 
   const [myPapers, setMyPapers] = useState([]);
   const [staffPaper, setStaffPaper] = useState([]);
@@ -124,7 +124,7 @@ export default function Dashboard() {
   else if (visiblePapers.length === 0) { mainContent = <NoPaperStatus setCreateModalOpen={setCreateModalOpen} /> }
   else {
     mainContent = (
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-5 max-w-7xl mx-auto">
         {visiblePapers.map((paper) => (
           <QuestionPaperCard
             key={paper.id}
@@ -193,7 +193,7 @@ export default function Dashboard() {
               onClick={() => setFilters((prev) => ({ ...prev, tab: 'staff' }))}
               className={`tab-btn px-6 py-2.5 text-sm font-medium rounded-full transition-all duration-200 flex items-center gap-2 
                 ${filters.tab === 'staff' ? 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg' : 'text-gray-400 hover:text-white'}`}>
-              
+
               <i className="fas fa-users" />
 
               Staff Papers

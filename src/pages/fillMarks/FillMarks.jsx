@@ -3,8 +3,10 @@ import ControlPannel from "./components/ControlPanel";
 import { InitialState, SkeletonLoader } from "./components/PageStatus";
 import MarksEntryContainer from "./components/MarksEntryContainer/MarksEntryContainer";
 import "./style/FillMarks.css"
-import {NoStudentsState, ErrorState}  from "../utils/GlobalPageStatus"
+import { NoStudentsState, ErrorState } from "../utils/GlobalPageStatus"
 import { useState, useEffect } from "react";
+import { apiGet } from "../../api/api"
+import { fetchClasses } from "../utils/fetchClasses"
 
 function FillMarks() {
 
@@ -17,17 +19,11 @@ function FillMarks() {
     const [isStudentDataloading, setstudentDataLoading] = useState(false);
 
     const [SubjectFetchingError, setSubjectFetchingError] = useState("");
+    const [ExamFetchingError, setExamFetchingError] = useState("");
 
     const [filters, setFilters] = useState({ classId: "", subjectId: "", examId: "", });
     const [selectedExamInfo, setSelectedExamInfo] = useState({});
     const [selectedSubjectInfo, setSelectedSubjectInfo] = useState({});
-
-
-
-    useEffect(() => {
-        fetchClassesAndExams();
-    }, []);
-
 
     useEffect(() => {
         if (!filters.classId) {
@@ -35,54 +31,59 @@ function FillMarks() {
             return;
         }
 
-        fetchSubjectsForClass(filters.classId);
+        fetchSubjectsAndExamsForClass(filters.classId);
 
     }, [filters.classId]);
 
 
+    useEffect(() => {
+        const loadClasses = async () => {
+            const classData = await fetchClasses();
+            setClasses(classData);
+        };
+        loadClasses()
+    }, [])
 
-    async function fetchClassesAndExams() {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/fetchClassesAndExams`, {
-                credentials: "include",
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const data = await response.json();
-            console.log(data.classes)
-
-            setExams(data.exams);
-            setClasses(data.classes);
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function fetchSubjectsForClass(classId) {
+    async function fetchSubjectsAndExamsForClass(classId) {
         setSubjectFetchingError("");
+        setExamFetchingError("");
+
         setSubjects([]);
+        setExams([]);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/api/subjects/${filters.classId}`, {
-                credentials: "include",
-            });
+            const response = await apiGet(
+                `/api/subjects_and_exams_by_class/${classId}`
+            );
+            const data = await response.json();
 
             if (!response.ok) {
-                throw new Error("Failed to fetch subjects");
+                throw new Error(
+                    response.error || "Failed to fetch subjects and exams"
+                );
             }
 
-            const subjectsList = await response.json();
+            const subjectsList = data.subjects;
+            const examsList = data.exams;
 
             if (subjectsList.length === 0) {
                 setSubjectFetchingError("No subjects found for the selected class");
             }
+
+            if (examsList.length === 0) {
+                setExamFetchingError("No exams found for the selected class");
+            }
+
             setSubjects(subjectsList);
+            setExams(examsList);
+
         } catch (err) {
             console.error(err);
-            setSubjectFetchingError("Error fetching subjects");
+
+            showAlert(400, err.message);
+
+            setSubjectFetchingError("Error fetching Subjects");
+            setExamFetchingError("Error fetching Exams");
         }
     }
 
@@ -108,18 +109,12 @@ function FillMarks() {
                 exam_id: filters.examId,
             });
 
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/get_marks?${params}`,
-                {
-                    credentials: "include",
-                }
-            );
-
+            const response = await apiGet(`/api/get_marks?${params}`);
             const data = await response.json();
 
             if (!response.ok) {
                 throw new Error(data.error || "Failed to fetch marks");
-                
+
             }
 
             setStudentsData(data.students);
@@ -164,7 +159,8 @@ function FillMarks() {
                 filters={filters} setFilters={setFilters}
                 submitFilters={submitFilters}
                 SubjectFetchingError={SubjectFetchingError}
-                isStudentDataloading = {isStudentDataloading}>
+                ExamFetchingError={ExamFetchingError}
+                isStudentDataloading={isStudentDataloading}>
             </ControlPannel>
 
             {mainPageStates}

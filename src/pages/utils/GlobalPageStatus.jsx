@@ -43,7 +43,7 @@ function ErrorState({
     onRetry = null,
 }) {
     return (
-        <div className="flex flex-col items-center justify-center py-16 px-4 text-center glass-card rounded-2xl border border-white/5">
+        <div className="m-5 flex flex-col items-center justify-center py-16 px-4 text-center glass-card rounded-2xl border border-white/5">
             <div className="w-24 h-24 mb-6 rounded-full bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center">
                 <i className="fas fa-exclamation-triangle text-4xl text-red-300"></i>
             </div>
