@@ -1,10 +1,10 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
-import StudentFeeCard from "../components/StudentFeeCard";
+import StudentFeeCard from "./components/StudentFeeCard";
 import StudentDetailsModal from "../../utils/StudentsDetailsModal.jsx/StudentDetailsModal";
 import FeeDrawer from "../../utils/feeDrawer/FeeDrawer";
 import TransactionModal from "../../utils/feeTransactionsModal/TransactionModal";
 import { fetchClasses } from "../../utils/fetchClasses";
-import { filterAndSortStudents } from "./filter";
+import { filterAndSortStudents } from "./components/filter";
 import usePermission from "../../../hooks/usePermission";
 
 const sortOptions = [

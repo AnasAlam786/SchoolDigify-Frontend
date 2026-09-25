@@ -1,7 +1,7 @@
-import boyImage from '../../../assets/no-student-boy-image.png';
-import girlImage from '../../../assets/no-student-girl-image.png';
+import boyImage from '../../../../assets/no-student-boy-image.png';
+import girlImage from '../../../../assets/no-student-girl-image.png';
 import { memo } from 'react';
-import usePermission from "../../../hooks/usePermission";
+import usePermission from "../../../../hooks/usePermission";
 import { CreditCard, Receipt, Award, ShieldCheck, ChevronRight, Phone } from "lucide-react";
 
 const currencyFormatter = new Intl.NumberFormat('en-IN', {

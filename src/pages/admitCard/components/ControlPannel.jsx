@@ -8,7 +8,6 @@ function ControlPannel({
 
   fetchHTMLPreview,
   isHTMLloading,
-  HTMLFetchError,
 }) {
 
   const [selectedClass, setSelectedClass] = useState("");
@@ -16,6 +15,7 @@ function ControlPannel({
   const [schemeHeading, setSchemeHeading] = useState("");
 
   const [outputType, setOutputType] = useState('both');
+
   const [examScheme, setExamScheme] = useState(() => {
     try {
       const stored = localStorage.getItem('admitExamScheme');
@@ -24,6 +24,9 @@ function ControlPannel({
       return [];
     }
   });
+
+  const admitInputDisabled = outputType === 'SchemeOnly';
+  const schemeInputDisabled = outputType === 'admitOnly';
 
 
   useEffect(() => {
@@ -83,21 +86,31 @@ function ControlPannel({
         <div>
           <label htmlFor="admitHeading" className="block text-sm font-medium text-gray-300 mb-2">Admit Heading</label>
           <input
+            disabled={admitInputDisabled}
             id="admitHeading"
             value={admitHeading}
             onChange={(event) => setAdmitHeading(event.target.value)}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
+            className={`w-full rounded-lg border py-3 px-4 shadow-sm transition-all duration-200 backdrop-blur-sm 
+              ${admitInputDisabled
+              ? 'border-gray-700 bg-gray-900/60 text-gray-500 cursor-not-allowed opacity-70'
+              : 'border-gray-600 bg-gray-800/50 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30'
+              }`}
             placeholder="e.g. Half Yearly 2026"
           />
         </div>
 
         <div>
-          <label htmlFor="Scheme Heading" className="block text-sm font-medium text-gray-300 mb-2">Scheme Heading</label>
+          <label htmlFor="schemeHeading" className="block text-sm font-medium text-gray-300 mb-2">Scheme Heading</label>
           <input
-            id="SchemeHeading"
+            disabled={schemeInputDisabled}
+            id="schemeHeading"
             value={schemeHeading}
             onChange={(event) => setSchemeHeading(event.target.value)}
-            className="w-full rounded-lg border border-gray-600 bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 transition-all duration-200 backdrop-blur-sm"
+            className={`w-full rounded-lg border py-3 px-4 shadow-sm transition-all duration-200 backdrop-blur-sm 
+              ${schemeInputDisabled
+              ? 'border-gray-700 bg-gray-900/60 text-gray-500 cursor-not-allowed opacity-70'
+              : 'border-gray-600 bg-gray-800/50 text-white focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30'
+              }`}
             placeholder="e.g. Timing:- 8:30 to 11:30"
           />
         </div>

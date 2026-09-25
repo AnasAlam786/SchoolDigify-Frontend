@@ -1,4 +1,4 @@
-import FeeSessionSetupModal from "../../utils/feeSessionSetup/FeeSessionSetupModal";
+import FeeSessionSetupModal from "../../../utils/feeSessionSetup/FeeSessionSetupModal";
 import { useState, useEffect } from 'react';
 
 
