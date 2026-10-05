@@ -66,10 +66,10 @@ export default function CropperModal({
         if (!canvas) return;
 
         canvas.toBlob(
-        (blob) => {
+            (blob) => {
                 if (!blob) return;
 
-                const file = new File([blob], "student_image.jpg", { type: "image/jpeg" })
+                const file = new File([blob], "student_image.jpg", { type: "image/jpeg" });
                 setImage(file);
             },
             "image/jpeg",
@@ -80,7 +80,7 @@ export default function CropperModal({
     };
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60">
 
             <div className="w-full max-w-2xl rounded-xl bg-neutral-900 shadow-xl border border-neutral-700">
 
@@ -146,7 +146,7 @@ export default function CropperModal({
                         onClick={cropSave}
                         className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                     >
-                        Crop & Save
+                        Use This Image
                     </button>
 
                 </div>

@@ -5,6 +5,19 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: "Bastliga One";
+    src: url("__SIGNATURE_FONT_URL__") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+.signature-name {
+    font-family: "Bastliga One", cursive;
+    font-size: 16px;
+    line-height: 1;
+}
+
 .id-card-container {
     width: 54mm;
     height: 85.6mm;

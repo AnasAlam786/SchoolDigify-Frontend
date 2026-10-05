@@ -3,7 +3,17 @@ import { FaCloudUploadAlt, FaUpload, FaCamera, } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
 const UploadContainer = ({
-    image, setImage, onOpenChoice, onUpload, onCapture,
+    image,
+    setImage,
+    onOpenChoice,
+    onUpload,
+    onCapture,
+
+    // For Directly Update Images
+    showSaveButton = false,
+    saveButtonText = "Upload Image",
+    saveDisabled = false,
+    onSave,
 }) => {
 
     const removeImage = () => {
@@ -81,6 +91,30 @@ const UploadContainer = ({
                         Capture
                     </button>
                 </div>
+
+                {/* For Directly Update Images */}
+
+                {showSaveButton && (
+                    <div className="mt-4">
+                        <button
+                            type="button"
+                            disabled={saveDisabled}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (typeof onSave === "function") {
+                                    onSave();
+                                }
+                            }}
+                            className={`w-full rounded-lg px-4 py-3 font-medium transition-all duration-300 ${
+                                saveDisabled
+                                    ? "cursor-not-allowed bg-gray-700 text-gray-400"
+                                    : "bg-blue-600 text-white hover:bg-blue-500"
+                            }`}
+                        >
+                            {saveButtonText}
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );

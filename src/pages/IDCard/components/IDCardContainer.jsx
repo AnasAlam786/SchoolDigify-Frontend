@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import IDCardPreview from "../components/IDCardPreview";
 
 
-function IDCardContainer({ filteredStudents, selectedStudents, schoolData, setSelectedStudents }) {
+function IDCardContainer(
+    { filteredStudents, selectedStudents, schoolData, setSelectedStudents, selectedDesign }
+) {
 
     const toggleSelection = (studentId) => {
         setSelectedStudents(prev => {
@@ -29,7 +31,12 @@ function IDCardContainer({ filteredStudents, selectedStudents, schoolData, setSe
                         transition-all duration-300 hover:scale-105 cursor-pointer
                         ${isSelected ? "ring-4 ring-blue-500 bg-blue-900/20" : "bg-gray-800 hover:scale-105"}`}>
 
-                        <IDCardPreview key={index} student={student} school={schoolData}/>
+                        <IDCardPreview
+                            key={`${student.student_id}-${selectedDesign?.id || 'hanging'}`}
+                            student={student}
+                            school={schoolData}
+                            design={selectedDesign}
+                        />
                         <div className='p-3 bg-gray-700 border-t border-gray-600'>
                             <div className="text-white font-semibold text-sm mb-1">{student.student_name}</div>
                             <div className="text-gray-400 text-xs">Class: {student.class+" - "+student.roll}</div>

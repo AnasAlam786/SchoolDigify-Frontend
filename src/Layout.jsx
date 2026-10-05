@@ -62,13 +62,6 @@ function Layout() {
           permissionName: PERMISSIONS.ATTENDANCE
         },
         {
-          label: "Overall Attendance",
-          route: "/overall_attendance",
-          icon: CalendarDays,
-          color: "text-indigo-500",
-          permissionName: PERMISSIONS.OVERALL_ATTENDANCE
-        },
-        {
           label: "Update Marks",
           route: "/fillmarks",
           icon: FileEdit,

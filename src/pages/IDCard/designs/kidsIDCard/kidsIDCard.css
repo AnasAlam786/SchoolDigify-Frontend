@@ -1,0 +1,67 @@
+.id-card img {
+    display: block;
+}
+
+@font-face {
+    font-family: "Bastliga One";
+    src: url("__SIGNATURE_FONT_URL__") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+.signature-name {
+    position: absolute;
+    right: 0;
+    bottom: .8mm;
+    left: 0;
+    overflow: visible;
+    color: #584946;
+    font-family: "Bastliga One", cursive;
+    font-size: 12pt;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.clamp2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+@media screen {
+    .id-card {
+        box-shadow: 0 7px 25px rgba(20, 30, 40, .10);
+    }
+}
+
+@page {
+    size: 54mm 85.6mm;
+    margin: 0;
+}
+
+@media print {
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        background: #fff;
+    }
+
+    body {
+        display: block;
+    }
+
+    .id-card {
+        box-shadow: none !important;
+        margin: 0 !important;
+        break-after: page;
+        page-break-after: always;
+    }
+
+    .id-card:last-child {
+        break-after: auto;
+        page-break-after: auto;
+    }
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { apiPost } from '../../../../api/api';
 
-function CreatePaperModal({ setCreateModalOpen }) {
+function CreatePaperModal({ setCreateModalOpen, classes }) {
     const [formData, setFormData] = useState({
         event: '',
         subject: '',
@@ -94,13 +94,11 @@ function CreatePaperModal({ setCreateModalOpen }) {
                             <i className="fas fa-calendar-day absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
                         <datalist id="eventList">
-                            <option value="Formative Assessment - I" />
-                            <option value="Summative Assessment - I" />
-                            <option value="Formative Assessment - II" />
-                            <option value="Summative Assessment - II" />
-                            <option value="Unit Test" />
-                            <option value="Half Yearly" />
+                            <option value="Unit Test 1" />
+                            <option value="Unit Test 2" />
+                            <option value="Half Yearly Examination" />
                             <option value="Annual Examination" />
+
                         </datalist>
                     </div>
 
@@ -127,6 +125,7 @@ function CreatePaperModal({ setCreateModalOpen }) {
                             <option value="English" />
                             <option value="Hindi" />
                             <option value="Math" />
+                            <option value="Urdu" />
                             <option value="Science" />
                             <option value="Computer" />
                             <option value="Social Studies" />
@@ -153,10 +152,31 @@ function CreatePaperModal({ setCreateModalOpen }) {
                             <i className="fas fa-graduation-cap absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         </div>
                         <datalist id="classList">
-                            <option value="IX" />
-                            <option value="X" />
-                            <option value="XI" />
-                            <option value="XII" />
+                            {classes && classes.length > 0 ? (
+                                classes.map((cls) => (
+                                    <option key={cls.id} value={cls.class_name} />
+                                ))
+                            ) : (
+                            <>
+                                <option value="Nursery" />
+                                <option value="LKG" />
+                                <option value="UKG" />
+                                <option value="I" />
+                                <option value="II" />
+                                <option value="III" />
+                                <option value="IV" />
+                                <option value="V" />
+                                <option value="VI" />
+                                <option value="VII" />
+                                <option value="VIII" />
+                                <option value="IX" />
+                                <option value="X" />
+                                <option value="XI" />
+                                <option value="XII" />
+
+                            </>
+                            )}
+
                         </datalist>
                     </div>
 

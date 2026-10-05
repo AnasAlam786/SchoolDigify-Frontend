@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { sendWhatsAppMessage } from "../../utils/sendWhatsAppMessage";
 import boyImage from "../../../assets/no-student-boy-image.png";
 import girlImage from "../../../assets/no-student-girl-image.png";
 import { printAdmissionForm } from '../../utils/printAdmissionForm';
 import usePermission from "../../../hooks/usePermission";
+import ImageUploader from "../../utils/ImageUploader/ImageUploader.jsx";
+import { apiPostFormData } from "../../../api/api";
 
 
 
@@ -23,13 +25,18 @@ function getImageUrl(student) {
         ? boyImage : girlImage;
 }
 
-function StudentCard({ student, onViewDetails, onPayFees }) {
+function StudentCard({ student, onViewDetails, onPayFees, onImageUpdated }) {
 
     const { hasPermission, PERMISSIONS } = usePermission()
 
     const navigate = useNavigate();
     const phone = normalizePhone(student.PHONE);
     const imageUrl = getImageUrl(student);
+
+    const [showImageUploadModal, setShowImageUploadModal] = useState(false);
+    const [imagePreview, setImagePreview] = useState("");
+    const [selectedImageFile, setSelectedImageFile] = useState(null);
+    const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 
     const handleWhatsApp = (event) => {
         event.preventDefault();
@@ -48,7 +55,54 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
         console.warn("Pay fees drawer handler is not available.");
     };
 
+    const handleImageSelection = (nextImage) => {
+        if (nextImage instanceof Blob) {
+            setSelectedImageFile(nextImage);
+            setImagePreview(URL.createObjectURL(nextImage));
+            return;
+        }
+
+        if (typeof nextImage === "string") {
+            setSelectedImageFile(null);
+            setImagePreview(nextImage);
+        }
+    };
+
+    const handleStudentImageUpload = async (file) => {
+        if (!(file instanceof Blob)) return;
+
+        setIsUploadingPhoto(true);
+
+        try {
+            const formData = new FormData();
+            formData.append("student_id", Number(student.id));
+            formData.append("image_file", file, "student_image.jpg");
+
+            const response = await apiPostFormData("/api/update_student_image", formData);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data?.error || data?.message || "Failed to upload student image.");
+            }
+
+            const nextImageId = data?.image_id ||  student.IMAGE;
+
+            if (typeof onImageUpdated === "function") {
+                onImageUpdated(student.id, nextImageId);
+            }
+
+            setShowImageUploadModal(false);
+            setImagePreview("");
+            setSelectedImageFile(null);
+        } catch (err) {
+            showAlert(400, err.message || "Failed to upload student image.");
+        } finally {
+            setIsUploadingPhoto(false);
+        }
+    };
+
     return (
+        <>
         <div className="student-card overflow-vissible">
             <div className="flex items-center justify-between px-3 py-0.5 bg-gray-800 bg-opacity-40 border-b border-gray-700">
                 <div className="flex space-x-1 p-1">
@@ -101,7 +155,13 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                         <img
                             src={imageUrl}
                             alt="Student"
-                            className="student-image w-20 h-20 object-cover border-2 border-gray-700 shadow-lg"
+                            onClick={() => {
+                                if (!student.IMAGE) {
+                                    setImagePreview("");
+                                    setShowImageUploadModal(true);
+                                }
+                            }}
+                            className={`student-image w-20 h-20 object-cover border-2 border-gray-700 shadow-lg ${!student.IMAGE ? "cursor-pointer" : ""}`}
                             loading="lazy"
                         />
 
@@ -193,6 +253,38 @@ function StudentCard({ student, onViewDetails, onPayFees }) {
                 </button>
             </div>
         </div>
+
+        {showImageUploadModal && (
+            <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-4">
+                <div className="w-full max-w-xl rounded-2xl border border-gray-700 bg-[#111827] p-4 shadow-2xl">
+                    <div className="mb-4 flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-white">Upload Student Photo</h3>
+                        <button
+                            type="button"
+                            onClick={() => setShowImageUploadModal(false)}
+                            disabled={isUploadingPhoto}
+                            className={`rounded-full border px-2 py-1 text-sm ${
+                                isUploadingPhoto
+                                    ? "cursor-not-allowed border-gray-700 text-gray-500"
+                                    : "border-gray-600 text-gray-200 hover:bg-gray-800"
+                            }`}
+                        >
+                            Close
+                        </button>
+                    </div>
+
+                    <ImageUploader
+                        image={imagePreview}
+                        setImage={handleImageSelection}
+                        showSaveButton={true}
+                        saveButtonText={isUploadingPhoto ? "Uploading..." : "Upload Image"}
+                        saveDisabled={!selectedImageFile || isUploadingPhoto}
+                        onSave={() => handleStudentImageUpload(selectedImageFile)}
+                    />
+                </div>
+            </div>
+        )}
+        </>
     );
 }
 

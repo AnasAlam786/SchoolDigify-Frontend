@@ -6,6 +6,7 @@ import { ErrorState } from '../../utils/GlobalPageStatus.jsx';
 import CreatePaperModal from './modal/CreatePaperModal.jsx';
 import Header from './components/Header.jsx';
 import usePermission from '../../../hooks/usePermission.js';
+import { fetchClasses } from '../../utils/fetchClasses'
 
 const sortOptions = [
   { value: 'newest', label: 'Newest First' },
@@ -26,6 +27,8 @@ export default function Dashboard() {
 
   const { hasPermission, PERMISSIONS } = usePermission()
 
+  const [classes, setClasses] = useState([])
+
   const [myPapers, setMyPapers] = useState([]);
   const [staffPaper, setStaffPaper] = useState([]);
 
@@ -36,6 +39,14 @@ export default function Dashboard() {
   const [filters, setFilters] = useState(defaultFilters);
   const [menuOpenId, setMenuOpenId] = useState(null);
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+
+  useEffect(() => {
+    const loadClasses = async () => {
+      const classData = await fetchClasses();
+      setClasses(classData);
+    }
+    loadClasses()
+  }, [])
 
 
   useEffect(() => {
@@ -207,7 +218,7 @@ export default function Dashboard() {
       {mainContent}
 
 
-      {isCreateModalOpen && (<CreatePaperModal setCreateModalOpen={setCreateModalOpen} />)}
+      {isCreateModalOpen && (<CreatePaperModal setCreateModalOpen={setCreateModalOpen} classes={classes}/>)}
 
     </>
   );

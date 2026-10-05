@@ -1,5 +1,3 @@
-import cardTemplate from "../designs/hangingIDCard/hangingIDCard.html?raw";
-import IDCardCss from "../designs/hangingIDCard/hangingIDCard.css?raw";
 import leagueSpartanFont from "../../../assets/LeagueSpartanFont.ttf";
 
 const imageBaseUrl = "https://lh3.googleusercontent.com/d/";
@@ -9,33 +7,38 @@ const safeText = (value) => {
     return String(value).trim();
 };
 
-function applyCardData(cardNode, student, school) {
-    const fields = {
-        "school-name": school?.name || "School Name",
-        "school-UDISE": `UDISE: ${school?.udise || ""}`,
-        "session-year": student?.session_year || "2025-26",
-        "student-image": student?.image
-            ? `${imageBaseUrl}${student.image}=s220`
-            : "/static/no-student-boy-image.png",
-        "student-name": student?.student_name || "Student Name",
-        "student-father": `C/O ${student?.father_name || student?.student_father || "Father Name"}`,
-        "student-class-roll": student?.class_roll || "Class - Roll",
-        "student-DOB": student?.dob || "DOB",
-        "student-phone": student?.phone || "N/A",
-        "student-address": student?.address || "N/A",
-        "teacher-sign": student?.teacher_sign
-            ? `${imageBaseUrl}${student.teacher_sign}=s200`
-            : "",
-        "principal-sign": school?.principal_sign
-            ? `${imageBaseUrl}${school.principal_sign}=s200`
-            : "",
-        "school-address": school?.address || "School Address",
-        "school-phone": school?.phone || "School Phone",
-        "school-logo": school?.logo || "",
-    };
+const firstName = (value) => safeText(value).split(/\s+/)[0] || "";
 
-    Object.entries(fields).forEach(([id, value]) => {
-        const element = cardNode.querySelector(`#${id}`);
+function applyCardData(cardNode, student, school) {
+    const fields = [
+        ["school-name", "school-name", school?.name || "School Name"],
+        ["school-udise", "school-UDISE", `UDISE: ${school?.udise || ""}`],
+        ["school-logo", "school-logo", school?.logo || ""],
+        ["session-year", "session-year", student?.session_year || "2025-26"],
+        ["student-image", "student-image", student?.image
+            ? `${imageBaseUrl}${student.image}=s220`
+            : "/static/no-student-boy-image.png"],
+        ["student-name", "student-name", student?.student_name || "Student Name"],
+        ["student-father", "student-father", `C/O ${student?.father_name || student?.student_father || "Father Name"}`],
+        ["student-class-roll", "student-class-roll", student?.class_roll || "Class - Roll"],
+        ["student-dob", "student-DOB", student?.dob || "DOB"],
+        ["student-phone", "student-phone", student?.phone || "N/A"],
+        ["student-address", "student-address", student?.address || "N/A"],
+        ["teacher-sign", "teacher-sign", student?.teacher_sign
+            ? `${imageBaseUrl}${student.teacher_sign}=s200`
+            : ""],
+        ["teacher-name", "teacher-name", firstName(student?.teacher_name)],
+        ["principal-sign", "principal-sign", school?.principal_sign
+            ? `${imageBaseUrl}${school.principal_sign}=s200`
+            : ""],
+        ["principal-name", "principal-name", firstName(school?.principal_name)],
+        ["school-address", "school-address", school?.address || "School Address"],
+        ["school-phone", "school-phone", school?.phone || "School Phone"],
+    ];
+
+    fields.forEach(([field, id, value]) => {
+        const element = cardNode.querySelector(`[data-field="${field}"]`)
+            || cardNode.querySelector(`[id="${id}" i]`);
 
         if (!element) return;
 
@@ -52,19 +55,31 @@ function applyCardData(cardNode, student, school) {
     const teacherSign = cardNode.querySelector("#teacher-sign");
     const principalSign = cardNode.querySelector("#principal-sign");
 
-    if (teacherSign) {
-        teacherSign.style.display = teacherSign.getAttribute("src") ? "block" : "none";
-    }
+    [[teacherSign, cardNode.querySelector("#teacher-name"), cardNode.querySelector("#teacher-sign-label")],
+        [principalSign, cardNode.querySelector("#principal-name"), cardNode.querySelector("#principal-sign-label")]].forEach(([image, name, label]) => {
+        if (!image || !name || !label) return;
 
-    if (principalSign) {
-        principalSign.style.display = principalSign.getAttribute("src") ? "block" : "none";
-    }
+        const showName = () => {
+            image.style.display = "none";
+            name.style.display = name.textContent.trim() ? "block" : "none";
+            label.style.display = name.textContent.trim() ? "block" : "none";
+        };
+
+        image.addEventListener("error", showName, { once: true });
+        if (image.getAttribute("src")) {
+            image.style.display = "block";
+            name.style.display = "none";
+            label.style.display = "block";
+        } else {
+            showName();
+        }
+    });
 }
 
-function makePrintableCard(student, school) {
+function makePrintableCard(student, school, design) {
     const printDoc = document.implementation.createHTMLDocument("ID Card Print");
     const template = printDoc.createElement("template");
-    template.innerHTML = cardTemplate;
+    template.innerHTML = design.html;
 
     const cardNode = template.content.firstElementChild?.cloneNode(true);
     if (!cardNode) {
@@ -75,9 +90,14 @@ function makePrintableCard(student, school) {
     return cardNode;
 }
 
-export function PrintIDCard(studentsData, schoolData) {
+export function PrintIDCard(studentsData, schoolData, design) {
     if (!Array.isArray(studentsData) || studentsData.length === 0) {
         alert("No data available for printing.");
+        return;
+    }
+
+    if (!design) {
+        alert("No ID card design selected.");
         return;
     }
 
@@ -93,7 +113,7 @@ export function PrintIDCard(studentsData, schoolData) {
     doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8" /><title>ID Cards</title>
 
         <style>
-        ${IDCardCss}
+        ${design.css}
 
                 /* ---------- PRINT LAYOUT ONLY ---------- */
                             @font-face {
@@ -173,7 +193,9 @@ export function PrintIDCard(studentsData, schoolData) {
     page.className = "print-page";
 
     studentsData.forEach((student) => {
-        const card = makePrintableCard(student, schoolData);
+        const card = makePrintableCard(
+            student, schoolData, design
+        );
         if (!card) return;
 
         const cardWrap = doc.createElement("div");

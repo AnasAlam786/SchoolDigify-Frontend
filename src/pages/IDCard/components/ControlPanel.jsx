@@ -1,18 +1,28 @@
+import { useMemo, useState } from "react";
+
 function ControlPanel({
     classes = [],
     filters,
     selection,
     setSelectedClass,
-    handlePrint
+    handlePrint,
+    design
 }) {
 
     const { search, setSearch, showOnlyImages, setshowOnlyImages } = filters;
     const { totalSelected, handleSelectAllVisible } = selection;
+    const [isDesignModalOpen, setIsDesignModalOpen] = useState(false);
 
+    const designOptions = useMemo(
+        () => Object.values(design?.designs || {}),
+        [design]
+    );
 
-
+    const selectedDesign =
+        design?.designs?.[design.selectedDesignId] || designOptions[0] || null;
 
     return (
+        <>
         <div className="rounded-2xl bg-[#1A1A1A] border border-white/[0.05] shadow-2xl shadow-black/80 p-6 
                 md:p-8 transition-all duration-300 hover:border-blue-500/20 hover:shadow-blue-500/5">
 
@@ -137,7 +147,21 @@ function ControlPanel({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-6 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-6 border-t border-white/5">
+
+                <button
+                    type="button"
+                    onClick={() => setIsDesignModalOpen(true)}
+                    className="group relative px-5 py-3.5 bg-white/[0.04] border border-white/10 hover:border-cyan-400/40 hover:bg-cyan-500/5 text-white font-semibold rounded-xl transition-all duration-300 flex items-center gap-3 min-w-[180px] justify-center text-sm shadow-lg shadow-black/20"
+                >
+                    <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30">
+                        <i className="fas fa-layer-group text-sm"></i>
+                    </span>
+                    <span className="flex flex-col items-start leading-tight">
+                        <span className="text-[10px] uppercase tracking-[0.22em] text-blue-300/80">Template</span>
+                        <span className="text-sm font-semibold text-white">{selectedDesign?.name || "Select Design"}</span>
+                    </span>
+                </button>
 
                 <button
                     id="download-images"
@@ -145,8 +169,7 @@ function ControlPanel({
                         hover:to-cyan-400 text-white font-semibold rounded-xl transition-all duration-300 transform 
                         hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 
                         flex items-center gap-3 min-w-[240px] justify-center text-base
-
-                        "
+                        disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                     disabled={!totalSelected}
                     onClick={() => handlePrint && handlePrint()}
                 >
@@ -167,6 +190,104 @@ function ControlPanel({
 
             </div>
         </div>
+
+        {isDesignModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+                <div className="w-full max-w-5xl rounded-[28px] border border-white/10 bg-[#0f172a]/95 shadow-[0_30px_80px_rgba(15,23,42,0.85)] ring-1 ring-blue-500/20">
+                    <div className="flex items-center justify-between border-b border-white/10 px-6 py-5 sm:px-8">
+                        <div>
+                            <p className="text-[10px] uppercase tracking-[0.24em] text-cyan-300/80">Design Library</p>
+                            <h3 className="mt-2 text-2xl font-bold text-white">Choose an ID Card Design</h3>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setIsDesignModalOpen(false)}
+                            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xl text-gray-300 transition hover:bg-white/10 hover:text-white"
+                            aria-label="Close design selector"
+                        >
+                            ×
+                        </button>
+                    </div>
+
+                    <div className="grid gap-5 p-6 sm:grid-cols-2 lg:grid-cols-3 sm:p-8">
+                        {designOptions.map((option) => {
+                            const isSelected = option.id === selectedDesign?.id;
+
+                            return (
+                                <button
+                                    key={option.id}
+                                    type="button"
+                                    onClick={() => {
+                                        if (design?.setSelectedDesignId) {
+                                            design.setSelectedDesignId(option.id);
+                                        }
+                                        setIsDesignModalOpen(false);
+                                    }}
+                                    className={`group relative overflow-hidden rounded-2xl border p-3 text-left transition-all duration-300 ${
+                                        isSelected
+                                            ? "border-cyan-400/60 bg-cyan-500/10 shadow-[0_0_30px_rgba(34,211,238,0.2)]"
+                                            : "border-white/10 bg-white/[0.02] hover:border-blue-400/40 hover:bg-blue-500/5"
+                                    }`}
+                                >
+                                    <div className="mb-4 rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-3">
+                                        <div className="mx-auto h-36 w-full max-w-[180px] rounded-xl bg-gradient-to-br from-blue-500/10 via-slate-800 to-slate-900 p-2 shadow-inner ring-1 ring-white/10">
+                                            <div className="flex h-full flex-col justify-between rounded-lg border border-white/10 bg-[#0b1120] p-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="h-7 w-7 rounded-full bg-cyan-400/20 ring-1 ring-cyan-300/40" />
+                                                    <div className="h-2.5 w-16 rounded-full bg-white/10" />
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="h-12 w-12 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-400/90 shadow-lg" />
+                                                    <div className="flex-1 space-y-1.5">
+                                                        <div className="h-2.5 w-2/3 rounded-full bg-white/80" />
+                                                        <div className="h-2 rounded-full bg-white/50" />
+                                                        <div className="h-2 w-1/2 rounded-full bg-white/40" />
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center justify-between text-[9px] text-slate-300">
+                                                    <span>Class</span>
+                                                    <span>Roll</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <h4 className="text-base font-semibold text-white">{option.name}</h4>
+                                            <p className="mt-1 text-xs text-slate-400">{option.description || "Premium student card layout"}</p>
+                                        </div>
+                                        {isSelected && (
+                                            <span className="inline-flex items-center rounded-full bg-cyan-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-300 ring-1 ring-cyan-400/30">
+                                                Active
+                                            </span>
+                                        )}
+                                    </div>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    <div className="flex flex-col-reverse gap-3 border-t border-white/10 px-6 py-5 sm:flex-row sm:items-center sm:justify-end sm:px-8">
+                        <button
+                            type="button"
+                            onClick={() => setIsDesignModalOpen(false)}
+                            className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-gray-300 transition hover:bg-white/10 hover:text-white"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsDesignModalOpen(false)}
+                            className="rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:brightness-110"
+                        >
+                            Done
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }
 

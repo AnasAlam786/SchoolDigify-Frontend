@@ -131,15 +131,18 @@
         <div style="font-family: 'League Spartan'; position: absolute; top: 84%; left: 25%; transform: translate(-50%, -50%); width: 90%; text-align: center; z-index: 5;">
             <img src="" id="teacher-sign"
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 200%; max-height: 200%; object-fit: contain;"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='none';">
-            <p style="font-weight: bolder; font-size: 9px; color: #919191;">Teacher's Sign</p>
+                >
+            <span id="teacher-name" data-field="teacher-name" class="signature-name" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:red;">
+                
+            </span>
+            <p id="teacher-sign-label" style="display:none; font-weight: bolder; font-size: 8px; color: #919191;">Teacher's Sign</p>
         </div>
         
         <div style="font-family: 'League Spartan'; position: absolute; top: 84%; left: 75%; transform: translate(-50%, -50%); width: 90%; text-align: center; z-index: 5;">
             <img src="" id="principal-sign"
-                onerror="this.style.display='none'; this.nextElementSibling.style.display='none';"
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 200%; max-height: 200%; object-fit: contain;">
-            <p style="font-weight: bolder; font-size: 9px; color: #919191;">Principal Sign</p>
+            <span id="principal-name" data-field="principal-name" class="signature-name" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color: green;"></span>
+            <p id="principal-sign-label" style="display:none; font-weight: bolder; font-size: 8px; color: #919191;">Principal Sign</p>
         </div>
         
         <!-- Footer -->

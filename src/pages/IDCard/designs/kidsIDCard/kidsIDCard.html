@@ -1,0 +1,590 @@
+<div class="id-card" style="
+        width:54mm;
+        height:85.6mm;
+        position:relative;
+        overflow:hidden;
+        background:#fffdfb;
+        color:#202830;
+        font-family:Inter,system-ui,sans-serif;
+        flex:0 0 auto;
+        isolation:isolate;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+        --a:#d58378;
+        --mint:#79a998;
+        --deep:#584946;
+        --pale:#fff4f0;
+        --ink:#47403e;
+        --muted:#8d7d78;
+        --line:#eedfd9;
+    ">
+
+    <div style="
+            position:absolute;
+            top:0;
+            left:0;
+            right:0;
+            height:1.8mm;
+            background:var(--mint);
+        ">
+    </div>
+
+    <div style="
+            position:absolute;
+            width:7mm;
+            height:7mm;
+            right:-3mm;
+            top:19mm;
+            border-radius:50%;
+            background:#fae2dd;
+        ">
+    </div>
+
+    <div style="
+            position:absolute;
+            width:5mm;
+            height:5mm;
+            left:-2mm;
+            top:42mm;
+            border-radius:50%;
+            background:#e0f2eb;
+        ">
+    </div>
+
+    <div style="
+            position:absolute;
+            width:3.5mm;
+            height:3.5mm;
+            right:4mm;
+            top:47mm;
+            border-radius:50%;
+            background:#fdebc9;
+        ">
+    </div>
+
+
+    <div style="
+    position:absolute;
+    top:3mm;
+    left:0;
+    width:100%;
+    height:10mm;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    z-index:5;
+">
+
+        <!-- DYNAMIC WIDTH HEADER -->
+        <div style="
+        display:flex;
+        align-items:center;
+        gap:2mm;
+
+        width:max-content;
+        max-width:calc(100% - 4mm);
+
+        min-width:0;
+    ">
+
+            <!-- SCHOOL LOGO -->
+            <div style="
+            flex:0 0 8.5mm;
+            width:8.5mm;
+            height:8.5mm;
+
+            overflow:hidden;
+            background:#fff;
+            border-radius:50%;
+            border:.4mm solid #f3d9d4;
+        ">
+                <img id="school-logo" data-field="school-logo" style="
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    object-fit:cover;
+                " src="https://lh3.googleusercontent.com/d/1WGhnlEn8v3Xl1KGaPs2iyyaIWQzKBL3w" alt="school-logo">
+            </div>
+
+
+            <!-- SCHOOL INFORMATION -->
+            <div style="
+            min-width:0;
+            max-width:42mm;
+        ">
+
+                <div data-field="school-name" id="school-name" style="
+                    color:var(--deep);
+                    font-size:8pt;
+                    font-weight:900;
+                    line-height:1.06;
+                    letter-spacing:.05px;
+
+                    max-height:7mm;
+
+                    white-space:normal!important;
+                    word-break:break-word!important;
+                    overflow-wrap:break-word!important;
+
+                    display:-webkit-box;
+                    -webkit-line-clamp:2;
+                    -webkit-box-orient:vertical;
+                    overflow:hidden;
+                ">
+                    FALAK PUBLIC SCHOOL SCHOOL
+                </div>
+
+
+                <div style="
+                margin-top:.6mm;
+                color:var(--a);
+                font-size:4.5pt;
+                line-height:1;
+                font-weight:800;
+                letter-spacing:.35px;
+                white-space:nowrap;
+                text-transform:uppercase;
+            ">
+                    <span data-field="school-udise" id="school-udise">
+                        UDISE: 09041404306
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div style="
+            position:absolute;
+            top:15mm;
+            left:50%;
+            transform:translateX(-50%);
+            width:21mm;
+            height:24mm;
+            overflow:hidden;
+            background:#e9eef2;
+            border-radius:4.8mm;
+            border:.8mm solid #fff;
+            outline:.35mm solid #df968c;
+            box-shadow:0 1.2mm 3.2mm rgba(137,91,84,.11);
+        ">
+
+        <img id="student-image" data-field="student-image" style="
+                display:block;
+                width:100%;
+                height:100%;
+                object-fit:cover;
+                object-position:top center;
+            ">
+
+    </div>
+
+    <div style="
+            position:absolute;
+            top:42mm;
+            left:5mm;
+            width:44mm;
+            text-align:center;
+            z-index:5;
+        ">
+
+        <div data-field="student-name" id="student-name" style="
+                color:var(--deep);
+                font-size: 9.5pt;
+                line-height:1;
+                font-weight:900;
+                letter-spacing:-.05px;
+                max-height:7.3mm;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
+                overflow:hidden;
+            ">
+            Aarav Sharma
+        </div>
+
+        <div data-field="student-father" id="student-father" style="
+                margin-top:0.5mm;
+                color:#7e6e69;
+                font-size:6.57pt;
+                line-height:1;
+                font-weight:650;
+                display:-webkit-box;
+                -webkit-line-clamp:2;
+                -webkit-box-orient:vertical;
+                overflow:hidden;
+            ">
+
+        </div>
+
+    </div>
+
+    <div style="
+            position:absolute;
+            top:51mm;
+            left:50%;
+            transform:translateX(-50%);
+            width:48mm;
+            z-index:5;
+        ">
+
+        <div style="
+                display:flex;
+                align-items:baseline;
+                margin-bottom:.55mm;
+                padding:.7mm 1.3mm;
+                border-radius:1.8mm;
+                background:#fff7f4;
+            ">
+
+            <span style="
+                    width:16mm;
+                    flex:0 0 16mm;
+                    color:#a66b63;
+                    font-size:4.7pt;
+                    line-height:1.05;
+                    font-weight:800;
+                    letter-spacing:.3px;
+                    text-transform:uppercase;
+                    white-space:nowrap;
+                ">
+                Class / Roll
+            </span>
+
+            <span style="
+                    width:1.4mm;
+                    flex:0 0 1.4mm;
+                    font-size:4.8pt;
+                    font-weight:900;
+                    text-align:center;
+                ">
+                :
+            </span>
+
+            <span data-field="student-class-roll" id="student-class-roll" style="
+                    min-width:0;
+                    flex:1;
+                    color:#504643;
+                    font-size:6.5pt;
+                    line-height:1.04;
+                    font-weight:750;
+                    overflow-wrap:anywhere;
+                ">
+                X-A / 12
+            </span>
+
+        </div>
+
+        <div style="
+                display:flex;
+                align-items:baseline;
+                margin-bottom:.55mm;
+                padding:.7mm 1.3mm;
+                border-radius:1.8mm;
+                background:#f3faf7;
+            ">
+
+            <span style="
+                    width:16mm;
+                    flex:0 0 16mm;
+                    color:#a66b63;
+                    font-size:4.7pt;
+                    line-height:1.05;
+                    font-weight:800;
+                    letter-spacing:.3px;
+                    text-transform:uppercase;
+                    white-space:nowrap;
+                ">
+                Date of Birth
+            </span>
+
+            <span style="
+                    width:1.4mm;
+                    flex:0 0 1.4mm;
+                    font-size:4.8pt;
+                    font-weight:900;
+                    text-align:center;
+                ">
+                :
+            </span>
+
+            <span data-field="student-dob" id="student-dob" style="
+                    min-width:0;
+                    flex:1;
+                    color:#504643;
+                    font-size:6.5pt;
+                    line-height:1.04;
+                    font-weight:750;
+                    overflow-wrap:anywhere;
+                ">
+                14 Aug 2010
+            </span>
+
+        </div>
+
+        <div style="
+                display:flex;
+                align-items:baseline;
+                margin-bottom:.55mm;
+                padding:.7mm 1.3mm;
+                border-radius:1.8mm;
+                background:#fff7f4;
+            ">
+
+            <span style="
+                    width:16mm;
+                    flex:0 0 16mm;
+                    color:#a66b63;
+                    font-size:4.7pt;
+                    line-height:1.05;
+                    font-weight:800;
+                    letter-spacing:.3px;
+                    text-transform:uppercase;
+                    white-space:nowrap;
+                ">
+                Phone
+            </span>
+
+            <span style="
+                    width:1.4mm;
+                    flex:0 0 1.4mm;
+                    font-size:4.8pt;
+                    font-weight:900;
+                    text-align:center;
+                ">
+                :
+            </span>
+
+            <span data-field="student-phone" id="student-phone" style="
+                    min-width:0;
+                    flex:1;
+                    color:#504643;
+                    font-size:6.5pt;
+                    line-height:1.04;
+                    font-weight:750;
+                    overflow-wrap:anywhere;
+                ">
+                +91 8765 43210
+            </span>
+
+        </div>
+
+        <div style="
+                display:flex;
+                align-items:baseline;
+                margin-bottom:.55mm;
+                padding:.7mm 1.3mm;
+                border-radius:1.8mm;
+                background:#f3faf7;
+            ">
+
+            <span style="
+                    width:16mm;
+                    flex:0 0 16mm;
+                    color:#a66b63;
+                    font-size:4.7pt;
+                    line-height:1.05;
+                    font-weight:800;
+                    letter-spacing:.3px;
+                    text-transform:uppercase;
+                    white-space:nowrap;
+                ">
+                Address
+            </span>
+
+            <span style="
+                    width:1.4mm;
+                    flex:0 0 1.4mm;
+                    font-size:4.8pt;
+                    font-weight:900;
+                    text-align:center;
+                ">
+                :
+            </span>
+
+            <span data-field="student-address" id="student-address" style="
+                    min-width:0;
+                    flex:1;
+                    color:#504643;
+                    font-size:4.8pt;
+                    line-height:1.04;
+                    font-weight:700;
+                    overflow-wrap:anywhere;
+                ">
+                12, MG Road, Bengaluru 560001
+            </span>
+
+        </div>
+
+    </div>
+
+    <div style="
+    position:absolute;
+    top:71mm;
+    left:50%;
+    transform:translateX(-50%);
+    width:46mm;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    z-index:15;
+">
+
+        <!-- TEACHER -->
+        <div style="
+        width:15mm;
+        height:5mm;
+        position:relative;
+        text-align:center;
+    ">
+
+            <img id="teacher-sign" data-field="teacher-sign" style="
+                display:none;
+                max-height:6mm;
+                max-width:15mm;
+                width:auto;
+                height:auto;
+                object-fit:contain;
+                margin:0 auto;
+            " alt="teacher-sign">
+
+            <span id="teacher-name" data-field="teacher-name" class="signature-name" style="display:none; color: red;"></span>
+
+            <span id="teacher-sign-label" style="
+            display:none;
+            position:absolute;
+            bottom:-0.3mm;
+            left:0;
+            width:100%;
+            text-align:center;
+
+            font-size:3.3pt;
+            font-weight:800;
+            letter-spacing:.3px;
+            text-transform:uppercase;
+
+            color:#98665e;
+            opacity:.55;
+
+            pointer-events:none;
+        ">
+                Teacher Sign
+            </span>
+
+        </div>
+
+
+        <!-- SESSION -->
+        <div data-field="session-year" id="session-year" style="
+            padding:1mm 1.35mm;
+            background:#eff8f5;
+            border-radius:4mm;
+            color:#568878;
+            font-size:4.2pt;
+            line-height:1;
+            font-weight:800;
+            letter-spacing:.35px;
+            white-space:nowrap;
+            text-transform:uppercase;
+        ">
+            2026-27
+        </div>
+
+
+        <!-- PRINCIPAL -->
+        <div style="
+        width:15mm;
+        height:5mm;
+        position:relative;
+        text-align:center;
+    ">
+
+            <img id="principal-sign" data-field="principal-sign" style="
+                display:block;
+                max-height:6mm;
+                max-width:15mm;
+                width:auto;
+                height:auto;
+                object-fit:contain;
+                margin:0 auto;
+            " alt="principal-sign">
+
+            <span id="principal-name" data-field="principal-name" class="signature-name" style="display:none; color: green;"></span>
+
+            <span id="principal-sign-label" style="
+            display:none;
+            position:absolute;
+            bottom:-0.3mm;
+            left:0;
+            width:100%;
+            text-align:center;
+
+            font-size:3.3pt;
+            font-weight:800;
+            letter-spacing:.3px;
+            text-transform:uppercase;
+
+            color:#98665e;
+            opacity:.55;
+
+            pointer-events:none;
+        ">
+                Principal Sign
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div style="
+            position:absolute;
+            left:0;
+            right:0;
+            bottom:0;
+            height:5mm;
+            z-index:20;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:1mm 3mm;
+            background:#eef7f3;
+            border-top:.25mm solid #d9e9e2;
+            color:#456c60;
+        ">
+
+        <div data-field="school-address" id="school-address" style="
+                width:100%;
+                color:#5b786e;
+                font-size:5pt;
+                line-height:1.04;
+                font-weight:650;
+                display:-webkit-box;
+                -webkit-box-orient:vertical;
+                -webkit-line-clamp:2;
+                overflow:hidden;
+                overflow-wrap:anywhere;
+                transform-origin:center top;
+            ">
+            MG Road, Bengaluru, Karnataka 560001
+        </div>
+
+        <div data-field="school-phone" id="school-phone" style="
+                margin-top:.45mm;
+                font-size:5.5pt;
+                line-height:1;
+                font-weight:850;
+                white-space:nowrap;
+            ">
+            +91 80 1234 5678
+        </div>
+
+    </div>
+
+</div>

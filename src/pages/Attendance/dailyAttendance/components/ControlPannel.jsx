@@ -1,9 +1,8 @@
-import React from 'react'
-
 function ControlPannel({
   classes,
   selectedClass,
   selectedDate,
+  filterValidationErrors,
   onClassChange,
   onDateChange,
   onGetAttendance,
@@ -13,6 +12,9 @@ function ControlPannel({
 
 
 {
+  const classHasError = Boolean(filterValidationErrors?.class)
+  const dateHasError = Boolean(filterValidationErrors?.date)
+
   return (
     <section className="w-full mb-10 p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6">
@@ -26,7 +28,9 @@ function ControlPannel({
               value={selectedClass}
               onChange={(e) => onClassChange(e.target.value)}
               required
-              className="w-full bg-[#1A1A1A] border border-white/10 text-gray-100 text-base p-3 pl-4 rounded-lg focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+              aria-invalid={classHasError}
+              aria-describedby={classHasError ? 'attendance-class-error' : undefined}
+              className={`w-full bg-[#1A1A1A] border text-gray-100 text-base p-3 pl-4 rounded-lg focus:ring-2 outline-none transition-all appearance-none cursor-pointer ${classHasError ? 'border-red-500 focus:ring-red-500/30 focus:border-red-500' : 'border-white/10 focus:ring-indigo-500/50 focus:border-indigo-500'}`}
             >
               <option disabled value="" className="bg-[#1A1A1A] text-gray-500">
                 Select Class
@@ -45,6 +49,12 @@ function ControlPannel({
               <i className="fas fa-chevron-down"></i>
             </div>
           </div>
+          {classHasError && (
+            <p id="attendance-class-error" className="mt-2 flex items-center gap-1.5 text-xs font-medium text-red-300">
+              <i className="fas fa-circle-exclamation" aria-hidden="true"></i>
+              Select a class first.
+            </p>
+          )}
         </div>
 
         {/* Date Picker */}
@@ -58,9 +68,17 @@ function ControlPannel({
               value={selectedDate}
               onChange={(e) => onDateChange(e.target.value)}
               required
-              className="w-full bg-[#1A1A1A] border border-white/10 text-gray-100 text-base p-3 pl-4 pr-10 rounded-lg focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 outline-none transition-all cursor-pointer"
+              aria-invalid={dateHasError}
+              aria-describedby={dateHasError ? 'attendance-date-error' : undefined}
+              className={`w-full bg-[#1A1A1A] border text-gray-100 text-base p-3 pl-4 pr-10 rounded-lg focus:ring-2 outline-none transition-all cursor-pointer ${dateHasError ? 'border-red-500 focus:ring-red-500/30 focus:border-red-500' : 'border-white/10 focus:ring-blue-500/50 focus:border-blue-500'}`}
             />
           </div>
+          {dateHasError && (
+            <p id="attendance-date-error" className="mt-2 flex items-center gap-1.5 text-xs font-medium text-red-300">
+              <i className="fas fa-circle-exclamation" aria-hidden="true"></i>
+              Select a date first.
+            </p>
+          )}
         </div>
       </div>
 

@@ -73,6 +73,10 @@ createRoot(document.getElementById("root")).render(
             element={<PermissionRoute permission="attendance"> <Attendance /> </PermissionRoute>} />
 
           <Route
+            path="/overall_attendance"
+            element={<PermissionRoute permission="overall_attendance"> <Attendance /> </PermissionRoute>} />
+
+          <Route
             path="/show_marks"
             element={<PermissionRoute permission="show_marks"> <ShowMarks /> </PermissionRoute>} />
 

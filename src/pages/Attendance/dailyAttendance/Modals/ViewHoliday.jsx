@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { apiGet, apiPost } from '../../../api/api'
+import { apiGet, apiPost } from '../../../../api/api'
 
 function ViewHoliday({ onClose }) {
   const [holidays, setHolidays] = useState([])

@@ -8,7 +8,12 @@ import UploadContainer from "./components/UploaderContainer"
 import "./style/ImageUploader.css"
 
 export default function ImageUploader({
-    image = "", setImage
+    image = "",
+    setImage,
+    showSaveButton = false,
+    saveButtonText = "Upload Image",
+    saveDisabled = false,
+    onSave,
 }) {
 
     const [cropSrc, setCropSrc] = useState(null);
@@ -62,6 +67,12 @@ export default function ImageUploader({
                 onOpenChoice={() => setShowChoice(true)}
                 onUpload={() => openFilePicker(false)}
                 onCapture={() => openFilePicker(true)}
+
+                // For Directly Update Image
+                showSaveButton={showSaveButton}
+                saveButtonText={saveButtonText}
+                saveDisabled={saveDisabled}
+                onSave={onSave}
             />
 
 

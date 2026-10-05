@@ -45,29 +45,39 @@ export default function StudentsList() {
         fetchClasses().then(setClasses);
     }, []);
 
-    useEffect(() => {
-        const loadStudents = async () => {
-            setLoading(true);
-            setError("");
-            try {
-                const response = await apiGet("/api/get_students_data");
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error("Failed to load students data.");
-                }
-
-                const loadedStudents = data.students || [];
-                setStudents(loadedStudents);
-                setStats(data.stats || null);
-            } catch (err) {
-                setError(err.message || "Unable to load student data.");
-            } finally {
-                setLoading(false);
+    const loadStudents = useCallback(async () => {
+        setLoading(true);
+        setError("");
+        try {
+            const response = await apiGet("/api/get_students_data");
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error("Failed to load students data.");
             }
-        };
 
-        loadStudents();
+            const loadedStudents = data.students || [];
+            setStudents(loadedStudents);
+            setStats(data.stats || null);
+        } catch (err) {
+            setError(err.message || "Unable to load student data.");
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
+    const handleStudentImageUpdated = useCallback((studentId, nextImageId) => {
+        setStudents((prevStudents) =>
+            prevStudents.map((student) =>
+                String(student.id) === String(studentId)
+                    ? { ...student, IMAGE: nextImageId ?? student.IMAGE }
+                    : student
+            )
+        );
+    }, []);
+
+    useEffect(() => {
+        loadStudents();
+    }, [loadStudents]);
 
 
     const filteredStudents = useMemo(() => {
@@ -155,6 +165,7 @@ export default function StudentsList() {
                         student={student}
                         onViewDetails={openStudentDetails}
                         onPayFees={openFeeDrawer}
+                        onImageUpdated={handleStudentImageUpdated}
                     />
                 ))}
             </div>

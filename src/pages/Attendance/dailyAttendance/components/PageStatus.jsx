@@ -1,5 +1,3 @@
-import React from 'react'
-
 function SkeletonLoader() {
     return (
         <div className="grid gap-4 justify-center [grid-template-columns:repeat(auto-fit,minmax(0,420px))] max-[480px]:grid-cols-1">
@@ -74,7 +72,12 @@ function HolidayState({ holidayDetails, setShowViewHolidayModal }) {
 
 
 
-function InitialState() {
+function InitialState({
+    title = 'Mark Student Attendance',
+    badge = 'Attendance Management',
+    description,
+    hint = 'Choose filters above to begin',
+}) {
     return (
         <div className="flex flex-col items-center justify-center py-20 px-6 text-center glass-card rounded-3xl border border-white/10 relative overflow-hidden">
 
@@ -89,27 +92,40 @@ function InitialState() {
 
             {/* Badge */}
             <span className="mb-4 px-4 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-sm border border-emerald-500/20">
-                Attendance Management
+                {badge}
             </span>
 
             {/* Title */}
             <h2 className="text-3xl font-bold text-white mb-3">
-                Mark Student Attendance
+                {title}
             </h2>
 
             {/* Description */}
             <p className="max-w-lg text-gray-400 leading-relaxed">
-                Select the class, section, and attendance date to load students.
-                Once loaded, you can quickly mark students as
-                <span className="text-green-400"> Present</span>,
-                <span className="text-red-400"> Absent</span>, or
-                <span className="text-yellow-400"> Leave</span>.
+                {description || (
+                    <>
+                        Select the class and attendance date to load students. Once loaded, you can quickly mark students as
+                        <span className="text-green-400"> Present</span>,
+                        <span className="text-red-400"> Absent</span>, or
+                        <span className="text-yellow-400"> Half Day</span>.
+                    </>
+                )}
             </p>
 
+            <aside className="relative z-10 mt-6 flex w-full max-w-2xl items-start gap-3 rounded-xl border border-indigo-400/15 bg-indigo-400/[0.06] p-4 text-left">
+                <i className="fas fa-circle-info mt-0.5 text-indigo-300" aria-hidden="true"></i>
+                <div>
+                    <p className="text-sm font-semibold text-gray-200">How attendance is used</p>
+                    <p className="mt-1 text-sm leading-relaxed text-gray-400">
+                        Overall attendance is used in official documents such as results and transfer certificates when entered. If it has not been entered, daily attendance records are used instead.
+                    </p>
+                </div>
+            </aside>
+
             {/* Hint */}
-            <div className="mt-8 flex items-center gap-2 text-sm text-gray-500">
+            <div className="relative z-10 mt-6 flex items-center gap-2 text-sm text-gray-500">
                 <i className="fas fa-arrow-up"></i>
-                <span>Choose filters above to begin</span>
+                <span>{hint}</span>
             </div>
 
         </div>

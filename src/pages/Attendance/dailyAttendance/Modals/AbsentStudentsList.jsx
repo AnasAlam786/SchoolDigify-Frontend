@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { apiGet } from '../../../api/api';
+import { apiGet } from '../../../../api/api';
 
 
 function AbsentStudentsList({ classID, date, onClose }) {

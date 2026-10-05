@@ -1,3 +1,4 @@
+import { ID_CARD_DESIGNS } from "./designs/designRegistry";
 import { useEffect, useState, useMemo } from 'react';
 import Header from './components/Header'
 import ControlPanel from './components/ControlPanel'
@@ -10,6 +11,9 @@ import { apiGet } from '../../api/api';
 import "./style/IDCard.css"
 
 function IDCard() {
+
+    const [selectedDesignId, setSelectedDesignId] = useState("hanging");
+    const selectedDesign = ID_CARD_DESIGNS[selectedDesignId] || ID_CARD_DESIGNS.hanging;
 
     const [StudentsIDCardData, setStudentsIDCardData] = useState(null);
     const [SchoolData, setSchoolData] = useState(null);
@@ -40,7 +44,7 @@ function IDCard() {
             return;
         }
 
-        PrintIDCard(selectedStudentsData, SchoolData);
+        PrintIDCard(selectedStudentsData, SchoolData, selectedDesign);
     };
 
 
@@ -56,6 +60,7 @@ function IDCard() {
             if (response.ok) {
                 setStudentsIDCardData(data.students_data)
                 setSchoolData(data.school_data)
+                console.log(data.students_data)
             } else {
                 setstudentIDCardError(data.message || 'Failed to fetch attendance')
                 showAlert(500, data.message || 'Failed to fetch attendance')
@@ -168,6 +173,7 @@ function IDCard() {
                 selectedStudents={selectedStudents}
                 schoolData={SchoolData}
                 setSelectedStudents={setSelectedStudents}
+                selectedDesign={selectedDesign}
             />);
     }
 
@@ -181,6 +187,12 @@ function IDCard() {
 
                 setSelectedClass={setSelectedClass}
                 handlePrint={handlePrint}
+
+                design={{
+                    designs: ID_CARD_DESIGNS,
+                    selectedDesignId,
+                    setSelectedDesignId
+                }}
             />
 
             <StatusBar

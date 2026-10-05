@@ -1,5 +1,6 @@
 import htmlTemplate from "./hangingIDCard.html?raw";
 import cssText from "./hangingIDCard.css?raw";
+import signatureFontUrl from "../../../../assets/Bastliga One.ttf?url";
 
 class IDCard extends HTMLElement {
   static htmlTemplate = htmlTemplate;
@@ -20,7 +21,9 @@ class IDCard extends HTMLElement {
     "student-phone",
     "student-address",
     "teacher-sign",
+    "teacher-name",
     "principal-sign",
+    "principal-name",
     "school-address",
     "school-phone",
   ];
@@ -77,7 +80,9 @@ class IDCard extends HTMLElement {
       if (!IDCard.cssSheet) {
 
         IDCard.cssSheet = new CSSStyleSheet();
-        IDCard.cssSheet.replaceSync(cssText);
+        IDCard.cssSheet.replaceSync(
+          cssText.replaceAll("__SIGNATURE_FONT_URL__", signatureFontUrl)
+        );
       }
 
       this.shadowRoot.innerHTML = IDCard.htmlTemplate;
@@ -142,10 +147,41 @@ class IDCard extends HTMLElement {
     set("student-phone", "student-phone");
     set("student-address", "student-address");
 
-    set("teacher-sign", "teacher-sign");
-    set("principal-sign", "principal-sign");
+    this.updateSignature("teacher-sign", "teacher-name");
+    this.updateSignature("principal-sign", "principal-name");
     set("school-address", "school-address");
     set("school-phone", "school-phone");
+  }
+
+  updateSignature(sign, staffName) {
+    const image = this.shadowRoot.getElementById(sign);
+    const name = this.shadowRoot.getElementById(staffName);
+    const label = this.shadowRoot.getElementById(`${sign}-label`);
+    if (!image || !name || !label) return;
+
+    const imageUrl = this.getAttribute(sign)?.trim();
+    const firstName = this.getAttribute(staffName)?.trim().split(/\s+/)[0] || "";
+    name.textContent = firstName;
+
+    const showName = () => {
+      image.style.display = "none";
+      name.style.display = firstName ? "block" : "none";
+      label.style.display = firstName ? "block" : "none";
+    };
+
+    image.onerror = () => {
+      if (image.getAttribute("src") === imageUrl) showName();
+    };
+
+    if (imageUrl) {
+      image.style.display = "block";
+      name.style.display = "none";
+      label.style.display = "block";
+      image.setAttribute("src", imageUrl);
+    } else {
+      image.removeAttribute("src");
+      showName();
+    }
   }
 }
 
