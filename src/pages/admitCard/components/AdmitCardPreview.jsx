@@ -1,4 +1,4 @@
-function AdmitCardPreview({ previewHtml, isHTMLloading }) {
+function AdmitCardPreview({ previewHtml, isHTMLloading, error }) {
 
   const handleOpen = () => {
     if (!previewHtml) {
@@ -43,7 +43,9 @@ function AdmitCardPreview({ previewHtml, isHTMLloading }) {
     <>
       <h2 className="text-lg font-medium text-white mb-4">Preview</h2>
       <div className="flex flex-col gap-3 md:flex-row justify-between items-start md:items-center mb-4">
-        <div className="text-sm text-gray-400">{isHTMLloading}</div>
+        <div className="text-sm text-gray-400">
+          {isHTMLloading ? 'Preparing your print preview...' : error ? `Could not generate preview: ${error}` : ''}
+        </div>
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <button
             type="button"
@@ -71,7 +73,7 @@ function AdmitCardPreview({ previewHtml, isHTMLloading }) {
         {previewHtml ? (
           <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
         ) : (
-          <div className="text-gray-500">Select a class and click "Generate Preview" to see admit cards here.</div>
+          <div className="text-gray-500">Select a class, choose one or two print items, and click "Generate Preview".</div>
         )}
       </div>
     </>

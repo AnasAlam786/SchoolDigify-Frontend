@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import ControlPannel from './components/ControlPannel.jsx';
 import AdmitCardPreview from './components/AdmitCardPreview.jsx';
 import Header from './components/Header.jsx';
+import { fetchClasses } from '../utils/fetchClasses'
 
 function AdmitAndScheme() {
   const [classes, setClasses] = useState([]);
@@ -14,32 +15,27 @@ function AdmitAndScheme() {
 
 
   useEffect(() => {
-    async function fetchClasses() {
+    const loadClasses = async () => {
       setIsClassesLoading(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/get_classes`, {
-          credentials: 'include'
-        });
-        if (!res.ok) throw new Error('Failed to fetch classes');
-        const data = await res.json();
-        setClasses(data.classes || data || []);
-      } catch (err) {
-        console.error('fetchClasses error', err);
+        const classData = await fetchClasses();
+        setClasses(classData);
+      } catch (error) {
+        setClassError(error.message || 'Unable to load classes.');
       } finally {
         setIsClassesLoading(false);
       }
-    }
+    };
+    loadClasses()
+  }, [])
 
-    fetchClasses();
-  }, []);
 
-
-  async function fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme) {
+  async function fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme, feeHeading) {
     setClassError(null)
     if (!selectedClass) {
       setPreviewHtml("");
       setClassError("Class Selection is mandatory")
-      showAlert(400, "Please select a class first");
+      setHTMLFetchError("Please select a class first.");
 
       document.querySelector(".main-content")?.scrollTo({
         top: 0,
@@ -68,17 +64,16 @@ function AdmitAndScheme() {
             schemeHeading: schemeHeading,
             outputType: outputType,
             examScheme: examScheme,
+            feeHeading: feeHeading,
           }),
         }
       );
 
+      const responseData = await res.json();
       if (!res.ok) {
-        throw new Error("Failed to fetch students");
+        throw new Error(responseData.message || responseData.error || 'Failed to generate print preview.');
       }
-
-      const students = await res.json();
-
-      setPreviewHtml(students.html || "");
+      setPreviewHtml(responseData.html || "");
     } catch (err) {
       console.error(err);
 
@@ -93,7 +88,7 @@ function AdmitAndScheme() {
     <>
       <Header />
       <ControlPannel
-        
+
         classes={classes}
         classError={classError}
         isClassesLoading={isClassesLoading}
@@ -107,6 +102,7 @@ function AdmitAndScheme() {
         <AdmitCardPreview
           previewHtml={previewHtml}
           isHTMLloading={isHTMLloading}
+          error={HTMLFetchError}
         />
       </div>
     </>
