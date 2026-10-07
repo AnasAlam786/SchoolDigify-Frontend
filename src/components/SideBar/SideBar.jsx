@@ -22,8 +22,11 @@ export default function Sidebar({ isSidebarOpen, setSidebarOpen, menuSections })
     const visibleSections = menuSections
         .map(section => ({
             ...section,
-            items: section.items.filter(item => hasPermission(item.permissionName)
-            ),
+            items: section.items.filter(item => (
+                item.permissionNames
+                    ? item.permissionNames.some((permissionName) => hasPermission(permissionName))
+                    : hasPermission(item.permissionName)
+            )),
         }))
         .filter(section => section.items.length > 0);
 

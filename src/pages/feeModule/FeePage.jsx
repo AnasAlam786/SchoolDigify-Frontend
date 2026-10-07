@@ -6,9 +6,16 @@ import { apiGet } from '../../api/api';
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
 import { SkeletonLoader } from './studentsListTab/components/PageStatus';
 import { NoFeeSessionStatus } from './studentsListTab/components/PageStatus';
+import usePermission from '../../hooks/usePermission'
 
 function FeePage() {
-  const [activeTab, setActiveTab] = useState('pay-fees');
+  const { hasPermission, PERMISSIONS } = usePermission()
+  const canViewFeeData = hasPermission(PERMISSIONS.VIEW_FEE_DATA);
+  const canViewAnalytics = hasPermission(PERMISSIONS.FEES_ANALYTICS);
+
+  const [activeTab, setActiveTab] = useState(
+    canViewFeeData ? 'pay-fees' : 'dashboard'
+  );
 
   const [studentsData, setStudentsData] = useState([]);
   const [totalDiscountBySchool, setTotalDiscountBySchool] = useState(0);
@@ -77,13 +84,23 @@ function FeePage() {
   }, []);
 
   useEffect(() => {
-    Promise.allSettled([loadStudentFeeData(), loadDashboardData()]);
-  }, [loadStudentFeeData, loadDashboardData]);
+    Promise.allSettled([
+      canViewFeeData
+        ? Promise.resolve().then(loadStudentFeeData)
+        : Promise.resolve(),
+      canViewAnalytics
+        ? Promise.resolve().then(loadDashboardData)
+        : Promise.resolve(),
+    ]);
+  }, [canViewFeeData, canViewAnalytics, loadStudentFeeData, loadDashboardData]);
 
   const tabOptions = [
-    { value: 'pay-fees', label: 'Pay Fees', icon: WalletCards },
-    { value: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-  ];
+    canViewFeeData && { value: 'pay-fees', label: 'Pay Fees', icon: WalletCards },
+    canViewAnalytics && { value: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+  ].filter(Boolean);
+  const selectedTab = tabOptions.some((tab) => tab.value === activeTab)
+    ? activeTab
+    : tabOptions[0]?.value;
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -120,7 +137,7 @@ function FeePage() {
         </div>
       </header>
 
-      {activeTab === 'pay-fees' ? (
+      {selectedTab === 'pay-fees' ? (
         isStudentsDataLoading ? (
           <SkeletonLoader />
         ) : showNoFeeSessionState ? (
@@ -135,7 +152,7 @@ function FeePage() {
             totalDiscountBySchool={totalDiscountBySchool}
           />
         )
-      ) : (
+      ) : selectedTab === 'dashboard' ? (
         <DashboardTab
           data={dashboardData}
           loading={isDashboardLoading}
@@ -143,7 +160,7 @@ function FeePage() {
           onRetry={loadDashboardData}
           students={studentsData}
         />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -110,7 +110,7 @@ createRoot(document.getElementById("root")).render(
 
           <Route
             path="/fees"
-            element={<PermissionRoute permission="view_fee_data"> <FeePage /> </PermissionRoute>} />
+            element={<PermissionRoute permissions={["view_fee_data", "fees_analytics"]}> <FeePage /> </PermissionRoute>} />
 
           <Route
             path="/setup"

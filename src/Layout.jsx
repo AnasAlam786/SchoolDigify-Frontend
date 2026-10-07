@@ -33,7 +33,7 @@ function Layout() {
           route: "/fees",
           icon: Receipt,
           color: "text-emerald-500",
-          permissionName: PERMISSIONS.VIEW_FEE_DATA
+          permissionNames: [PERMISSIONS.VIEW_FEE_DATA, PERMISSIONS.FEES_ANALYTICS]
         },
         {
           label: "Add Student",
