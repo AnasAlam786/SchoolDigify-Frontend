@@ -1,9 +1,9 @@
-import React from 'react'
+import { useNavigate } from 'react-router-dom';
 import { apiGet } from '../../../api/api';
 import usePermission from '../../../hooks/usePermission';
 
 function Header() {
-
+    const navigate = useNavigate();
     const {hasPermission, PERMISSIONS} = usePermission()
 
     const handleDownloadPdf = async () => {
@@ -39,7 +39,7 @@ function Header() {
                 {hasPermission(PERMISSIONS.ADMISSION) && 
                 (<button
                     type="button"
-                    onClick={() => (window.location.href = "/admission")}
+                    onClick={() => navigate("/admission")}
                     className="bg-gradient-to-r from-blue-500 to-indigo-700 text-white px-6 py-3 rounded-xl font-medium flex items-center justify-center"
                 >
                     <i className="fas fa-plus mr-2" /> Add New Student

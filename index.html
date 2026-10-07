@@ -351,7 +351,7 @@
 
 <script>
   // Alert System
-  function showAlert(statusCode, message) {
+  function showAlert(statusCode, message, timeOutTime=5000) {
     const isSuccess = statusCode >= 200 && statusCode < 300;
     const alertId = 'alert-' + Date.now();
 
@@ -385,7 +385,7 @@
         alert.style.transform = 'translateY(-10px)';
         setTimeout(() => alert.remove(), 300);
       }
-    }, 5000);
+    }, timeOutTime);
   }
 
 </script>
