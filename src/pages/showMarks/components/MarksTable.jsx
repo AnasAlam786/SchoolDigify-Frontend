@@ -1,4 +1,3 @@
-import React from 'react'
 import usePermission from '../../../hooks/usePermission'
 
 const getOrderedExamNames = (student) => {
@@ -118,8 +117,6 @@ function MarksTable(
         const marks = student.marks || {}
         const examNames = getOrderedExamNames(student)
         const subjects = getOrderedSubjects(student, examNames)
-        const gTotal = marks['G. Total'] || marks['Grand Total'] || null
-        const percentageValue = gTotal?.percentage ?? 0
         const isSelected = selectedIds.has(student.student_session_id)
 
         return (

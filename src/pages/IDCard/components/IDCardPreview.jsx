@@ -29,6 +29,11 @@ function IDCardPreview({ student, school, design }) {
     );
 
     card.setAttribute(
+      "qr-value",
+      student?.qr_value ?? ""
+    );
+
+    card.setAttribute(
       "student-image",
       student?.image
         ? `${imageBaseUrl}${student.image}=s220`

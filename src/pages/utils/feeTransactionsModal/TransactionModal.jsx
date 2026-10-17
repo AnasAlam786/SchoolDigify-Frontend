@@ -5,14 +5,23 @@ import TransactionCard from './components/TransactionCard';
 import TransactionModalSkeletonLoader from './components/ModalStatus';
 
 
-export default function TransactionModal({ transactionModalStudent, onClose }) {
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function TransactionModal({
+  transactionModalStudent,
+  onClose,
+  initialTransactions = null,
+  readOnly = false,
+}) {
+  const [transactions, setTransactions] = useState(() => initialTransactions ?? []);
+  const [loading, setLoading] = useState(() => !Array.isArray(initialTransactions));
   const [error, setError] = useState('');
   const [deletedExpanded, setDeletedExpanded] = useState(false);
 
 
   useEffect(() => {
+    if (Array.isArray(initialTransactions)) {
+      return;
+    }
+
     async function loadTransactions() {
       const studentSessionId = transactionModalStudent?.studentSessionId;
       const phone = transactionModalStudent?.phone;
@@ -54,7 +63,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
     }
 
     loadTransactions();
-  }, [transactionModalStudent]);
+  }, [transactionModalStudent, initialTransactions]);
 
   const activeTransactions = transactions.filter((transaction) => !transaction.is_deleted);
   const deletedTransactions = transactions.filter((transaction) => transaction.is_deleted);
@@ -113,7 +122,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0 flex-1">
               <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl lg:text-3xl">Fee Transactions</h1>
-              <p className="mt-1 text-xs text-slate-400 sm:text-sm">View and manage all fee transactions</p>
+              <p className="mt-1 text-xs text-slate-400 sm:text-sm">{readOnly ? "View fee payment transactions" : "View and manage all fee transactions"}</p>
             </div>
             <button type="button" onClick={onClose} aria-label="Close modal" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-600/50 bg-slate-800/80 text-slate-400 transition-all hover:bg-slate-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 sm:h-9 sm:w-9">
               <svg className="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,6 +157,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
                   transaction={transaction}
                   setTransactions={setTransactions}
                   isDeleted={false}
+                  readOnly={readOnly}
                 />
               ))
             )}
@@ -177,6 +187,7 @@ export default function TransactionModal({ transactionModalStudent, onClose }) {
                     transaction={transaction}
                     setTransactions={setTransactions}
                     isDeleted={true}
+                    readOnly={readOnly}
                   />
                 ))}
               </div>

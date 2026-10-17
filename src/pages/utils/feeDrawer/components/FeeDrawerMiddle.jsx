@@ -1,7 +1,14 @@
 import FeeCard from './FeeCard';
 
 
-export default function FeeDrawerMiddle({ currentStudentData, currentStudentIndex, setStudents, noFeeSelectedError, setNoFeeSelectedError }) {
+export default function FeeDrawerMiddle({
+    currentStudentData,
+    currentStudentIndex,
+    setStudents,
+    noFeeSelectedError,
+    setNoFeeSelectedError,
+    readOnly = false,
+}) {
 
     const monthlyFees = currentStudentData?.monthlyFees || [];
     const otherFees = currentStudentData?.otherFees || [];
@@ -45,7 +52,8 @@ export default function FeeDrawerMiddle({ currentStudentData, currentStudentInde
                         isSelected={
                             selectedFees.some((selected) => selected.id === fee.id || selected.fee_id === fee.fee_id)
                         }
-                        onToggle={onToggleFee}
+                        onToggle={readOnly ? undefined : onToggleFee}
+                        readOnly={readOnly}
                     />
                 ))}
 
@@ -78,7 +86,8 @@ export default function FeeDrawerMiddle({ currentStudentData, currentStudentInde
                         isSelected={
                             selectedFees.some((selected) => selected.id === fee.id || selected.fee_id === fee.fee_id)
                         }
-                        onToggle={onToggleFee}
+                        onToggle={readOnly ? undefined : onToggleFee}
+                        readOnly={readOnly}
                     />
                 ))}
 

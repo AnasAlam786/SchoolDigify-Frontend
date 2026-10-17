@@ -1,5 +1,3 @@
-import React from 'react'
-
 export default function SelectionBar(
     { filteredStudents, selectedIds, setSelectedIds, handlePrintCertificate, handlePrintResult }
 ) {

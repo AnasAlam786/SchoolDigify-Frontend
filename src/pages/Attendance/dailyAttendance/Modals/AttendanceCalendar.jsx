@@ -16,11 +16,12 @@ const statusInfo = {
 
 const getStatus = (s) => statusInfo[s] || { label: "Unmarked", abbr: "—", className: "status-unmarked" };
 
-export default function AttendanceCalendar({ student, onClose }) {
+export default function AttendanceCalendar({ student, onClose, qrToken = null }) {
   const today = new Date();
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
   const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   // All data in a single state
   const [attendanceData, setAttendanceData] = useState({
@@ -33,16 +34,23 @@ export default function AttendanceCalendar({ student, onClose }) {
     if (!student?.student_session_id) return;
 
     setLoading(true);
+    setError("");
     setAttendanceData({ records: [], monthly_summary: {}, session_summary: {},
   })
 
     try {
-      const query = new URLSearchParams({ student_session_id: student.student_session_id, year, month })
-      const response = await apiGet(`/api/get_student_attendance_month?${query}`)
+      const query = new URLSearchParams({ year, month })
+      const attendanceUrl = qrToken
+        ? `/api/public/idcard/${encodeURIComponent(qrToken)}/attendance?${query}`
+        : `/api/get_student_attendance_month?${new URLSearchParams({
+          student_session_id: student.student_session_id,
+          year,
+          month,
+        })}`;
+      const response = await apiGet(attendanceUrl)
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
-        return
       }
 
       const data = await response.json();
@@ -53,8 +61,8 @@ export default function AttendanceCalendar({ student, onClose }) {
         session_summary: data.session_summary || {},
       });
     } catch (error) {
-      showAlert(500, "Failed to load attendance:", error)
       console.error("Failed to load attendance:", error);
+      setError(error.message || "Failed to load attendance.");
 
       setAttendanceData({
         records: [],
@@ -190,6 +198,10 @@ export default function AttendanceCalendar({ student, onClose }) {
                 {isLoading ? (
                   <div className="col-span-7 py-20 text-center text-neutral-400">
                     Loading attendance...
+                  </div>
+                ) : error ? (
+                  <div role="alert" className="col-span-7 py-20 text-center text-rose-300">
+                    {error}
                   </div>
                 ) : (
                   <>

@@ -1,4 +1,5 @@
 import leagueSpartanFont from "../../../assets/LeagueSpartanFont.ttf";
+import { createStudentQRCode } from "../designs/studentQRCode";
 
 const imageBaseUrl = "https://lh3.googleusercontent.com/d/";
 
@@ -51,6 +52,14 @@ function applyCardData(cardNode, student, school) {
 
         element.textContent = safeText(value);
     });
+
+    const qrContainer = cardNode.querySelector("#student-qr");
+    const qrCodeContainer = cardNode.querySelector("#student-qr-code");
+    if (qrContainer && qrCodeContainer) {
+        const qrCode = createStudentQRCode(student?.qr_value);
+        qrCodeContainer.innerHTML = qrCode;
+        qrContainer.style.display = qrCode ? "flex" : "none";
+    }
 
     const teacherSign = cardNode.querySelector("#teacher-sign");
     const principalSign = cardNode.querySelector("#principal-sign");

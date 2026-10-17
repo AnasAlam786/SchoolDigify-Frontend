@@ -1,10 +1,7 @@
-export default function FeeCard({ fee, isSelected, onToggle }) {
-
-  console.log(fee.dueDate, fee)
+export default function FeeCard({ fee, isSelected, onToggle, readOnly = false }) {
 
   const statusUpper = (fee.status || '').toUpperCase();
   const isPaid = statusUpper === 'PAID';
-  const isDue = statusUpper === 'DUE';
 
   const title = fee.period_name || fee.name || fee.fee_type || fee.month || 'Fee';
 
@@ -57,16 +54,16 @@ export default function FeeCard({ fee, isSelected, onToggle }) {
 
     <div
       className={`group relative flex flex-col justify-between w-full overflow-hidden rounded-2xl border  transition-all duration-200 backdrop-blur-md ${currentStyle.container
-        } ${isPaid
+        } ${readOnly || isPaid
           ? 'cursor-not-allowed opacity-85'
           : 'cursor-pointer active:scale-[0.985]'
         }`}
-      onClick={() => !isPaid && onToggle?.(fee)}
-      role="button"
-      tabIndex={isPaid ? -1 : 0}
-      aria-disabled={isPaid}
+      onClick={() => !readOnly && !isPaid && onToggle?.(fee)}
+      role={readOnly ? undefined : "button"}
+      tabIndex={readOnly || isPaid ? -1 : 0}
+      aria-disabled={readOnly || isPaid}
       onKeyDown={(e) => {
-        if (!isPaid && (e.key === 'Enter' || e.key === ' ')) {
+        if (!readOnly && !isPaid && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           onToggle?.(fee);
         }

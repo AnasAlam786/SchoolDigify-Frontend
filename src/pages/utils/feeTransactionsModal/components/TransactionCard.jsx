@@ -6,7 +6,7 @@ import { sendWhatsAppMessage } from '../../../utils/sendWhatsAppMessage';
 import { transactionWhatsappMessage } from '../../../utils/watsappMessages';
 import { usePrintableTransaction } from './printableTransaction';
 
-function TransactionCard({ transaction, setTransactions, isDeleted }) {
+function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = false }) {
   const getTransactionHTML = usePrintableTransaction();
 
   const [isRestoreButtonLoading, setRestoreButtonLoading] = useState(false);
@@ -142,7 +142,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted }) {
           <div className="flex items-center gap-1.5 shrink-0 ml-auto sm:ml-0">
             {!isDeleted ? (
               <>
-                <button
+                {!readOnly && <button
                   type="button"
                   onClick={() => handleWhatsappMessage(transaction)}
                   aria-label="Send WhatsApp"
@@ -150,9 +150,9 @@ function TransactionCard({ transaction, setTransactions, isDeleted }) {
                 >
                   <i className="fab fa-whatsapp text-sm" />
                   <span className="hidden md:inline">WhatsApp</span>
-                </button>
+                </button>}
 
-                <button 
+                <button
                   type="button" 
                   onClick={() => handlePrint(transaction)} 
                   aria-label="Print Transaction"
@@ -162,7 +162,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted }) {
                   <span className="hidden md:inline">Print</span>
                 </button>
 
-                <button
+                {!readOnly && <button
                   type="button"
                   disabled={isSoftDeleteButtonLoading}
                   onClick={() => handleSoftDelete(transaction.id)}
@@ -177,9 +177,9 @@ function TransactionCard({ transaction, setTransactions, isDeleted }) {
                   <span className="hidden md:inline">
                     {isSoftDeleteButtonLoading ? "Deleting..." : "Delete"}
                   </span>
-                </button>
+                </button>}
               </>
-            ) : (
+            ) : (!readOnly && (
               <button
                 type="button"
                 disabled={isRestoreButtonLoading}
@@ -193,7 +193,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted }) {
                 )}
                 <span>{isRestoreButtonLoading ? "Restoring..." : "Restore"}</span>
               </button>
-            )}
+            ))}
           </div>
         </div>
 

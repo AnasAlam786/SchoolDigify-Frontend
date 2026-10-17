@@ -1,6 +1,7 @@
 import htmlTemplate from "./kidsIDCard.html?raw";
 import cssText from "./kidsIDCard.css?raw";
 import signatureFontUrl from "../../../../assets/Bastliga One.ttf?url";
+import { createStudentQRCode } from "../studentQRCode";
 
 class IDCard extends HTMLElement {
     static htmlTemplate = htmlTemplate;
@@ -13,6 +14,7 @@ class IDCard extends HTMLElement {
         "school-udise",
         "school-logo",
         "session-year",
+        "qr-value",
         "student-image",
         "student-name",
         "student-father",
@@ -89,6 +91,7 @@ class IDCard extends HTMLElement {
             this.shadowRoot.adoptedStyleSheets = [IDCard.cssSheet];
 
             this.updateContent();
+            this.updateStudentQRCode();
         } catch (error) {
             console.error("Error loading ID card:", error);
 
@@ -113,6 +116,7 @@ class IDCard extends HTMLElement {
         if (!this.shadowRoot) return;
 
         this.updateContent();
+        if (name === "qr-value") this.updateStudentQRCode();
     }
 
     updateContent() {
@@ -151,6 +155,16 @@ class IDCard extends HTMLElement {
         this.updateSignature("principal-sign", "principal-name");
         set("school-address", "school-address");
         set("school-phone", "school-phone");
+    }
+
+    updateStudentQRCode() {
+        const qrContainer = this.shadowRoot.getElementById("student-qr");
+        const qrCodeContainer = this.shadowRoot.getElementById("student-qr-code");
+        if (!qrContainer || !qrCodeContainer) return;
+
+        const qrCode = createStudentQRCode(this.getAttribute("qr-value"));
+        qrCodeContainer.innerHTML = qrCode;
+        qrContainer.style.display = qrCode ? "flex" : "none";
     }
 
     updateSignature(sign, staffName) {

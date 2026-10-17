@@ -12,7 +12,7 @@ import "./style/IDCard.css"
 
 function IDCard() {
 
-    const [selectedDesignId, setSelectedDesignId] = useState("hanging");
+    const [selectedDesignId, setSelectedDesignId] = useState("kidsIDCard");
     const selectedDesign = ID_CARD_DESIGNS[selectedDesignId] || ID_CARD_DESIGNS.hanging;
 
     const [StudentsIDCardData, setStudentsIDCardData] = useState(null);

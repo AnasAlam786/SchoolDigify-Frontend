@@ -16,6 +16,7 @@ import Login from "./pages/login/Login.jsx";
 import Logout from "./pages/logout/Logout.jsx";
 
 import IDCard from "./pages/IDCard/IDCard.jsx";
+import PublicIDCard from "./pages/IDCard/PublicIDCard.jsx";
 import FillMarks from "./pages/fillMarks/FillMarks.jsx";
 import Dashboard from "./pages/questionPaperMaker/PaperDashboard/Dashboard.jsx";
 import Editor from "./pages/questionPaperMaker/PaperEditor/Editor.jsx";
@@ -43,6 +44,7 @@ createRoot(document.getElementById("root")).render(
 
         {/* Login */}
         <Route path="/login" element={<LoginCheck> <Login /> </LoginCheck>} />
+        <Route path="/idcard/:token" element={<PublicIDCard />} />
 
         <Route element={<LoginRequired> <Layout /> </LoginRequired>} >
 

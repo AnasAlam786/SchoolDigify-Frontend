@@ -10,6 +10,7 @@ import { AuthContext } from '../../../../auth/authProvider';
 export default function FeeDrawerHeader({
     students,
     currentStudentData,
+    readOnly = false,
 }) {
     const { sessionData } = useContext(AuthContext);
 
@@ -49,7 +50,7 @@ export default function FeeDrawerHeader({
                 throw new Error("No student fee data available");
             }
 
-            const schoolName = sessionData.school_name || "School Administration"
+            const schoolName = sessionData?.school_name || "School Administration"
 
             // Generate message from the fresh API data
             const message = feeDemandMessage(students, schoolName);
@@ -129,7 +130,7 @@ export default function FeeDrawerHeader({
                                 <i className="fas fa-clock mr-1.5 opacity-80" />Due: ₹{getStudentDueAmount(currentStudentData)}
                             </span>
 
-                            <button
+                            {!readOnly && <button
                                 type="button"
                                 onClick={() => handleWhatsAppReminder(students)}
                                 title="Send fee reminder on WhatsApp"
@@ -138,7 +139,7 @@ export default function FeeDrawerHeader({
                             >
                                 <MessageCircle className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" strokeWidth={2.2} />
                                 <span>Reminder</span>
-                            </button>
+                            </button>}
                         </div>
                     </div>
 
