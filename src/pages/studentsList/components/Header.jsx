@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { apiGet } from '../../../api/api';
 import usePermission from '../../../hooks/usePermission';
 
-function Header() {
+function Header({ onPrintStudentRegister }) {
     const navigate = useNavigate();
     const {hasPermission, PERMISSIONS} = usePermission()
 
@@ -53,6 +53,14 @@ function Header() {
                 >
                     <i className="fas fa-file-download mr-2" /> Students Data PDF
                 </button>)}
+
+                <button
+                    type="button"
+                    onClick={onPrintStudentRegister}
+                    className="bg-gradient-to-r from-purple-500 to-violet-700 text-white px-6 py-3 rounded-xl font-medium flex items-center justify-center"
+                >
+                    <i className="fas fa-print mr-2" /> Print Student Register
+                </button>
             </div>
         </div>
     )

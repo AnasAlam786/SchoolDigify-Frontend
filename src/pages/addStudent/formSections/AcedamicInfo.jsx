@@ -1,10 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FormField from '../components/FormField';
 import { apiPost } from '../../../api/api';
 
 function AcedamicInfo({ form, setForm, classes, errors, sessionYears, handleInputChange }) {
 
     const [rollText, setRollText] = useState("Available rolls will appear after selecting class.");
+    const savedAdmissionNumbers = useRef({ SR: form.SR, ADMISSION_NO: form.ADMISSION_NO });
+
+    const handleStudentStatusChange = (isNew) => {
+        if (isNew) {
+            setForm((state) => ({
+                ...state,
+                admitted_as_new: true,
+                admission_session_id: sessionYears.length > 0 ? sessionYears[0].id : state.admission_session_id,
+                class_id: state.admission_class_id,
+                SR: savedAdmissionNumbers.current.SR ?? "",
+                ADMISSION_NO: savedAdmissionNumbers.current.ADMISSION_NO ?? "",
+            }));
+            return;
+        }
+
+        savedAdmissionNumbers.current = { SR: form.SR, ADMISSION_NO: form.ADMISSION_NO };
+        setForm((state) => ({ ...state, admitted_as_new: false, SR: "", ADMISSION_NO: "" }));
+    };
 
     useEffect(() => {
         const fetchAvailableRolls = async () => {
@@ -131,12 +149,7 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, handleInpu
                             name="admitted_as_new"
                             value="new"
                             checked={form.admitted_as_new}
-                            onChange={() => setForm((state) => ({
-                                ...state,
-                                admitted_as_new: true,
-                                admission_session_id: sessionYears.length > 0 ? sessionYears[0].id : state.admission_session_id,
-                                class_id: state.admission_class_id // initial sync
-                            }))}
+                            onChange={() => handleStudentStatusChange(true)}
                             className="peer hidden"
                         />
                         <div className="peer-checked:bg-gradient-to-r peer-checked:from-blue-600/20 peer-checked:to-cyan-600/20 peer-checked:border-blue-500/50 peer-checked:text-blue-400 p-4 sm:p-5 rounded-xl border-2 border-gray-800 hover:border-gray-700 transition-all duration-300">
@@ -158,7 +171,7 @@ function AcedamicInfo({ form, setForm, classes, errors, sessionYears, handleInpu
                             name="admitted_as_new"
                             value="old"
                             checked={!form.admitted_as_new}
-                            onChange={() => setForm((state) => ({ ...state, admitted_as_new: false }))}
+                            onChange={() => handleStudentStatusChange(false)}
                             className="peer hidden"
                         />
                         <div className="peer-checked:bg-gradient-to-r peer-checked:from-emerald-600/20 peer-checked:to-green-600/20 peer-checked:border-emerald-500/50 peer-checked:text-emerald-400 p-4 sm:p-5 rounded-xl border-2 border-gray-800 hover:border-gray-700 transition-all duration-300">

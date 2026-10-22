@@ -15,6 +15,7 @@ import FeeDrawer from "../utils/feeDrawer/FeeDrawer";
 import FeeSessionSetupModal from "../utils/feeSessionSetup/FeeSessionSetupModal";
 import TransactionModal from '../utils/feeTransactionsModal/TransactionModal';
 import RollNumberGapWarning from "./components/RollNumberGapWarning";
+import { createStudentRegisterHtml } from "./components/StudentRegisterPrint";
 
 import usePermission from "../../hooks/usePermission";
 
@@ -40,6 +41,33 @@ export default function StudentsList() {
 
     const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
     const [transactionModalStudent, setTransactionModalStudent] = useState({});
+
+    const printStudentRegister = useCallback(async () => {
+        const printWindow = window.open("", "_blank");
+        if (!printWindow) {
+            alert("Pop-up blocked. Please allow pop-ups to print the student register.");
+            return;
+        }
+
+        try {
+            const response = await apiGet("/api/get_students_print_data");
+            if (!response.ok) {
+                throw new Error("Failed to load student register data.");
+            }
+            const data = await response.json();
+            if (!Array.isArray(data.students)) {
+                throw new Error("Student register data is unavailable.");
+            }
+
+            printWindow.document.open();
+            printWindow.document.write(createStudentRegisterHtml(data.students));
+            printWindow.document.close();
+            printWindow.setTimeout(() => printWindow.print(), 250);
+        } catch (err) {
+            printWindow.close();
+            alert(err.message || "Unable to print the student register.");
+        }
+    }, []);
 
     useEffect(() => {
         fetchClasses().then(setClasses);
@@ -174,7 +202,7 @@ export default function StudentsList() {
 
     return (
         <div className="mx-auto">
-            <Header />
+            <Header onPrintStudentRegister={printStudentRegister} />
 
             <StudentFilters
                 studentFilters={studentFilters}
