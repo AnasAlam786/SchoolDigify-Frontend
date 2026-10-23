@@ -9,6 +9,7 @@ import AttendanceCalendar from './Modals/AttendanceCalendar'
 import MarkHoliday from './Modals/MarkHoliday'
 import ViewHoliday from './Modals/ViewHoliday'
 import StudentAttendanceList from './Modals/StudentAttendanceList'
+import BulkAttendance from './Modals/BulkAttendance'
 
 import { InitialState, SkeletonLoader, HolidayState } from './components/PageStatus'
 import { ErrorState, NoStudentsState } from '../../utils/GlobalPageStatus'
@@ -29,6 +30,7 @@ function DailyAttendance({ classes, classesLoading }) {
   const [showViewHolidayModal, setShowViewHolidayModal] = useState(false)
   const [showCalendarModal, setShowCalendarModal] = useState(false)
   const [showStudentAttendanceModal, setShowStudentAttendanceModal] = useState(false)
+  const [showBulkAttendanceModal, setShowBulkAttendanceModal] = useState(false)
   const [attendanceCategory, setAttendanceCategory] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState(null)
 
@@ -118,6 +120,27 @@ function DailyAttendance({ classes, classesLoading }) {
     setShowStudentAttendanceModal(true)
   }, [])
 
+  const handleBulkAttendance = useCallback(async action => {
+    try {
+      const response = await apiPost('/api/bulk_mark_attendance', {
+        class_id: selectedClass,
+        date: selectedDate,
+        action,
+      })
+      const data = await response.json()
+
+      if (!response.ok) return data.message || 'Failed to update attendance'
+
+      setShowBulkAttendanceModal(false)
+      window.showAlert?.(200, data.message || 'Attendance updated successfully')
+      await fetchAttendance(selectedClass, selectedDate)
+      return null
+    } catch (error) {
+      console.error(error)
+      return 'Network error while updating attendance'
+    }
+  }, [fetchAttendance, selectedClass, selectedDate])
+
   let mainPageState
   if (classesLoading || loadingStudentsData) {
     mainPageState = <SkeletonLoader />
@@ -170,6 +193,7 @@ function DailyAttendance({ classes, classesLoading }) {
           if (value) setFilterValidationErrors(current => ({ ...current, date: false }))
         }}
         onGetAttendance={() => fetchAttendance(selectedClass, selectedDate)}
+        onOpenBulkAttendance={() => setShowBulkAttendanceModal(true)}
         loadingStudentsData={loadingStudentsData || classesLoading}
       />
       {mainPageState}
@@ -199,6 +223,14 @@ function DailyAttendance({ classes, classesLoading }) {
             setShowStudentAttendanceModal(false)
             setAttendanceCategory('all')
           }}
+        />
+      )}
+      {showBulkAttendanceModal && (
+        <BulkAttendance
+          className={selectedClassName}
+          date={selectedDate}
+          onClose={() => setShowBulkAttendanceModal(false)}
+          onConfirm={handleBulkAttendance}
         />
       )}
     </div>

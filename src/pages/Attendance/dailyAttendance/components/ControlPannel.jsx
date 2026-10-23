@@ -6,6 +6,7 @@ function ControlPannel({
   onClassChange,
   onDateChange,
   onGetAttendance,
+  onOpenBulkAttendance,
   loadingStudentsData,
 }) 
 
@@ -83,11 +84,11 @@ function ControlPannel({
       </div>
 
       {/* Get Attendance Button */}
-      <div className="lg:col-span-2 mt-3 flex justify-center">
+      <div className="lg:col-span-2 mt-3 flex flex-col sm:flex-row justify-center gap-3">
         <button
           onClick={onGetAttendance}
           disabled={loadingStudentsData}
-          className="w-full lg:w-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 
+          className="w-full sm:w-1/2 bg-gradient-to-r from-purple-600 to-indigo-600 
                      hover:from-purple-700 hover:to-indigo-700 text-white font-semibold 
                      py-3.5 px-6 rounded-xl transition-all duration-300 shadow-xl 
                      shadow-purple-900/30 hover:shadow-purple-900/40 
@@ -109,6 +110,16 @@ function ControlPannel({
               <span>Get Attendance</span>
             </>
           )}
+        </button>
+        <button
+          type="button"
+          onClick={onOpenBulkAttendance}
+          disabled={!selectedClass || !selectedDate || loadingStudentsData}
+          className="w-full sm:w-auto bg-white/5 hover:bg-white/10 border border-white/10 text-gray-100 font-semibold py-3.5 px-5 rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+          title="Apply one attendance action to every student in this class"
+        >
+          <i className="fas fa-users" aria-hidden="true"></i>
+          <span>Bulk Attendance</span>
         </button>
       </div>
     </section>
