@@ -1,5 +1,4 @@
 import { MessageCircle } from 'lucide-react';
-const indicatorColors = ['bg-blue-500', 'bg-green-500', 'bg-amber-500', 'bg-purple-500'];
 import { feeDemandMessage } from '../../watsappMessages';
 import { sendWhatsAppMessage } from '../../sendWhatsAppMessage';
 import { useContext } from "react";
@@ -20,28 +19,29 @@ export default function FeeDrawerHeader({
     }
 
     function getStudentDueAmount(student) {
-        let total = 0;
-
-        if (Array.isArray(student?.monthlyFees)) {
-            for (const fee of student.monthlyFees) {
-                if (fee.status.toLowerCase() == 'due') {
-                    total += Number(fee.amount || 0);
-                }
-            }
-        }
-        if (Array.isArray(student?.otherFees)) {
-            for (const fee of student.otherFees) {
-                if (fee.status.toLowerCase() == 'due') {
-                    total += Number(fee.amount || 0);
-                }
-            }
-        }
-
-        return total;
+        return Number(student?.total_due_amount || 0);
     }
 
     const grandTotalDueAmountOfAllStudents =
         students.reduce((sum, student) => sum + getStudentDueAmount(student), 0);
+
+    const summaryCards = [
+        {
+            label: 'Paid Amount',
+            amount: currentStudentData?.total_paid_amount,
+            styles: 'border-emerald-500/25 bg-emerald-950/20 text-emerald-300',
+        },
+        {
+            label: 'Remaining Amount',
+            amount: currentStudentData?.total_remaining_amount,
+            styles: 'border-rose-500/25 bg-rose-950/20 text-rose-300',
+        },
+        {
+            label: 'Upcoming Amount',
+            amount: currentStudentData?.total_upcoming_amount,
+            styles: 'border-amber-500/25 bg-amber-950/20 text-amber-300',
+        },
+    ];
 
 
     async function handleWhatsAppReminder(students) {
@@ -98,6 +98,17 @@ export default function FeeDrawerHeader({
                     <span><i className="fas fa-users mr-2 text-gray-400" />Students: <strong className="text-white">{students.length}</strong></span>
                     <span><i className="fas fa-calendar-times mr-2 text-gray-400" />Pending Months: <strong className="text-white">{pendingMonths}</strong></span>
                 </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 px-4 pt-3 sm:grid-cols-3 sm:px-6">
+                {summaryCards.map((card) => (
+                    <div key={card.label} className={`border px-3 py-2.5 ${card.styles}`}>
+                        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{card.label}</p>
+                        <p className="mt-1 text-lg font-bold tabular-nums">
+                            ₹{Number(card.amount || 0).toLocaleString('en-IN')}
+                        </p>
+                    </div>
+                ))}
             </div>
 
             {/* Current Student Card */}

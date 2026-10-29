@@ -10,6 +10,7 @@ import MarkHoliday from './Modals/MarkHoliday'
 import ViewHoliday from './Modals/ViewHoliday'
 import StudentAttendanceList from './Modals/StudentAttendanceList'
 import BulkAttendance from './Modals/BulkAttendance'
+import AttendanceReport from './Modals/AttendanceReport'
 
 import { InitialState, SkeletonLoader, HolidayState } from './components/PageStatus'
 import { ErrorState, NoStudentsState } from '../../utils/GlobalPageStatus'
@@ -31,6 +32,7 @@ function DailyAttendance({ classes, classesLoading }) {
   const [showCalendarModal, setShowCalendarModal] = useState(false)
   const [showStudentAttendanceModal, setShowStudentAttendanceModal] = useState(false)
   const [showBulkAttendanceModal, setShowBulkAttendanceModal] = useState(false)
+  const [showAttendanceReport, setShowAttendanceReport] = useState(false)
   const [attendanceCategory, setAttendanceCategory] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState(null)
 
@@ -178,6 +180,7 @@ function DailyAttendance({ classes, classesLoading }) {
       <Header
         onOpenMarkHolidayModal={() => setShowMarkHolidayModal(true)}
         onOpenViewHolidayModal={() => setShowViewHolidayModal(true)}
+        onOpenAttendanceReport={() => setShowAttendanceReport(true)}
       />
       <ControlPannel
         classes={classes}
@@ -231,6 +234,12 @@ function DailyAttendance({ classes, classesLoading }) {
           date={selectedDate}
           onClose={() => setShowBulkAttendanceModal(false)}
           onConfirm={handleBulkAttendance}
+        />
+      )}
+      {showAttendanceReport && (
+        <AttendanceReport
+          classes={classes}
+          onClose={() => setShowAttendanceReport(false)}
         />
       )}
     </div>

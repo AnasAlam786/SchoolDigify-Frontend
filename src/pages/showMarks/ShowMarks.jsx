@@ -108,6 +108,33 @@ function ShowMarks() {
     }
   };
 
+  const handlePrintFront = async () => {
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    printWindow.document.write('<!DOCTYPE html><title>Preparing marksheet front page</title>')
+
+    try {
+      const response = await apiGet('/api/print_classical_marksheet_front')
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to prepare the marksheet front page.')
+      }
+
+      printWindow.onload = () => {
+        printWindow.focus()
+        printWindow.print()
+      }
+      printWindow.document.open()
+      printWindow.document.write(data.html)
+      printWindow.document.close()
+    } catch (error) {
+      printWindow.close()
+      console.error(error)
+    }
+  }
+
   const handlePrintResult = async (studentIds) => {
     try {
 
@@ -148,7 +175,10 @@ function ShowMarks() {
 
   return (
     <div className="mx-auto">
-      <Header />
+      <Header
+        onPrintFront={handlePrintFront}
+        canPrintFront={hasPermission(PERMISSIONS.GET_RESULT)}
+      />
       <ControlPannel
         searchQuery={searchQuery}
         onSearchChange={(value) => setSearchQuery(value)}

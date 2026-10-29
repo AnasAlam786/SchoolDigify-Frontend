@@ -4,6 +4,7 @@ function ControlPanel({
     classes = [],
     filters,
     selection,
+    selectedClass,
     setSelectedClass,
     handlePrint,
     design
@@ -63,13 +64,22 @@ function ControlPanel({
 
                     <div className="relative group">
                         <select
-                            id="class-filter" onChange={(e) => setSelectedClass(e.target.value) }
+                            id="class-filter"
+                            value={selectedClass}
+                            onChange={(e) => setSelectedClass(e.target.value)}
                             className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-xl text-white focus:outline-none 
                                 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 appearance-none cursor-pointer
                                 transition-all duration-200 group-hover:border-white/20 text-base"
                         >
                             <option
                                 value=""
+                                disabled
+                                className="bg-[#1A1A1A] text-gray-300"
+                            >
+                                Select class
+                            </option>
+                            <option
+                                value="all"
                                 className="bg-[#1A1A1A] text-gray-300"
                             >
                                 All Classes

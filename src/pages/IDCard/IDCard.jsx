@@ -22,7 +22,7 @@ function IDCard() {
     const [isStudentIDCardloading, setStudentIDCardloading] = useState(false);
 
     const [classes, setClasses] = useState([]);
-    const [selectedClass, setSelectedClass] = useState(null);
+    const [selectedClass, setSelectedClass] = useState("");
     const [search, setSearch] = useState("");
     const [showOnlyImages, setshowOnlyImages] = useState(true);
 
@@ -48,12 +48,15 @@ function IDCard() {
     };
 
 
-    async function FetchAndLoadPreview(selectedClass) {
+    async function FetchAndLoadPreview(classSelection) {
         setStudentIDCardloading(true);
         setstudentIDCardError(null);
 
         try {
-            const response = await apiGet(`/api/idcard_students/${selectedClass}`)
+            const endpoint = classSelection === "all"
+                ? "/api/idcard_students"
+                : `/api/idcard_students/${classSelection}`;
+            const response = await apiGet(endpoint)
             const data = await response.json()
 
             // simulate API
@@ -185,6 +188,7 @@ function IDCard() {
                 filters={{ search, setSearch, showOnlyImages, setshowOnlyImages }}
                 selection={{ totalSelected, handleSelectAllVisible }}
 
+                selectedClass={selectedClass}
                 setSelectedClass={setSelectedClass}
                 handlePrint={handlePrint}
 

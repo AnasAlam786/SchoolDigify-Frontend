@@ -312,7 +312,7 @@ function AddStudent() {
           }
           setValidationModalOpen(false)
 
-          showAlert(404, data.error);
+          showAlert(404, data.error || "Validation failed.");
           return;
         }
 

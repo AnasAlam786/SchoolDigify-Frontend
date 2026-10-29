@@ -63,16 +63,16 @@ export default function StudentsTab({
     const totalStudents = filteredStudents.length;
 
     const totalSettledAmount = filteredStudents.reduce(
-      (sum, student) => sum + (student.totalSettledAmount || 0),
+      (sum, student) => sum + Number(student.totalSettledAmount || 0),
       0,
     );
 
     const totalOutstanding = filteredStudents.reduce(
-      (sum, student) => sum + (student.dueAmount || 0),
+      (sum, student) => sum + Number(student.dueAmount || 0),
       0,
     );
 
-    const totalDiscount = totalDiscountBySchool;
+    const totalDiscount = Number(totalDiscountBySchool || 0);
 
     return {
       totalStudents,

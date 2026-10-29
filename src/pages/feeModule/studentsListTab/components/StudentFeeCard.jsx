@@ -84,12 +84,12 @@ function StudentFeeCard({ student, onViewDetails, onPayFees, onViewTransactions 
   const isRTE = student?.isRTE;
   const statusStyles = getStatusStyles(student?.feeStatus || 'Due');
 
-  const totalSettledAmount = student?.totalSettledAmount || 0;
-  const totalDueAmount = student?.dueAmount || 0;
-  const totalPayableAmount = student?.totalPayable || 0;
+  const totalSettledAmount = Number(student?.totalSettledAmount || 0);
+  const totalDueAmount = Number(student?.dueAmount || 0);
+  const totalPayableAmount = Number(student?.totalPayable || 0);
 
   const dueMonths = student?.dueMonths || 0;
-  const upcomingAmount = student?.upcomingAmount || 0;
+  const upcomingAmount = Number(student?.upcomingAmount || 0);
 
   const exactTotal = totalSettledAmount + totalDueAmount + upcomingAmount;
   const safeTotal = exactTotal > 0 ? exactTotal : 1;

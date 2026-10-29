@@ -1,7 +1,7 @@
-import React from 'react'
+import { FileText } from 'lucide-react'
 import usePermission from '../../../../hooks/usePermission'
 
-function Header({ onOpenMarkHolidayModal, onOpenViewHolidayModal }) {
+function Header({ onOpenMarkHolidayModal, onOpenViewHolidayModal, onOpenAttendanceReport }) {
   const {hasPermission, PERMISSIONS} = usePermission()
 
   return (
@@ -16,7 +16,16 @@ function Header({ onOpenMarkHolidayModal, onOpenViewHolidayModal }) {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+
+          {hasPermission(PERMISSIONS.ATTENDANCE) && <button
+            type="button"
+            onClick={onOpenAttendanceReport}
+            className="flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-2.5 font-semibold text-emerald-100 transition hover:border-emerald-300/50 hover:bg-emerald-400/20"
+          >
+            <FileText size={17} aria-hidden="true" />
+            Get Report
+          </button>}
 
           { hasPermission(PERMISSIONS.MARK_HOLIDAY) && (<button
             onClick={onOpenMarkHolidayModal}

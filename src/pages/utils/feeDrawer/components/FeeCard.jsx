@@ -1,7 +1,10 @@
-export default function FeeCard({ fee, isSelected, onToggle, readOnly = false }) {
+import { Settings2 } from 'lucide-react';
+
+export default function FeeCard({ fee, isSelected, selectedAmount, isPartialSelection, onToggle, onConfigurePayment, readOnly = false }) {
 
   const statusUpper = (fee.status || '').toUpperCase();
   const isPaid = statusUpper === 'PAID';
+  const isUnavailable = isPaid || statusUpper === 'OVERPAID';
 
   const title = fee.period_name || fee.name || fee.fee_type || fee.month || 'Fee';
 
@@ -27,6 +30,22 @@ export default function FeeCard({ fee, isSelected, onToggle, readOnly = false })
       amount: isSelected ? 'text-blue-300' : 'text-red-400',
       label: 'Due'
     },
+    PARTIAL: {
+      container: isSelected
+        ? 'border-amber-400 bg-amber-950/30 ring-1 ring-amber-400/50 shadow-xl shadow-amber-500/10'
+        : 'border-amber-500/40 bg-amber-950/20 hover:border-amber-400/60 hover:bg-amber-950/30',
+      iconBox: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+      badge: 'bg-amber-500/10 text-amber-300 border-amber-500/30',
+      amount: 'text-amber-300',
+      label: 'Partial'
+    },
+    OVERPAID: {
+      container: 'border-rose-500/40 bg-rose-950/20',
+      iconBox: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+      badge: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
+      amount: 'text-rose-300',
+      label: 'Overpaid'
+    },
     UPCOMING: {
       container: isSelected
         ? 'border-blue-500 bg-slate-900/90 ring-1 ring-blue-500/50 shadow-xl shadow-blue-500/10'
@@ -48,22 +67,41 @@ export default function FeeCard({ fee, isSelected, onToggle, readOnly = false })
     }
   };
 
-  const currentStyle = styles[statusUpper] || styles.UPCOMING;
+  const currentStyle = isPartialSelection ? styles.PARTIAL : (styles[statusUpper] || styles.UPCOMING);
+  const obligatoryAmount = fee.obligatory_amount ?? fee.amount;
+  const displayedAmount = selectedAmount ?? (
+    isPaid
+      ? fee.paid_amount ?? obligatoryAmount
+      : statusUpper === 'PARTIAL' || statusUpper === 'OVERPAID'
+        ? fee.remaining_amount ?? obligatoryAmount
+        : obligatoryAmount
+  );
+  const amountLabel = selectedAmount !== undefined
+    ? 'Pay now'
+    : isPaid
+      ? 'Paid Amount'
+      : statusUpper === 'PARTIAL'
+        ? 'Remaining Amount'
+        : statusUpper === 'OVERPAID'
+          ? 'Overpaid'
+          : statusUpper === 'DUE'
+            ? 'Due Amount'
+            : 'Upcoming Amount';
 
   return (
 
     <div
       className={`group relative flex flex-col justify-between w-full overflow-hidden rounded-2xl border  transition-all duration-200 backdrop-blur-md ${currentStyle.container
-        } ${readOnly || isPaid
+        } ${readOnly || isUnavailable
           ? 'cursor-not-allowed opacity-85'
           : 'cursor-pointer active:scale-[0.985]'
         }`}
-      onClick={() => !readOnly && !isPaid && onToggle?.(fee)}
+      onClick={() => !readOnly && !isUnavailable && onToggle?.(fee)}
       role={readOnly ? undefined : "button"}
-      tabIndex={readOnly || isPaid ? -1 : 0}
-      aria-disabled={readOnly || isPaid}
+      tabIndex={readOnly || isUnavailable ? -1 : 0}
+      aria-disabled={readOnly || isUnavailable}
       onKeyDown={(e) => {
-        if (!readOnly && !isPaid && (e.key === 'Enter' || e.key === ' ')) {
+        if (!readOnly && !isUnavailable && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault();
           onToggle?.(fee);
         }
@@ -88,9 +126,25 @@ export default function FeeCard({ fee, isSelected, onToggle, readOnly = false })
         </div>
 
         {/* Status Badge */}
-        <span className={`inline-flex items-center shrink-0 rounded-md border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase ${currentStyle.badge}`}>
-          {isSelected && !isPaid ? 'Selected' : currentStyle.label}
-        </span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[9px] font-bold tracking-wider uppercase ${currentStyle.badge}`}>
+            {isSelected && !isUnavailable ? 'Selected' : currentStyle.label}
+          </span>
+          {isSelected && !readOnly && onConfigurePayment && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                onConfigurePayment(fee);
+              }}
+              aria-label={`Set payment amount for ${title}`}
+              title="Set payment amount"
+              className="flex h-7 w-7 items-center justify-center rounded-md border border-amber-400/30 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20"
+            >
+              <Settings2 className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* DATA GRID: Clean Metric Columns */}
@@ -106,10 +160,10 @@ export default function FeeCard({ fee, isSelected, onToggle, readOnly = false })
 
         <div className="text-right shrink-0">
           <span className="block text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-            Amount
+            {amountLabel}
           </span>
           <span className={`text-base font-extrabold tracking-tight ${currentStyle.amount}`}>
-            ₹{fee.amount}
+            ₹{statusUpper === 'OVERPAID' ? Math.abs(Number(displayedAmount)) : displayedAmount}
           </span>
         </div>
       </div>

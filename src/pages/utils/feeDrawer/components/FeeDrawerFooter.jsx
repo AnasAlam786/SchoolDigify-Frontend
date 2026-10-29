@@ -42,7 +42,7 @@ export default function FeeDrawerFooter({
 
   function getSelectedFeeTotal(student) {
     return Array.isArray(student?.selectedFees)
-      ? student.selectedFees.reduce((sum, fee) => sum + Number(fee.amount || 0), 0)
+      ? student.selectedFees.reduce((sum, fee) => sum + Number(fee.payment_amount ?? fee.remaining_amount ?? fee.amount ?? 0), 0)
       : 0;
   }
 
