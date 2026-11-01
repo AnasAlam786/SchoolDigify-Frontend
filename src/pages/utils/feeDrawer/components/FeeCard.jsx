@@ -40,10 +40,10 @@ export default function FeeCard({ fee, isSelected, selectedAmount, isPartialSele
       label: 'Partial'
     },
     OVERPAID: {
-      container: 'border-rose-500/40 bg-rose-950/20',
-      iconBox: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
-      badge: 'bg-rose-500/10 text-rose-300 border-rose-500/30',
-      amount: 'text-rose-300',
+      container: 'border-purple-500/40 bg-purple-950/20',
+      iconBox: 'bg-purple-500/10 text-purple-300 border-purple-500/30',
+      badge: 'bg-purple-500/10 text-purple-300 border-purple-500/30',
+      amount: 'text-purple-300',
       label: 'Overpaid'
     },
     UPCOMING: {
@@ -168,9 +168,12 @@ export default function FeeCard({ fee, isSelected, selectedAmount, isPartialSele
         </div>
       </div>
 
-      {isPaid && fee.transaction_no && (
-        <div className="bg-emerald-950/40 border border-emerald-500/15 py-1.5 flex items-center justify-center gap-1.5 text-[11px] font-mono text-emerald-300/90">
-          <i className="fas fa-receipt text-[10px] text-emerald-400/80 shrink-0" />
+      {(isPaid || statusUpper === 'OVERPAID') && fee.transaction_no && (
+        <div className={`border py-1.5 flex items-center justify-center gap-1.5 text-[11px] font-mono ${statusUpper === 'OVERPAID'
+          ? 'bg-purple-950/40 border-purple-500/15 text-purple-300/90'
+          : 'bg-emerald-950/40 border-emerald-500/15 text-emerald-300/90'
+          }`}>
+          <i className={`fas fa-receipt text-[10px] shrink-0 ${statusUpper === 'OVERPAID' ? 'text-purple-400/80' : 'text-emerald-400/80'}`} />
           <span className="font-semibold truncate select-all">
             #{fee.transaction_no}
           </span>

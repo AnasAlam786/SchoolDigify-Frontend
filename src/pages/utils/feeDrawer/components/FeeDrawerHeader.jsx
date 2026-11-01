@@ -1,4 +1,4 @@
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, BadgeCheck, CalendarClock, AlertCircle } from 'lucide-react';
 import { feeDemandMessage } from '../../watsappMessages';
 import { sendWhatsAppMessage } from '../../sendWhatsAppMessage';
 import { useContext } from "react";
@@ -29,17 +29,20 @@ export default function FeeDrawerHeader({
         {
             label: 'Paid Amount',
             amount: currentStudentData?.total_paid_amount,
+            icon: BadgeCheck,
             styles: 'border-emerald-500/25 bg-emerald-950/20 text-emerald-300',
         },
         {
-            label: 'Remaining Amount',
-            amount: currentStudentData?.total_remaining_amount,
+            label: 'Due Amount',
+            amount: currentStudentData?.total_due_amount,
+            icon: AlertCircle,
             styles: 'border-rose-500/25 bg-rose-950/20 text-rose-300',
         },
         {
             label: 'Upcoming Amount',
             amount: currentStudentData?.total_upcoming_amount,
-            styles: 'border-amber-500/25 bg-amber-950/20 text-amber-300',
+            icon: CalendarClock,
+            styles: 'border-gray-500/25 bg-gray-800/40 text-gray-300',
         },
     ];
 
@@ -88,7 +91,10 @@ export default function FeeDrawerHeader({
                         <div className="flex-shrink-0 bg-red-600/20 p-2 text-red-400">
                             <i className="fas fa-exclamation-triangle text-lg" aria-hidden="true" />
                         </div>
-                        <h3 className="text-lg font-bold text-white">Grand Total Due</h3>
+                        <div>
+                            <h3 className="text-lg font-bold text-white">Grand Total Due</h3>
+                            <p className="mt-1 text-xs text-red-200/70">Combined due for all siblings</p>
+                        </div>
                     </div>
                     <div className="text-right text-3xl font-extrabold leading-none tabular-nums text-white">
                         ₹{grandTotalDueAmountOfAllStudents}
@@ -100,16 +106,30 @@ export default function FeeDrawerHeader({
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-2 px-4 pt-3 sm:grid-cols-3 sm:px-6">
-                {summaryCards.map((card) => (
-                    <div key={card.label} className={`border px-3 py-2.5 ${card.styles}`}>
-                        <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-400">{card.label}</p>
-                        <p className="mt-1 text-lg font-bold tabular-nums">
-                            ₹{Number(card.amount || 0).toLocaleString('en-IN')}
-                        </p>
-                    </div>
-                ))}
+<div className="grid grid-cols-3 gap-2 px-4 pt-3 sm:gap-3 sm:px-6">
+    {summaryCards.map((card) => {
+        const Icon = card.icon;
+
+        return (
+            <div
+                key={card.label}
+                className={`min-w-0 rounded-xl border px-2.5 py-3 sm:px-4 sm:py-3.5 ${card.styles}`}
+            >
+                <p className="truncate text-[9px] font-semibold uppercase tracking-wider opacity-75 sm:text-[10px]">
+                    {card.label}
+                </p>
+
+                <div className="mt-2 flex items-center justify-between gap-1.5">
+                    <p className="min-w-0 truncate text-sm font-bold tracking-tight tabular-nums sm:text-lg">
+                        ₹{Number(card.amount || 0).toLocaleString('en-IN')}
+                    </p>
+
+                    <Icon size={17} strokeWidth={2} className="shrink-0 opacity-80 sm:size-[19px]" />
+                </div>
             </div>
+        );
+    })}
+</div>
 
             {/* Current Student Card */}
             <div className="relative mt-4 overflow-hidden rounded-2xl bg-gradient-to-r from-gray-800 to-gray-700 p-5 shadow-xl ring-1 ring-white/10 transition-all duration-300 hover:ring-white/20 m-4">
