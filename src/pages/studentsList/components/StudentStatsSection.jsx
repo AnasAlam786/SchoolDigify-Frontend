@@ -14,7 +14,7 @@ export default function StudentStatsSection({ stats }) {
   return (
     <>
       <div
-        className="flex justify-between items-center bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 cursor-pointer shadow-md transition-all duration-300 hover:from-[#16213e] hover:to-[#0f3460] hover:border-[#4361ee] hover:shadow-xl"
+        className="student-stats-toggle flex justify-between items-center bg-gradient-to-br from-[#1a1a2e] to-[#16213e] rounded-xl p-3 cursor-pointer shadow-md transition-all duration-300 hover:from-[#16213e] hover:to-[#0f3460] hover:border-[#4361ee] hover:shadow-xl"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         <h2 className="flex items-center text-[#8f94fb] font-semibold text-lg">

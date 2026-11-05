@@ -1,4 +1,5 @@
 import usePermission from '../../../hooks/usePermission'
+import { LoaderCircle } from 'lucide-react'
 
 const getOrderedExamNames = (student) => {
   const marks = student?.marks || {}
@@ -42,7 +43,7 @@ const formatPercentage = (value) => {
 }
 
 function MarksTable(
-  { students, selectedIds, setSelectedIds, handlePrintCertificate, handlePrintResult }) {
+  { students, selectedIds, setSelectedIds, handlePrintCertificate, handlePrintResult, marksheetLoading }) {
 
   const { hasPermission, PERMISSIONS } = usePermission()
 
@@ -118,6 +119,8 @@ function MarksTable(
         const examNames = getOrderedExamNames(student)
         const subjects = getOrderedSubjects(student, examNames)
         const isSelected = selectedIds.has(student.student_session_id)
+        const isPrintingResult = marksheetLoading?.source === 'student'
+          && marksheetLoading.studentId === student.student_session_id
 
         return (
           <div
@@ -185,11 +188,17 @@ function MarksTable(
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     type="button"
-                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:shadow-xl group"
-                    onClick={() => handlePrintResult(new Set([student.student_session_id]))}
+                    disabled={Boolean(marksheetLoading)}
+                    aria-busy={isPrintingResult}
+                    className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-3 px-5 md:px-6 rounded-xl text-sm md:text-base font-medium flex items-center justify-center gap-3 transition-all duration-200 shadow-lg hover:shadow-xl group disabled:cursor-wait disabled:opacity-70"
+                    onClick={() => handlePrintResult(new Set([student.student_session_id]), 'student')}
                   >
-                    <i className="fas fa-print text-sm group-hover:scale-110 transition-transform"></i>
-                    <span>Print Result</span>
+                    {isPrintingResult ? (
+                      <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    ) : (
+                      <i className="fas fa-print text-sm group-hover:scale-110 transition-transform" aria-hidden="true"></i>
+                    )}
+                    <span>{isPrintingResult ? 'Preparing…' : 'Print Result'}</span>
                   </button>
 
                   <button
@@ -275,12 +284,14 @@ function MarksTable(
                             const isGrandTotal = examName.includes('G. Total') || examName.includes('Grand')
                             const isSummary = !isGrandTotal && (examName.includes('Total') || examName.includes('Grades'))
                             const totalValue = examData?.exam_total ?? ''
+                            const grandTotalWeightage = student.summary.grand_max_total
 
                             if (isGrandTotal) {
                               return (
                                 <td key={`grand-total-${examName}`} className="py-4 px-2 text-center text-sm md:text-base font-black border-l border-amber-700/70 bg-amber-950/80">
-                                  <div className="inline-flex items-center gap-2 bg-amber-950 px-3 py-2 rounded-lg border-2 border-amber-600 shadow-lg">
-                                    <span className="text-amber-100 text-xl">{totalValue}</span>
+                                  <div className="inline-flex items-baseline gap-0.5 bg-amber-950 px-2.5 py-1.5 rounded-lg border-2 border-amber-600 shadow-lg whitespace-nowrap">
+                                    <span className="text-amber-100 text-xl font-black">{totalValue}</span>
+                                    <span className="text-amber-300/80 text-xs font-semibold">/{grandTotalWeightage}</span>
                                   </div>
                                 </td>
                               )

@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import Chart from "react-apexcharts";
+import useTheme from "../../../../components/useTheme.js";
 
 export default function CollectionTrend({ data = [] }) {
+  const { theme } = useTheme();
   const [viewMode, setViewMode] = useState("month");
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedRange, setSelectedRange] = useState(null);
@@ -359,11 +361,11 @@ export default function CollectionTrend({ data = [] }) {
           max: viewRange.end,
         },
         fill: {
-          color: "#d4d4d4",
+          color: theme === "dark" ? "#d4d4d4" : "#4361ee",
           opacity: 0.12,
         },
         stroke: {
-          color: "#d4d4d4",
+          color: theme === "dark" ? "#d4d4d4" : "#4361ee",
           width: 1,
           dashArray: 3,
         },
@@ -400,7 +402,7 @@ export default function CollectionTrend({ data = [] }) {
     },
 
     theme: {
-      mode: "dark",
+      mode: theme,
     },
 
     stroke: {
@@ -418,7 +420,7 @@ export default function CollectionTrend({ data = [] }) {
       },
     },
 
-    colors: ["#d4d4d4"],
+    colors: [theme === "dark" ? "#d4d4d4" : "#4361ee"],
 
     markers: {
       size: 0,
@@ -432,7 +434,7 @@ export default function CollectionTrend({ data = [] }) {
     },
 
     grid: {
-      borderColor: "rgba(255,255,255,0.08)",
+      borderColor: theme === "dark" ? "rgba(255,255,255,0.08)" : "#d9e1e8",
       strokeDashArray: 4,
       padding: {
         left: 8,
@@ -448,7 +450,7 @@ export default function CollectionTrend({ data = [] }) {
       labels: {
         datetimeUTC: false,
         style: {
-          colors: "#9CA3AF",
+          colors: theme === "dark" ? "#9CA3AF" : "#65758b",
           fontSize: "11px",
         },
       },
@@ -465,7 +467,7 @@ export default function CollectionTrend({ data = [] }) {
     yaxis: {
       labels: {
         style: {
-          colors: "#9CA3AF",
+          colors: theme === "dark" ? "#9CA3AF" : "#65758b",
           fontSize: "11px",
         },
         formatter: formatCompactCurrency,
@@ -473,7 +475,7 @@ export default function CollectionTrend({ data = [] }) {
     },
 
     tooltip: {
-      theme: "dark",
+      theme,
       shared: false,
 
       x: {

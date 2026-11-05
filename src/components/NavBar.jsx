@@ -2,6 +2,7 @@
 
 import { useContext } from "react";
 import { AuthContext } from "../auth/authProvider";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 export default function NavBar({ setSidebarOpen }) {
     const { sessionData, loading } = useContext(AuthContext);
@@ -51,6 +52,8 @@ export default function NavBar({ setSidebarOpen }) {
 
                     {/* Right Side */}
                     <div className="flex items-center space-x-3">
+
+                        <ThemeToggle className="px-2 sm:px-3" />
 
                         <div className="hidden sm:block text-right">
                             <p className="text-white font-medium text-sm">

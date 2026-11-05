@@ -1,8 +1,9 @@
 import React from 'react'
+import ThemeToggle from "../../../components/ThemeToggle.jsx";
 
 function Navbar() {
     return (
-        <nav className="bg-navbg/90 backdrop-blur-md border-b border-gray-800/50 sticky top-0 z-50">
+        <nav className="login-navbar bg-navbg/90 backdrop-blur-md border-b border-gray-800/50 sticky top-0 z-50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center space-x-3">
@@ -10,7 +11,7 @@ function Navbar() {
                             <i className="fas fa-graduation-cap text-white text-xl"></i>
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-white">SchoolDigify</h1>
+                            <h1 className="login-nav-title text-xl font-bold text-white">SchoolDigify</h1>
                             <p className="text-xs text-gray-400 hidden sm:block">Education ERP System</p>
                         </div>
                     </div>
@@ -25,6 +26,7 @@ function Navbar() {
                     <button className="md:hidden text-gray-300">
                         <i className="fas fa-bars text-xl"></i>
                     </button>
+                    <ThemeToggle className="ml-3 shrink-0" />
                 </div>
             </div>
         </nav>

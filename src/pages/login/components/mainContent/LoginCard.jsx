@@ -56,7 +56,7 @@ function LoginCard() {
     };
 
     return (
-        <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-800/50 overflow-hidden">
+        <div className="login-card bg-gradient-to-br from-gray-900/80 to-gray-900/40 backdrop-blur-xl rounded-2xl border border-gray-800/50 overflow-hidden">
             <div className="h-1 bg-gradient-to-r from-primary via-accent to-secondary" />
 
             <div className="px-20 py-10">

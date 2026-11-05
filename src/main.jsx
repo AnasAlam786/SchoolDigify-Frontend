@@ -11,6 +11,7 @@ import PermissionRoute from "./auth/PermissionRoute.jsx";
 
 import Layout from "./Layout.jsx";
 import TitleManager from "./components/TitleManager.jsx";
+import { ThemeProvider } from "./components/ThemeProvider.jsx";
 
 import Login from "./pages/login/Login.jsx";
 import Logout from "./pages/logout/Logout.jsx";
@@ -36,9 +37,10 @@ import FeePage from "./pages/feeModule/FeePage.jsx";
 import SchoolSetup from "./pages/setup/SchoolSetup.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <AuthProvider>
-    <BrowserRouter>
-      <TitleManager />
+  <ThemeProvider>
+    <AuthProvider>
+      <BrowserRouter>
+        <TitleManager />
 
       <Routes>
 
@@ -124,9 +126,10 @@ createRoot(document.getElementById("root")).render(
         {/* Default */}
         <Route path="/" element={<Navigate to="/student_list" replace />} />
 
-      </Routes>
+        </Routes>
 
-    </BrowserRouter>
-  </AuthProvider>
+      </BrowserRouter>
+    </AuthProvider>
+  </ThemeProvider>
 
 );

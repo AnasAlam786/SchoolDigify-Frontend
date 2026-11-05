@@ -1,5 +1,15 @@
+import { LoaderCircle, Printer } from 'lucide-react'
+
 export default function SelectionBar(
-    { filteredStudents, selectedIds, setSelectedIds, handlePrintCertificate, handlePrintResult }
+    {
+        filteredStudents,
+        selectedIds,
+        setSelectedIds,
+        handlePrintCertificate,
+        handlePrintResult,
+        handlePrintGazette,
+        marksheetLoading,
+    }
 ) {
 
     const toggleSelectAll = () => {
@@ -55,20 +65,39 @@ export default function SelectionBar(
                     </button>
 
                     <button
-                        id="bulk-download-btn"
                         type="button"
                         disabled={selectedCount === 0}
-                        onClick={() => handlePrintResult(selectedIds)}
-                        className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg hover:shadow-blue-500/20 disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => handlePrintGazette(selectedIds)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-40 disabled:cursor-not-allowed"
                     >
-                        <i className="fas fa-download"></i>
-                        <span>Marksheet</span>
-                        <span
-                            id="download-count"
-                            className="px-2 py-0.5 rounded-lg bg-white/20 text-xs font-bold min-w-[26px] 
-                            text-center" >
-                            {selectedCount}
-                        </span>
+                        <Printer className="h-4 w-4" aria-hidden="true" />
+                        <span>Print Gazette</span>
+                    </button>
+
+                    <button
+                        id="bulk-download-btn"
+                        type="button"
+                        disabled={selectedCount === 0 || Boolean(marksheetLoading)}
+                        aria-busy={marksheetLoading?.source === 'bulk'}
+                        onClick={() => handlePrintResult(selectedIds, 'bulk')}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl text-sm font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-lg hover:shadow-blue-500/20 disabled:opacity-60 disabled:cursor-wait"
+                    >
+                        {marksheetLoading?.source === 'bulk' ? (
+                            <>
+                                <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                <span>Preparing…</span>
+                            </>
+                        ) : (
+                            <>
+                                <i className="fas fa-download" aria-hidden="true"></i>
+                                <span>Marksheet</span>
+                                <span
+                                    id="download-count"
+                                    className="px-2 py-0.5 rounded-lg bg-white/20 text-xs font-bold min-w-[26px] text-center" >
+                                    {selectedCount}
+                                </span>
+                            </>
+                        )}
                     </button>
 
                     <button

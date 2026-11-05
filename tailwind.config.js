@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -15,8 +16,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        darkbg: '#121212',
-        navbg: '#1a1a1a',
+        darkbg: 'rgb(var(--page-bg) / <alpha-value>)',
+        navbg: 'rgb(var(--surface-raised) / <alpha-value>)',
         primary: '#4361ee',
         secondary: '#3f37c9',
         accent: '#4895ef',
@@ -28,8 +29,8 @@ export default {
         admin: '#ff006e',
         support: '#8338ec',
         assistant: '#ffbe0b',
-        sidebar: '#1a1a1a',
-        'sidebar-hover': '#252525',
+        sidebar: 'rgb(var(--surface) / <alpha-value>)',
+        'sidebar-hover': 'rgb(var(--surface-raised) / <alpha-value>)',
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',

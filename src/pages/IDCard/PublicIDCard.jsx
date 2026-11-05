@@ -5,6 +5,8 @@ import StudentDetailsModal from "../utils/StudentsDetailsModal.jsx/StudentDetail
 import FeeDrawer from "../utils/feeDrawer/FeeDrawer";
 import TransactionModal from "../utils/feeTransactionsModal/TransactionModal";
 import AttendanceCalendar from "../Attendance/dailyAttendance/Modals/AttendanceCalendar";
+import ThemeToggle from "../../components/ThemeToggle.jsx";
+import useTheme from "../../components/useTheme.js";
 
 const imageBaseUrl = "https://lh3.googleusercontent.com/d/";
 
@@ -98,6 +100,7 @@ function FeatureCard({ title, description, onClick }) {
 }
 
 export default function PublicIDCard() {
+  const { theme } = useTheme();
   const { token } = useParams();
   const [status, setStatus] = useState("loading");
   const [data, setData] = useState(null);
@@ -144,12 +147,18 @@ export default function PublicIDCard() {
   );
 
   if (status === "loading") {
-    return <main className="grid min-h-screen place-items-center bg-slate-950 text-slate-200">Loading student information…</main>;
+    return (
+      <main className="grid min-h-screen place-items-center bg-slate-950 text-slate-200">
+        <ThemeToggle className="fixed right-4 top-4 z-50" />
+        Loading student information…
+      </main>
+    );
   }
 
   if (status === "error") {
     return (
       <main className="grid min-h-screen place-items-center bg-slate-950 p-6 text-center text-white">
+        <ThemeToggle className="fixed right-4 top-4 z-50" />
         <div>
           <h1 className="text-2xl font-bold">ID card unavailable</h1>
           <p className="mt-2 text-slate-400">{error}</p>
@@ -161,7 +170,8 @@ export default function PublicIDCard() {
   const { student, school, transactions, marksheet } = data;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 px-4 py-8 text-white sm:px-6">
+    <main className={`public-id-card min-h-screen px-4 py-8 sm:px-6 ${theme === "dark" ? "bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white" : "bg-slate-50 text-slate-900"}`}>
+      <ThemeToggle className="fixed right-4 top-4 z-50" />
       <div className="mx-auto max-w-5xl">
         <header className="mb-8 flex flex-col items-center text-center">
           {school.logo && (

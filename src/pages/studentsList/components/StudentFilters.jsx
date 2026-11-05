@@ -98,7 +98,7 @@ export default function StudentFilters({
                             </div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-gray-900/40 to-gray-900/20 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/70 min-w-[320px]">
+                        <div className="student-count-panel bg-gradient-to-br from-gray-900/40 to-gray-900/20 backdrop-blur-xl rounded-2xl p-5 border border-gray-800/70 min-w-[320px]">
                             <div className="flex items-center justify-between h-full">
                                 <div className="text-center">
                                     <div className="text-sm text-gray-400 mb-2">Showing</div>
@@ -116,7 +116,7 @@ export default function StudentFilters({
                                     type="button"
                                     onClick={clearFilters}
                                     title="Clear all filters"
-                                    className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/15 to-red-700/20 border border-red-500/40 text-red-300 hover:from-red-500/30 hover:to-red-700/30 hover:border-red-400/70 hover:shadow-[0_0_0_3px_rgba(239,68,68,0.15)] active:scale-95 transition-all duration-300 group"
+                                    className="student-clear-filters relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-red-500/15 to-red-700/20 border border-red-500/40 text-red-300 hover:from-red-500/30 hover:to-red-700/30 hover:border-red-400/70 hover:shadow-[0_0_0_3px_rgba(239,68,68,0.15)] active:scale-95 transition-all duration-300 group"
                                 >
                                     <svg className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -617,7 +617,7 @@ export default function StudentFilters({
                         </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-800 px-4 py-3 mt-3">
+                    <div className="student-count-panel student-count-panel-mobile bg-gradient-to-r from-gray-900 to-gray-800 border-b border-gray-800 px-4 py-3 mt-3">
                         <div className="flex items-center justify-between">
                             <div className="text-center flex-1">
                                 <div className="text-xl font-bold text-white">
@@ -632,7 +632,7 @@ export default function StudentFilters({
                                 type="button"
                                 onClick={clearFilters}
                                 id="clear-filters-mobile"
-                                className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br 
+                                className="student-clear-filters relative flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br 
                                 from-red-500/15 to-red-700/20 border border-red-500/40 text-red-300 hover:from-red-500/30 
                                 hover:to-red-700/30 hover:border-red-400/70 active:scale-95 transition-all duration-300 group"
                                 title="Clear all filters">

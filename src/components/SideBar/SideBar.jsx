@@ -5,6 +5,7 @@ import { AuthContext } from "../../auth/authProvider";
 import { useContext, useState } from "react";
 import { apiPost } from "../../api/api";
 import usePermission from "../../hooks/usePermission";
+import ThemeToggle from "../ThemeToggle.jsx";
 
 export default function Sidebar({ isSidebarOpen, setSidebarOpen, menuSections }) {
 
@@ -244,6 +245,8 @@ export default function Sidebar({ isSidebarOpen, setSidebarOpen, menuSections })
 
                 {/* Footer */}
                 <div className="mt-auto p-5 border-t border-white/5">
+
+                    <ThemeToggle className="mb-4 w-full justify-center" />
 
                     {hasPermission('change_session') && (
 

@@ -4,6 +4,7 @@ import ControlPannel from './components/ControlPannel'
 import Header from './components/Header'
 import MarksTable from './components/MarksTable'
 import SelectionBar from './components/SelectionBar'
+import { buildMarksGazetteHtml, getMarksGazetteLayoutIssue } from './utils/marksGazette'
 import { fetchClasses } from '../utils/fetchClasses'
 import { ErrorState, NoClassSelectedState, NoStudentsState, SkeletonLoader } from './components/PageStatus'
 
@@ -21,6 +22,7 @@ function ShowMarks() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedIds, setSelectedIds] = useState(new Set())
   const [error, setError] = useState(null)
+  const [marksheetLoading, setMarksheetLoading] = useState(null)
 
   useEffect(() => {
     const loadClasses = async () => {
@@ -56,6 +58,8 @@ function ShowMarks() {
       const response = await apiGet(`/api/show_marks?class_id=${encodeURIComponent(classId)}`)
       const data = await response.json()
 
+      console.log('Fetched marksheets:', data)
+
       if (!response.ok) {
         throw new Error(data.message || 'Failed to load marksheets.')
       }
@@ -85,7 +89,6 @@ function ShowMarks() {
           percentage: student.marks?.['G. Total']?.percentage ?? 0,
         }))
 
-      console.log(studentPayload)
 
 
       const response = await apiPost("/api/bulk_print_certificate", {
@@ -135,7 +138,9 @@ function ShowMarks() {
     }
   }
 
-  const handlePrintResult = async (studentIds) => {
+  const handlePrintResult = async (studentIds, source = 'bulk') => {
+    if (marksheetLoading) return
+
     try {
 
       const selectedStudentIds = studentIds instanceof Set
@@ -145,6 +150,11 @@ function ShowMarks() {
       if (!selectedStudentIds) {
         throw new Error("studentIds must be a Set or an Array.");
       }
+
+      setMarksheetLoading({
+        source,
+        studentId: source === 'student' ? [...selectedStudentIds][0] : null,
+      })
 
       const selectedStudents = students.filter((student) =>
         selectedStudentIds.has(student.student_session_id)
@@ -169,8 +179,35 @@ function ShowMarks() {
 
     } catch (error) {
       console.error(error);
+    } finally {
+      setMarksheetLoading(null)
     }
   };
+
+  const handlePrintGazette = (studentIds) => {
+    const selectedStudents = students.filter((student) =>
+      studentIds.has(student.student_session_id)
+    )
+
+    if (selectedStudents.length === 0) return
+
+    const layoutIssue = getMarksGazetteLayoutIssue(selectedStudents)
+    if (layoutIssue) {
+      window.alert(layoutIssue)
+      return
+    }
+
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
+
+    printWindow.document.open()
+    printWindow.document.write(buildMarksGazetteHtml(selectedStudents))
+    printWindow.document.close()
+    printWindow.onload = () => {
+      printWindow.focus()
+      printWindow.print()
+    }
+  }
 
 
   return (
@@ -195,6 +232,8 @@ function ShowMarks() {
 
           handlePrintCertificate={handlePrintCertificate}
           handlePrintResult={handlePrintResult}
+          handlePrintGazette={handlePrintGazette}
+          marksheetLoading={marksheetLoading}
         />
       )}
 
@@ -209,6 +248,7 @@ function ShowMarks() {
 
           handlePrintCertificate={handlePrintCertificate}
           handlePrintResult={handlePrintResult}
+          marksheetLoading={marksheetLoading}
         />
       ) : selectedClass ? (
         <NoStudentsState onRetry={() => loadMarksheets(selectedClass)} />
