@@ -2,32 +2,18 @@ import { useState, useEffect } from 'react';
 import ControlPannel from './components/ControlPannel.jsx';
 import AdmitCardPreview from './components/AdmitCardPreview.jsx';
 import Header from './components/Header.jsx';
-import { fetchClasses } from '../utils/fetchClasses'
+import { useClasses } from '../../hooks/useClasses';
 
 function AdmitAndScheme() {
-  const [classes, setClasses] = useState([]);
-  const [isClassesLoading, setIsClassesLoading] = useState(false);
-  const [classError, setClassError] = useState(null);
 
   const [previewHtml, setPreviewHtml] = useState('');
   const [HTMLFetchError, setHTMLFetchError] = useState("");
   const [isHTMLloading, setHTMLloading] = useState(false);
 
 
-  useEffect(() => {
-    const loadClasses = async () => {
-      setIsClassesLoading(true);
-      try {
-        const classData = await fetchClasses();
-        setClasses(classData);
-      } catch (error) {
-        setClassError(error.message || 'Unable to load classes.');
-      } finally {
-        setIsClassesLoading(false);
-      }
-    };
-    loadClasses()
-  }, [])
+    const { 
+        data: classes = [], isPending: isClassesLoading, error: classError 
+    } = useClasses();
 
 
   async function fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme, feeHeading) {

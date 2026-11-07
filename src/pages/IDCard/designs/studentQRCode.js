@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { QRCodeSVG } from "qrcode.react";
 
-export function createStudentQRCode(qrValue) {
+export function createStudentQRCode(qrValue, width = "21mm", height = "26mm") {
     const value = qrValue === null || qrValue === undefined
         ? ""
         : String(qrValue).trim();
@@ -16,7 +16,7 @@ export function createStudentQRCode(qrValue) {
         includeMargin: true,
         bgColor: "#ffffff",
         fgColor: "#17324d",
-        style: { display: "block", width: "21mm", height: "26mm" },
+        style: { display: "block", width, height },
         title: "ID card QR code",
     }));
 }

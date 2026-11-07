@@ -81,3 +81,30 @@ export function sendWhatsAppMessage(phone, message = "") {
 }
 
 
+export function sendSmsMessage(phone, message = "") {
+  if (phone === null || phone === undefined) {
+    throw new Error("📞 Invalid phone number format.");
+  }
+
+  let formattedPhone = String(phone).trim().replace(/\D/g, "");
+
+  if (formattedPhone.startsWith("0")) {
+    formattedPhone = formattedPhone.substring(1);
+  }
+
+  if (formattedPhone.length !== 10) {
+    throw new Error("📞 Invalid phone number. It must be 10 digits.");
+  }
+
+  formattedPhone = `+91${formattedPhone}`;
+
+  const encodedMessage = encodeURIComponent(message || "");
+
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  const url = isIOS
+    ? `sms:${formattedPhone}&body=${encodedMessage}`
+    : `sms:${formattedPhone}?body=${encodedMessage}`;
+
+  window.location.href = url;
+}

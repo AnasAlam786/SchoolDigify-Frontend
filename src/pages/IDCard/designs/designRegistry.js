@@ -5,6 +5,8 @@ import "./hangingIDCard/hangingIDCard.js";
 import kidsHTML from "./kidsIDCard/kidsIDCard.html?raw";
 import kidsCSS from "./kidsIDCard/kidsIDCard.css?raw";
 import "./kidsIDCard/kidsIDCard.js";
+import d1HTML from "./floatingPortrait/floatingPortrait.html?raw";
+import "./floatingPortrait/floatingPortrait.js";
 import signatureFontUrl from "../../../assets/Bastliga One.ttf?url";
 
 
@@ -25,6 +27,15 @@ export const ID_CARD_DESIGNS = {
         description: "Classic ID card for kids with a premium school identity look.",
         html: kidsHTML,
         css: kidsCSS.replaceAll("__SIGNATURE_FONT_URL__", signatureFontUrl),
+    },
+
+    floatingPortrait: {
+        id: "floatingPortrait",
+        name: "Floating Portrait",
+        componentTag: "floating-portrait-id-card",
+        description: "Quiet navy portrait card with a QR code.",
+        html: d1HTML,
+        css: "",
     },
 };
 

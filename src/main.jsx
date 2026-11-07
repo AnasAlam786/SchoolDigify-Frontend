@@ -1,6 +1,6 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./index.css";
 
@@ -36,7 +36,17 @@ import FeePage from "./pages/feeModule/FeePage.jsx";
 
 import SchoolSetup from "./pages/setup/SchoolSetup.jsx";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 createRoot(document.getElementById("root")).render(
+  <QueryClientProvider client={queryClient}>
   <ThemeProvider>
     <AuthProvider>
       <BrowserRouter>
@@ -131,5 +141,6 @@ createRoot(document.getElementById("root")).render(
       </BrowserRouter>
     </AuthProvider>
   </ThemeProvider>
+  </QueryClientProvider>
 
 );

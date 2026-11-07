@@ -1,19 +1,13 @@
 import { apiGet } from "../../api/api";
 
-export const fetchClasses = async () => {
-  try {
-    const response = await apiGet('/api/get_classes');
+export const fetchClasses = async ({ signal } = {}) => {
+    const response = await apiGet('/api/get_classes', { signal });
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Something went wrong, Try again!");
+        showAlert(400, error )
+        throw new Error(data?.error || "Failed to fetch classes.");
     }
 
     return data.classes;
-    
-  } catch (error) {
-    showAlert(400, error )
-    console.error('Error fetching classes:', error);
-    return [];
-  }
 };

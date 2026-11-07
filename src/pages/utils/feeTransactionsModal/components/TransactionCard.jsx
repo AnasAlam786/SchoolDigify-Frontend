@@ -2,7 +2,7 @@ import { useState } from 'react';
 import TransactionPopover from './TransactionPopover';
 import { apiPost } from '../../../../api/api';
 import { Loader2, Trash2, RotateCcw, Printer, ChevronRight, Calendar, Hash, FileText, User, GraduationCap, Tag, CreditCard } from "lucide-react";
-import { sendWhatsAppMessage } from '../../../utils/sendWhatsAppMessage';
+import { sendWhatsAppMessage, sendSmsMessage } from '../../../utils/sendWhatsAppMessage';
 import { transactionWhatsappMessage } from '../../../utils/watsappMessages';
 import { usePrintableTransaction } from './printableTransaction';
 
@@ -84,6 +84,16 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
     }
   };
 
+const handleSmsMessage = async (transaction) => {
+  try {
+    const smsMessage = transactionWhatsappMessage(transaction);
+    sendSmsMessage(transaction.phone, smsMessage);
+  } catch (error) {
+    console.error("Error generating SMS message:", error);
+    showAlert(500, error);
+  }
+};
+
   const handlePrint = (transaction) => {
     const html = getTransactionHTML(transaction);
     const printWindow = window.open("", "_blank");
@@ -103,12 +113,11 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
   const totalAmount = paidAmount + discountAmount;
 
   return (
-    <article 
-      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl border transition-all duration-300 ${
-        isDeleted 
-          ? 'border-slate-800/60 bg-slate-950/40 opacity-70' 
-          : 'border-slate-800/80 bg-slate-900/90 shadow-lg shadow-slate-950/40 hover:border-slate-700/80'
-      }`}
+    <article
+      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl border transition-all duration-300 ${isDeleted
+        ? 'border-slate-800/60 bg-slate-950/40 opacity-70'
+        : 'border-slate-800/80 bg-slate-900/90 shadow-lg shadow-slate-950/40 hover:border-slate-700/80'
+        }`}
     >
       <div className="p-3.5 sm:p-5 space-y-3 sm:space-y-4">
         {/* Header Row: ID, Date, Actions */}
@@ -142,19 +151,31 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
           <div className="flex items-center gap-1.5 shrink-0 ml-auto sm:ml-0">
             {!isDeleted ? (
               <>
-                {!readOnly && <button
-                  type="button"
-                  onClick={() => handleWhatsappMessage(transaction)}
-                  aria-label="Send WhatsApp"
-                  className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2 py-1.5 sm:px-3 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-95"
-                >
-                  <i className="fab fa-whatsapp text-sm" />
-                  <span className="hidden md:inline">WhatsApp</span>
-                </button>}
+                {!readOnly && <>
+                  <button
+                    type="button"
+                    onClick={() => handleWhatsappMessage(transaction)}
+                    aria-label="Send WhatsApp"
+                    className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2 py-1.5 sm:px-3 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition-all active:scale-95"
+                  >
+                    <i className="fab fa-whatsapp text-sm" />
+                    <span className="hidden md:inline">WhatsApp</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleSmsMessage(transaction)}
+                    aria-label="Send SMS"
+                    className="inline-flex items-center gap-1 rounded-lg border border-blue-500/20 bg-blue-500/10 px-2 py-1.5 sm:px-3 text-xs font-semibold text-blue-400 hover:bg-blue-500/20 transition-all active:scale-95"
+                  >
+                    <i className="fas fa-sms text-sm" />
+                    <span className="hidden md:inline">SMS</span>
+                  </button>
+                </>}
 
                 <button
-                  type="button" 
-                  onClick={() => handlePrint(transaction)} 
+                  type="button"
+                  onClick={() => handlePrint(transaction)}
                   aria-label="Print Transaction"
                   className="inline-flex items-center gap-1 rounded-lg border border-slate-700/60 bg-slate-800/60 px-2 py-1.5 sm:px-3 text-xs font-semibold text-slate-300 hover:border-slate-600 hover:text-white transition-all active:scale-95"
                 >
@@ -245,9 +266,9 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
       </div>
 
       {/* Accordion Toggle */}
-      <button 
-        type="button" 
-        onClick={() => setExpanded((value) => !value)} 
+      <button
+        type="button"
+        onClick={() => setExpanded((value) => !value)}
         className="flex w-full items-center justify-between border-t border-slate-800/80 bg-slate-950/40 px-3.5 sm:px-5 py-2.5 transition-colors hover:bg-slate-800/40 focus:outline-none"
       >
         <div className="flex items-center gap-2 min-w-0">
@@ -305,8 +326,8 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
                 <div className="space-y-1.5">
                   {sibling.fees.monthly && (
                     <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 rounded-lg border border-slate-800/80 bg-slate-950/40 p-2 transition-all hover:border-slate-700/80">
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onPointerDown={(event) => event.stopPropagation()}
                         onClick={(event) => {
                           const anchorElement = event.currentTarget;
@@ -315,7 +336,7 @@ function TransactionCard({ transaction, setTransactions, isDeleted, readOnly = f
                               ? null
                               : { id: popoverId, anchorElement }
                           ));
-                        }} 
+                        }}
                         className="group flex items-center gap-2 text-left focus:outline-none min-w-0"
                       >
                         <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">

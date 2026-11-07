@@ -5,7 +5,8 @@ import { DEFAULT_FILTERS, fieldOptions, sortOptions } from "./StudentsFilter";
 
 export default function StudentFilters({
     studentFilters, setStudentFilters,
-    totalCount, visibleCount,
+    filteredStudentsCount,
+    totalStudentsCount,
     activeTags,
     classes,
 }) {
@@ -103,11 +104,9 @@ export default function StudentFilters({
                                 <div className="text-center">
                                     <div className="text-sm text-gray-400 mb-2">Showing</div>
                                     <div className="text-3xl font-bold text-white">
-                                        <span className="text-blue-400">{visibleCount}</span>
-                                        <span className="text-gray-500 mx-2">/</span>
-                                        <span className="text-gray-300">{totalCount}</span>
+                                        <span className="text-blue-400">{filteredStudentsCount}/{totalStudentsCount}</span>
                                     </div>
-                                    <div className="text-xs text-gray-400 mt-1">students</div>
+                                    <div className="text-xs text-gray-400 mt-1">students loaded</div>
                                 </div>
 
                                 <div className="w-px h-16 bg-gray-800" />
@@ -621,11 +620,9 @@ export default function StudentFilters({
                         <div className="flex items-center justify-between">
                             <div className="text-center flex-1">
                                 <div className="text-xl font-bold text-white">
-                                    <span className="text-blue-400">{visibleCount}</span>
-                                    <span className="text-gray-500 mx-2">/</span>
-                                    <span className="text-gray-300">{totalCount}</span>
+                                    <span className="text-blue-400">{filteredStudentsCount}/{totalStudentsCount}</span>
                                 </div>
-                                <div className="text-xs text-gray-400">students showing</div>
+                                <div className="text-xs text-gray-400">students loaded</div>
                             </div>
 
                             <button

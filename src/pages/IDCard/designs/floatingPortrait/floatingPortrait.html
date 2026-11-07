@@ -1,0 +1,118 @@
+<div
+    style="width:54mm;height:85.6mm;position:relative;overflow:hidden;background:#fff;color:#202830;font-family:Inter,system-ui,sans-serif;flex:0 0 auto;isolation:isolate;-webkit-print-color-adjust:exact;print-color-adjust:exact;">
+    <div style="position:absolute;inset:0 0 auto;height:16mm;background:#edf6f8;border-bottom:.25mm solid #d7e7ed;">
+    </div>
+    <div
+        style="position:absolute;top:4.2mm;left:4.5mm;right:4.5mm;height:10.5mm;display:flex;gap:2.2mm;align-items:center;z-index:5;">
+        <div
+            style="flex:0 0 8mm;width:8mm;height:8mm;overflow:hidden;background:#fff;border-radius:50%;border:.4mm solid #fff;box-shadow:0 0 0 .25mm #bdd7e1;">
+            <img id="school-logo" data-field="school-logo" alt="School logo"
+                style="display:block;width:100%;height:100%;object-fit:cover;">
+        </div>
+        <div style="min-width:0;flex:1;margin-right:12mm;">
+            <div id="school-name" data-field="school-name"
+                style="color:#18384c;font-size:8pt;font-weight:900;line-height:1.06;letter-spacing:.05px;max-height:7.3mm;white-space:normal;word-break:break-word;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                School Name</div>
+            <div
+                style="margin-top:.65mm;color:#3b7896;font-size:3.9pt;line-height:1;font-weight:800;letter-spacing:.35px;white-space:nowrap;text-transform:uppercase;">
+                <span id="school-udise" data-field="school-udise">UDISE:</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div
+        style="position:absolute;top:18mm;left:50%;transform:translateX(-50%);width:23mm;height:27mm;overflow:hidden;background:#e9eef2;border:.65mm solid #fff;border-radius:3.5mm;box-shadow:0 1.2mm 3.5mm rgba(39,74,96,.13);">
+        <img id="student-image" data-field="student-image" alt="Student photo"
+            style="display:block;width:100%;height:100%;object-fit:cover;object-position:top center;">
+    </div>
+    <div id="student-qr" data-qr-width="10mm" data-qr-height="10mm"
+        style="display:none;position:absolute;top:32.5mm;left:calc(50% + .5mm);width:11.2mm;height:11.2mm;align-items:center;justify-content:center;overflow:hidden;background:#fff;border:.35mm solid #fff;border-radius:1.5mm;box-shadow:0 1mm 2mm rgba(24,56,76,.22);z-index:8;">
+        <div id="student-qr-code"></div>
+    </div>
+
+    <div style="position:absolute;top:46.7mm;left:5mm;width:44mm;text-align:center;z-index:5;">
+        <div id="student-name" data-field="student-name"
+            style="color:#18384c;font-size:8.9pt;line-height:1.02;font-weight:900;letter-spacing:-.05px;max-height:7.3mm;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+            Student Name</div>
+        <div id="student-father" data-field="student-father"
+            style="margin-top:1mm;color:#6c7880;font-size:5pt;line-height:1.05;font-weight:650;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+            Parent Name</div>
+    </div>
+
+    <div style="position:absolute;top:53.4mm;left:50%;transform:translateX(-50%);width:46mm;z-index:5;">
+        <div
+            style="display:flex;align-items:baseline;min-height:4.15mm;padding:.72mm 0;border-bottom:.2mm solid #dbe6eb;">
+            <span
+                style="width:16mm;flex:0 0 16mm;color:#78919e;font-size:4.05pt;line-height:1.05;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;">Class
+                / Roll</span><span
+                style="width:1.4mm;flex:0 0 1.4mm;font-size:4.8pt;font-weight:900;text-align:center;">:</span><span
+                id="student-class-roll" data-field="student-class-roll"
+                style="min-width:0;flex:1;color:#202a31;font-size:5.55pt;line-height:1.04;font-weight:750;overflow-wrap:anywhere;">Class
+                / Roll</span>
+        </div>
+        <div
+            style="display:flex;align-items:baseline;min-height:4.15mm;padding:.72mm 0;border-bottom:.2mm solid #dbe6eb;">
+            <span
+                style="width:16mm;flex:0 0 16mm;color:#78919e;font-size:4.05pt;line-height:1.05;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;">Date
+                of Birth</span><span
+                style="width:1.4mm;flex:0 0 1.4mm;font-size:4.8pt;font-weight:900;text-align:center;">:</span><span
+                id="student-dob" data-field="student-dob"
+                style="min-width:0;flex:1;color:#202a31;font-size:5.55pt;line-height:1.04;font-weight:750;overflow-wrap:anywhere;">Date
+                of Birth</span>
+        </div>
+        <div
+            style="display:flex;align-items:baseline;min-height:4.15mm;padding:.72mm 0;border-bottom:.2mm solid #dbe6eb;">
+            <span
+                style="width:16mm;flex:0 0 16mm;color:#78919e;font-size:4.05pt;line-height:1.05;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;">Phone</span><span
+                style="width:1.4mm;flex:0 0 1.4mm;font-size:4.8pt;font-weight:900;text-align:center;">:</span><span
+                id="student-phone" data-field="student-phone"
+                style="min-width:0;flex:1;color:#202a31;font-size:5.55pt;line-height:1.04;font-weight:750;overflow-wrap:anywhere;">Phone</span>
+        </div>
+        <div style="display:flex;align-items:baseline;min-height:4.15mm;padding:.72mm 0;">
+            <span
+                style="width:16mm;flex:0 0 16mm;color:#78919e;font-size:4.05pt;line-height:1.05;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;">Address</span><span
+                style="width:1.4mm;flex:0 0 1.4mm;font-size:4.8pt;font-weight:900;text-align:center;">:</span><span
+                id="student-address" data-field="student-address"
+                style="min-width:0;flex:1;color:#202a31;font-size:4.75pt;line-height:1.04;font-weight:700;overflow-wrap:anywhere;">Address</span>
+        </div>
+    </div>
+
+    <div
+        style="position:absolute;top:69.8mm;left:50%;transform:translateX(-50%);width:46mm;display:flex;align-items:center;justify-content:space-between;z-index:15;">
+
+        <div style="width:14mm;text-align:center;">
+            <div style="height:5mm;display:flex;align-items:flex-end;justify-content:center;">
+                <img id="teacher-sign" data-field="teacher-sign" alt="Teacher signature"
+                    style="display:none;max-height:5mm;max-width:14mm;width:auto;object-fit:contain;">
+            </div>
+            <span
+                style="display:block;margin-top:.35mm;padding-top:.5mm;border-top:.25mm solid #91bac9;color:#18384c;font-size:3.85pt;font-weight:800;letter-spacing:.38px;text-transform:uppercase;">Teacher</span>
+        </div>
+
+        <div id="session-year" data-field="session-year"
+            style="padding:1.1mm 1.5mm;border:.25mm solid #b9d6e1;border-radius:5mm;color:#18384c;background:#fff;font-size:3.9pt;line-height:1;font-weight:800;letter-spacing:.35px;white-space:nowrap;text-transform:uppercase;">
+            2025-26
+        </div>
+
+        <div style="width:14mm;text-align:center;">
+            <div style="height:5mm;display:flex;align-items:flex-end;justify-content:center;">
+                <img id="principal-sign" data-field="principal-sign" alt="Principal signature"
+                    style="display:none;max-height:5mm;max-width:14mm;width:auto;object-fit:contain;">
+            </div>
+            <span
+                style="display:block;margin-top:.35mm;padding-top:.5mm;border-top:.25mm solid #91bac9;color:#18384c;font-size:3.85pt;font-weight:800;letter-spacing:.38px;text-transform:uppercase;">Principal</span>
+        </div>
+
+    </div>
+
+    <div
+        style="position:absolute;left:0;right:0;bottom:0;height:7mm;z-index:20;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:1mm 3mm;background:#18384c;color:#fff;">
+        <div id="school-address" data-field="school-address"
+            style="width:100%;color:#d0e5ec;font-size:3.65pt;line-height:1.04;font-weight:650;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;overflow-wrap:anywhere;">
+            School Address</div>
+        <div id="school-phone" data-field="school-phone"
+            style="margin-top:.45mm;font-size:4.55pt;line-height:1;font-weight:850;white-space:nowrap;">School Phone
+        </div>
+    </div>
+</div>

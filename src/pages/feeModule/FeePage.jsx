@@ -67,14 +67,23 @@ function FeePage() {
     setDashboardError(null);
 
     try {
-      const response = await apiGet('/api/fee-dashboard');
-      const payload = await response.json();
+      const endpoints = [
+        ['/api/fee-dashboard/summary', 'summary'],
+        ['/api/fee-dashboard/daily-collections', 'daily_collections'],
+        ['/api/fee-dashboard/class-analysis', 'class_analysis'],
+      ];
+      const responses = await Promise.all(
+        endpoints.map(async ([url, key]) => {
+          const response = await apiGet(url);
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload?.error || `Failed to load ${key.replace('_', ' ')}`);
+          }
+          return [key, payload[key]];
+        })
+      );
 
-      if (!response.ok) {
-        throw new Error(payload?.error || 'Failed to load dashboard');
-      }
-
-      setDashboardData(payload);
+      setDashboardData(Object.fromEntries(responses));
     } catch (error) {
       console.error('Failed to fetch fee dashboard data:', error);
       setDashboardError(error.message || 'Unable to load dashboard data.');

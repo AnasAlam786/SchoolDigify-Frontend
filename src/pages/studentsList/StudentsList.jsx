@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { apiGet, apiPost } from "../../api/api";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import { apiGet } from "../../api/api";
 import StudentFilters from "./components/StudentFilters";
 import StudentCard from "./components/StudentCard";
 import StudentStatsSection from "./components/StudentStatsSection";
 import StudentDetailsModal from "../utils/StudentsDetailsModal.jsx/StudentDetailsModal";
 import Header from "./components/Header";
-import { fetchClasses } from "../utils/fetchClasses";
+import { useClasses } from "../../hooks/useClasses";
 import "./style/StudentsList.css";
 import SkeletonLoader from "./components/PageStatus";
 import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
-import { DEFAULT_FILTERS, matchesSearch, matchesFilters, sortStudents } from "./components/StudentsFilter";
+import { DEFAULT_FILTERS } from "./components/StudentsFilter";
 
 import FeeDrawer from "../utils/feeDrawer/FeeDrawer";
 import FeeSessionSetupModal from "../utils/feeSessionSetup/FeeSessionSetupModal";
@@ -22,14 +24,20 @@ import usePermission from "../../hooks/usePermission";
 export default function StudentsList() {
 
     const { hasPermission, PERMISSIONS } = usePermission()
+    const queryClient = useQueryClient();
 
-    const [students, setStudents] = useState([]);
-    const [classes, setClasses] = useState([]);
     const [studentFilters, setStudentFilters] = useState(DEFAULT_FILTERS);
+    const [debouncedSearch, setDebouncedSearch] = useState(DEFAULT_FILTERS.search);
+    const [debouncedSearchIn, setDebouncedSearchIn] = useState(DEFAULT_FILTERS.searchIn);
 
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setDebouncedSearch(studentFilters.search);
+            setDebouncedSearchIn(studentFilters.searchIn);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [studentFilters.search]);
 
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [isDetailModalOpen, setDetailModalOpen] = useState(false);
@@ -41,6 +49,93 @@ export default function StudentsList() {
 
     const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
     const [transactionModalStudent, setTransactionModalStudent] = useState({});
+
+    const { 
+        data: classes = [], isPending: isClassesLoading, error: classError 
+    } = useClasses();
+
+
+    const queryParams = useMemo(() => ({
+        search: debouncedSearch,
+        searchIn: debouncedSearch.trim()
+            ? studentFilters.search === debouncedSearch
+                ? studentFilters.searchIn
+                : debouncedSearchIn
+            : "all",
+        classView: studentFilters.classView,
+        sortBy: studentFilters.sortBy,
+        sortDir: studentFilters.sortDir,
+        filterRTE: String(studentFilters.filterRTE),
+        filterPEN: studentFilters.filterPEN,
+        filterGender: studentFilters.filterGender,
+        filterAdmission: studentFilters.filterAdmission,
+    }), [studentFilters, debouncedSearch, debouncedSearchIn]);
+
+    const getStudentsData = async ({ queryParams, pageParam, signal }) => {
+        const searchParams = new URLSearchParams(queryParams);
+        searchParams.set("page", String(pageParam));
+
+        const response = await apiGet(
+            `/api/get_students_data?${searchParams.toString()}`,
+            { signal }
+        );
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data?.error || "Failed to load students data.");
+        }
+        return data;
+    };
+
+    const getStudentStats = async ({ signal }) => {
+        const response = await apiGet(
+            "/api/get_students_stats",
+            { signal }
+        );
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data?.error || "Failed to load student statistics.");
+        }
+        return data;
+    };
+
+    const studentsQuery = useInfiniteQuery({
+        queryKey: ["students", queryParams],
+        initialPageParam: 1,
+        queryFn: ({ pageParam, signal }) =>
+            getStudentsData({ queryParams, pageParam, signal }),
+        getNextPageParam: (lastPage) =>
+            lastPage.has_more ? lastPage.page + 1 : undefined,
+    });
+
+    const statsQuery = useQuery({
+        queryKey: ["studentStats"],
+        enabled: hasPermission(PERMISSIONS.STUDENTS_STATS),
+        queryFn: getStudentStats,
+    });
+
+
+
+    const students = studentsQuery.data?.pages.flatMap((page) => page.students) ?? [];
+    const filteredStudentsCount = studentsQuery.data?.pages[0]?.total_count ?? 0;
+    const totalStudentsCount = statsQuery.data?.total_students ?? 0;
+
+    const { ref: loadMoreRef, inView } = useInView({ threshold: 0 });
+    useEffect(() => {
+        if (
+            inView &&
+            studentsQuery.hasNextPage &&
+            !studentsQuery.isFetching &&
+            !studentsQuery.isFetchNextPageError
+        ) {
+            studentsQuery.fetchNextPage();
+        }
+    }, [
+        inView,
+        studentsQuery.hasNextPage,
+        studentsQuery.isFetching,
+        studentsQuery.isFetchNextPageError,
+        studentsQuery.fetchNextPage,
+    ]);
 
     const printStudentRegister = useCallback(async () => {
         const printWindow = window.open("", "_blank");
@@ -69,54 +164,24 @@ export default function StudentsList() {
         }
     }, []);
 
-    useEffect(() => {
-        fetchClasses().then(setClasses);
-    }, []);
 
-    const loadStudents = useCallback(async () => {
-        setLoading(true);
-        setError("");
-        try {
-            const response = await apiGet("/api/get_students_data");
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error("Failed to load students data.");
-            }
-
-            const loadedStudents = data.students || [];
-            setStudents(loadedStudents);
-            setStats(data.stats || null);
-        } catch (err) {
-            setError(err.message || "Unable to load student data.");
-        } finally {
-            setLoading(false);
-        }
-    }, []);
 
     const handleStudentImageUpdated = useCallback((studentId, nextImageId) => {
-        setStudents((prevStudents) =>
-            prevStudents.map((student) =>
-                String(student.id) === String(studentId)
-                    ? { ...student, IMAGE: nextImageId ?? student.IMAGE }
-                    : student
-            )
-        );
-    }, []);
-
-    useEffect(() => {
-        loadStudents();
-    }, [loadStudents]);
-
-
-    const filteredStudents = useMemo(() => {
-        const filtered = students.filter(student =>
-            matchesSearch(student, studentFilters) &&
-            matchesFilters(student, studentFilters)
-        );
-
-        const result = sortStudents(filtered, studentFilters);
-        return result;
-    }, [students, studentFilters]);
+        queryClient.setQueryData(["students", queryParams], (previous) => {
+            if (!previous) return previous;
+            return {
+                ...previous,
+                pages: previous.pages.map((page) => ({
+                    ...page,
+                    students: page.students.map((student) =>
+                        String(student.id) === String(studentId)
+                            ? { ...student, IMAGE: nextImageId ?? student.IMAGE }
+                            : student
+                    ),
+                })),
+            };
+        });
+    }, [queryClient, queryParams]);
 
 
     const activeTags = useMemo(() => {
@@ -168,7 +233,7 @@ export default function StudentsList() {
         setFeeDrawerOpen(true);
     }, []);
 
-    const openTransactionModal =  useCallback((studentSessionId, Phone) => {
+    const openTransactionModal = useCallback((studentSessionId, Phone) => {
         setTransactionModalStudent({ studentSessionId, phone: Phone });
         setTransactionModalOpen(true);
     }, []);
@@ -181,22 +246,46 @@ export default function StudentsList() {
 
     let mainContent;
 
-    if (loading) { mainContent = <SkeletonLoader /> }
-    else if (error) { mainContent = <ErrorState message={error} /> }
-    else if (filteredStudents.length === 0) { mainContent = <NoStudentsState /> }
+    if (studentsQuery.isPending) { mainContent = <SkeletonLoader /> }
+    else if (studentsQuery.isError && !studentsQuery.data) {
+        mainContent = <ErrorState message={studentsQuery.error.message || "Unable to load student data."} />;
+    }
+    else if (students.length === 0) { mainContent = <NoStudentsState /> }
     else {
         mainContent = (
-            <div className="students-grid">
-                {filteredStudents.map((student) => (
-                    <StudentCard
-                        key={student.id}
-                        student={student}
-                        onViewDetails={openStudentDetails}
-                        onPayFees={openFeeDrawer}
-                        onImageUpdated={handleStudentImageUpdated}
-                    />
-                ))}
-            </div>
+            <>
+                <div className="students-grid">
+                    {students.map((student) => (
+                        <StudentCard
+                            key={student.id}
+                            student={student}
+                            onViewDetails={openStudentDetails}
+                            onPayFees={openFeeDrawer}
+                            onImageUpdated={handleStudentImageUpdated}
+                        />
+                    ))}
+                </div>
+                {studentsQuery.hasNextPage && (
+                    <div ref={loadMoreRef} className="py-5 text-center text-sm text-gray-400" role="status">
+                        {studentsQuery.isFetchingNextPage ? "Loading more students..." : "Scroll for more students"}
+                    </div>
+                )}
+                {!studentsQuery.hasNextPage && (
+                    <div className="py-5 text-center text-sm text-gray-500" role="status">
+                        End of student list
+                    </div>
+                )}
+                {studentsQuery.isFetchNextPageError && (
+                    <div className="py-3 text-center text-sm text-red-400" role="alert">
+                        {studentsQuery.error.message || "Unable to load more students."}
+                        <button
+                            type="button"
+                            onClick={() => studentsQuery.fetchNextPage()}
+                            className="ml-2 underline"
+                        >Retry</button>
+                    </div>
+                )}
+            </>
         )
     }
 
@@ -208,19 +297,32 @@ export default function StudentsList() {
                 studentFilters={studentFilters}
                 setStudentFilters={setStudentFilters}
 
-                totalCount={students.length}
-                visibleCount={filteredStudents.length}
+                filteredStudentsCount={filteredStudentsCount}
+                totalStudentsCount={totalStudentsCount}
 
                 activeTags={activeTags}
                 classes={classes} />
 
 
 
-            {stats && hasPermission(PERMISSIONS.STUDENTS_STATS) && (
+            {statsQuery.data && hasPermission(PERMISSIONS.STUDENTS_STATS) && (
                 <>
-                    <StudentStatsSection stats={stats} />
-                    <RollNumberGapWarning students={students} />
+                    <StudentStatsSection stats={statsQuery.data} />
+                    {
+                        !studentFilters.search &&
+                        studentFilters.classView === "All" &&
+                        !studentFilters.filterRTE &&
+                        studentFilters.filterPEN === "any" &&
+                        studentFilters.filterGender === "any" &&
+                        studentFilters.filterAdmission === "any" && (
+                            <RollNumberGapWarning students={students} />
+                        )}
                 </>
+            )}
+            {statsQuery.isError && hasPermission(PERMISSIONS.STUDENTS_STATS) && (
+                <p className="my-3 text-sm text-red-400" role="alert">
+                    {statsQuery.error.message || "Unable to load student statistics."}
+                </p>
             )}
 
             <section className="mt-3">

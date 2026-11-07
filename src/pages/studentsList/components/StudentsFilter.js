@@ -15,7 +15,7 @@ export const GLOBAL_FIELDS = [
     "STUDENTS_NAME",
     "FATHERS_NAME", "SR",
     "ROLL", "PHONE",
-    "AADHAAR", "PEN",
+    "PEN",
 ];
 
 export const fieldOptions = [
@@ -25,7 +25,6 @@ export const fieldOptions = [
     { value: "SR", label: "SR No" },
     { value: "ROLL", label: "Roll" },
     { value: "PHONE", label: "Phone" },
-    { value: "AADHAAR", label: "Aadhaar" },
     { value: "PEN", label: "PEN" },
 ];
 
@@ -89,7 +88,7 @@ function fieldMatch(student, field, token) {
         return value === token || value.endsWith(token);
     }
 
-    if (field === "PHONE" || field === "AADHAAR") {
+    if (field === "PHONE") {
         return value.endsWith(token) || value.includes(token);
     }
 

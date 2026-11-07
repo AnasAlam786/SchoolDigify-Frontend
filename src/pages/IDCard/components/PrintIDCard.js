@@ -56,7 +56,11 @@ function applyCardData(cardNode, student, school) {
     const qrContainer = cardNode.querySelector("#student-qr");
     const qrCodeContainer = cardNode.querySelector("#student-qr-code");
     if (qrContainer && qrCodeContainer) {
-        const qrCode = createStudentQRCode(student?.qr_value);
+        const qrCode = createStudentQRCode(
+            student?.qr_value,
+            qrContainer.dataset.qrWidth || "21mm",
+            qrContainer.dataset.qrHeight || "26mm"
+        );
         qrCodeContainer.innerHTML = qrCode;
         qrContainer.style.display = qrCode ? "flex" : "none";
     }
