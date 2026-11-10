@@ -50,8 +50,8 @@ export default function StudentsList() {
     const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
     const [transactionModalStudent, setTransactionModalStudent] = useState({});
 
-    const { 
-        data: classes = [], isPending: isClassesLoading, error: classError 
+    const {
+        data: classes = [], isPending: isClassesLoading, error: classError
     } = useClasses();
 
 
@@ -111,6 +111,19 @@ export default function StudentsList() {
         queryKey: ["studentStats"],
         enabled: hasPermission(PERMISSIONS.STUDENTS_STATS),
         queryFn: getStudentStats,
+    });
+
+    const schoolRollGapsQuery = useQuery({
+        queryKey: ["schoolRollGaps"],
+        enabled: hasPermission(PERMISSIONS.STUDENTS_STATS),
+        queryFn: async ({ signal }) => {
+            const response = await apiGet("/api/get_school_roll_gaps", { signal });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data?.error || "Failed to load school roll gaps.");
+            }
+            return data.gaps;
+        },
     });
 
 
@@ -253,6 +266,7 @@ export default function StudentsList() {
     else if (students.length === 0) { mainContent = <NoStudentsState /> }
     else {
         mainContent = (
+
             <>
                 <div className="students-grid">
                     {students.map((student) => (
@@ -265,27 +279,83 @@ export default function StudentsList() {
                         />
                     ))}
                 </div>
+
                 {studentsQuery.hasNextPage && (
-                    <div ref={loadMoreRef} className="py-5 text-center text-sm text-gray-400" role="status">
-                        {studentsQuery.isFetchingNextPage ? "Loading more students..." : "Scroll for more students"}
+                    <div ref={loadMoreRef} className="flex justify-center py-8" role="status" aria-live="polite">
+                        <div className="flex items-center gap-3 rounded-full border border-gray-200/80 bg-white px-5 py-3 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+                            {studentsQuery.isFetchingNextPage ? (
+                                <>
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600 dark:border-gray-600 dark:border-t-blue-400"></div>
+                                    <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                                        Loading more students
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="h-2 w-2 animate-pulse rounded-full bg-blue-500"></span>
+                                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                        Scroll to discover more students
+                                    </span>
+                                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </>
+                            )}
+                        </div>
                     </div>
                 )}
-                {!studentsQuery.hasNextPage && (
-                    <div className="py-5 text-center text-sm text-gray-500" role="status">
-                        End of student list
+
+                {!studentsQuery.hasNextPage && !studentsQuery.isFetchNextPageError && students.length > 0 && (
+                    <div className="flex justify-center py-10" role="status">
+                        <div className="flex items-center gap-3">
+                            <div className="h-px w-10 bg-gradient-to-r from-transparent to-gray-300 dark:to-gray-700"></div>
+                            <div className="flex items-center gap-2 rounded-full border border-gray-200/80 bg-gray-50/80 px-4 py-2 dark:border-gray-700 dark:bg-gray-900/60">
+                                <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span className="text-xs font-medium tracking-wide text-gray-500 dark:text-gray-400">
+                                    You've reached the end
+                                </span>
+                            </div>
+                            <div className="h-px w-10 bg-gradient-to-l from-transparent to-gray-300 dark:to-gray-700"></div>
+                        </div>
                     </div>
                 )}
+
                 {studentsQuery.isFetchNextPageError && (
-                    <div className="py-3 text-center text-sm text-red-400" role="alert">
-                        {studentsQuery.error.message || "Unable to load more students."}
-                        <button
-                            type="button"
-                            onClick={() => studentsQuery.fetchNextPage()}
-                            className="ml-2 underline"
-                        >Retry</button>
+                    <div className="flex justify-center px-4 py-8" role="alert">
+                        <div className="flex w-full max-w-md items-center justify-between gap-4 rounded-2xl border border-red-200/80 bg-red-50/70 p-4 dark:border-red-900/50 dark:bg-red-950/20">
+                            <div className="flex min-w-0 items-start gap-3">
+                                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400">
+                                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.7 3h16.96a2 2 0 001.7-3L13.7 3.86a2 2 0 00-3.4 0z" />
+                                    </svg>
+                                </div>
+                                <div className="min-w-0">
+                                    <p className="text-sm font-semibold text-red-700 dark:text-red-400">
+                                        Couldn't load students
+                                    </p>
+                                    <p className="mt-0.5 break-words text-xs text-red-600/80 dark:text-red-400/70">
+                                        {studentsQuery.error?.message || "Something went wrong. Please try again."}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => studentsQuery.fetchNextPage()}
+                                disabled={studentsQuery.isFetchingNextPage}
+                                className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-red-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                <svg className={`h-3.5 w-3.5 ${studentsQuery.isFetchingNextPage ? "animate-spin" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M20 11a8.1 8.1 0 00-14.9-4M4 4v4h4m-4 5a8.1 8.1 0 0014.9 4M20 20v-4h-4" />
+                                </svg>
+                                Retry
+                            </button>
+                        </div>
                     </div>
                 )}
             </>
+
         )
     }
 
@@ -301,7 +371,9 @@ export default function StudentsList() {
                 totalStudentsCount={totalStudentsCount}
 
                 activeTags={activeTags}
-                classes={classes} />
+                classes={classes}
+                isClassesLoading={isClassesLoading}
+                classError={classError} />
 
 
 
@@ -315,7 +387,9 @@ export default function StudentsList() {
                         studentFilters.filterPEN === "any" &&
                         studentFilters.filterGender === "any" &&
                         studentFilters.filterAdmission === "any" && (
-                            <RollNumberGapWarning students={students} />
+                            schoolRollGapsQuery.data && (
+                                <RollNumberGapWarning gaps={schoolRollGapsQuery.data} />
+                            )
                         )}
                 </>
             )}

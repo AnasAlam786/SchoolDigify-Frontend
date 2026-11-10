@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 
 import { apiGet } from '../../../api/api.js';
-import { fetchClasses } from '../../utils/fetchClasses.js';
+import { useClasses } from '../../../hooks/useClasses';
+
 import SubjectFormModal from './SubjectFormModal.jsx';
 
 function SubjectSkeleton() {
@@ -71,11 +72,10 @@ function SubjectRow({ subject, isOpen, onToggle, onEdit }) {
 
   return (
     <div
-      className={`group rounded-xl border transition-all ${
-        isOpen
+      className={`group rounded-xl border transition-all ${isOpen
           ? 'border-indigo-500/30 bg-[#1a1a1e]'
           : 'border-white/5 bg-[#141414] hover:border-white/10 hover:bg-[#181818]'
-      }`}
+        }`}
     >
       <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 sm:px-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -86,9 +86,8 @@ function SubjectRow({ subject, isOpen, onToggle, onEdit }) {
             aria-label={isOpen ? 'Collapse classes' : 'Expand classes'}
           >
             <ChevronDown
-              className={`h-4 w-4 transition-transform duration-200 ${
-                isOpen ? 'rotate-180 text-indigo-400' : ''
-              }`}
+              className={`h-4 w-4 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-400' : ''
+                }`}
             />
           </button>
 
@@ -113,11 +112,10 @@ function SubjectRow({ subject, isOpen, onToggle, onEdit }) {
 
         <div className="flex items-center gap-2">
           <div
-            className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${
-              isEditable
+            className={`inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] font-medium ${isEditable
                 ? 'bg-indigo-500/10 text-indigo-300'
                 : 'bg-zinc-800/80 text-zinc-500'
-            }`}
+              }`}
             title={!isEditable ? 'Editing locked after marks entry' : 'Editable'}
           >
             {isEditable ? (
@@ -184,7 +182,6 @@ function SubjectRow({ subject, isOpen, onToggle, onEdit }) {
 
 function SubjectSetup() {
   const [subjects, setSubjects] = useState([]);
-  const [classes, setClasses] = useState([]);
   const [staff, setStaff] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -209,9 +206,12 @@ function SubjectSetup() {
     }
   }, []);
 
+  const {
+    data: classes = [], isPending: isClassesLoading, error: classError
+  } = useClasses();
+
   useEffect(() => {
     loadSubjects();
-    fetchClasses().then(setClasses);
     apiGet('/api/get_all_staff')
       .then((response) =>
         response.json().then((payload) => (response.ok ? payload.staff || [] : []))

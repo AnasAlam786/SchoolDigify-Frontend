@@ -6,7 +6,7 @@ import StatusBar from './components/StatusBar';
 import IDCardContainer from "./components/IDCardContainer"
 import { InitialState, NoStudentsState, ErrorState, SkeletonLoader } from './components/PageStatus'
 import { PrintIDCard } from "./components/PrintIDCard";
-import { fetchClasses } from '../utils/fetchClasses';
+import { useClasses } from '../../hooks/useClasses';
 import { apiGet } from '../../api/api';
 import "./style/IDCard.css"
 
@@ -21,7 +21,6 @@ function IDCard() {
     const [studentIDCardError, setstudentIDCardError] = useState(null);
     const [isStudentIDCardloading, setStudentIDCardloading] = useState(false);
 
-    const [classes, setClasses] = useState([]);
     const [selectedClass, setSelectedClass] = useState("");
     const [search, setSearch] = useState("");
     const [showOnlyImages, setshowOnlyImages] = useState(true);
@@ -84,7 +83,7 @@ function IDCard() {
             const term = search.trim().toLowerCase();
 
             if (term) {
-                
+
                 const studentName =
                     student.student_name?.toLowerCase() || "";
 
@@ -135,13 +134,9 @@ function IDCard() {
         });
     }
 
-    useEffect(() => {
-        const loadClasses = async () => {
-            const classData = await fetchClasses();
-            setClasses(classData);
-        };
-        loadClasses()
-    }, [])
+    const {
+        data: classes = [], isPending: isClassesLoading, error: classError
+    } = useClasses();
 
 
     useEffect(() => {
@@ -185,6 +180,8 @@ function IDCard() {
             <Header />
             <ControlPanel
                 classes={classes}
+                isClassesLoading={isClassesLoading}
+                classError={classError}
                 filters={{ search, setSearch, showOnlyImages, setshowOnlyImages }}
                 selection={{ totalSelected, handleSelectAllVisible }}
 

@@ -1,57 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
-function detectRollGaps(students) {
-  const groupedRolls = new Map();
-
-  students.forEach((student) => {
-    const className = String(student.CLASS ?? "").trim();
-    const rollNumber = Number.parseInt(student.ROLL, 10);
-
-    if (!className || Number.isNaN(rollNumber)) {
-      return;
-    }
-
-    if (!groupedRolls.has(className)) {
-      groupedRolls.set(className, []);
-    }
-
-    groupedRolls.get(className).push(rollNumber);
-  });
-
-  return Array.from(groupedRolls.entries()).flatMap(([className, rollNumbers]) => {
-    const uniqueRollNumbers = Array.from(new Set(rollNumbers.filter((roll) => roll >= 1)));
-
-    if (uniqueRollNumbers.length === 0) {
-      return [];
-    }
-
-    // Start checking from 1 to detect if Roll 1 is missing
-    const minRoll = Math.min(1, ...uniqueRollNumbers);
-    const maxRoll = Math.max(...uniqueRollNumbers);
-    const assigned = new Set(uniqueRollNumbers);
-    const missing = [];
-
-    for (let currentRoll = minRoll; currentRoll <= maxRoll; currentRoll += 1) {
-      if (!assigned.has(currentRoll)) {
-        missing.push(currentRoll);
-      }
-    }
-
-    if (!missing.length) {
-      return [];
-    }
-
-    return [{
-      className,
-      missing,
-    }];
-  });
-}
-
-export default function RollNumberGapWarning({ students = [] }) {
+export default function RollNumberGapWarning({ gaps = [] }) {
   const [isDismissed, setIsDismissed] = useState(false);
-
-  const gaps = useMemo(() => detectRollGaps(students), [students]);
 
   if (isDismissed || gaps.length === 0) {
     return null;

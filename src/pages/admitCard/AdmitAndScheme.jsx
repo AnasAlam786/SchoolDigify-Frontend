@@ -12,15 +12,13 @@ function AdmitAndScheme() {
 
 
     const { 
-        data: classes = [], isPending: isClassesLoading, error: classError 
+        data: classes = [], isPending: isClassesLoading, error: classError
     } = useClasses();
 
 
   async function fetchHTMLPreview(selectedClass, admitHeading, schemeHeading, outputType, examScheme, feeHeading) {
-    setClassError(null)
     if (!selectedClass) {
       setPreviewHtml("");
-      setClassError("Class Selection is mandatory")
       setHTMLFetchError("Please select a class first.");
 
       document.querySelector(".main-content")?.scrollTo({

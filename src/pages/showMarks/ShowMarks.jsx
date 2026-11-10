@@ -5,7 +5,8 @@ import Header from './components/Header'
 import MarksTable from './components/MarksTable'
 import SelectionBar from './components/SelectionBar'
 import { buildMarksGazetteHtml, getMarksGazetteLayoutIssue } from './utils/marksGazette'
-import { fetchClasses } from '../utils/fetchClasses'
+import { useClasses } from '../../hooks/useClasses';
+
 import { ErrorState, NoClassSelectedState, NoStudentsState, SkeletonLoader } from './components/PageStatus'
 
 import './style/ShowMarks.css'
@@ -15,7 +16,6 @@ function ShowMarks() {
 
   const { hasPermission, PERMISSIONS } = usePermission()
 
-  const [classes, setClasses] = useState([])
   const [selectedClass, setSelectedClass] = useState('')
   const [students, setStudents] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -24,13 +24,9 @@ function ShowMarks() {
   const [error, setError] = useState(null)
   const [marksheetLoading, setMarksheetLoading] = useState(null)
 
-  useEffect(() => {
-    const loadClasses = async () => {
-      const classData = await fetchClasses();
-      setClasses(classData);
-    };
-    loadClasses()
-  }, [])
+    const { 
+        data: classes = [], isPending: isClassesLoading, error: classError
+    } = useClasses();
 
   const filteredStudents = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -222,6 +218,8 @@ function ShowMarks() {
         selectedClass={selectedClass}
         onClassChange={loadMarksheets}
         classes={classes}
+        isClassesLoading={isClassesLoading}
+        classError={classError}
       />
 
       {hasPermission(PERMISSIONS.GET_RESULT) && (

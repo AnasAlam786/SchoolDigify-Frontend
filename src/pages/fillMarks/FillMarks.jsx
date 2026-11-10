@@ -6,11 +6,11 @@ import "./style/FillMarks.css"
 import { NoStudentsState, ErrorState } from "../utils/GlobalPageStatus"
 import { useState, useEffect } from "react";
 import { apiGet } from "../../api/api"
-import { fetchClasses } from "../utils/fetchClasses"
+import { useClasses } from '../../hooks/useClasses';
+
 
 function FillMarks() {
 
-    const [classes, setClasses] = useState([]);
     const [exams, setExams] = useState([]);
     const [subjects, setSubjects] = useState([]);
 
@@ -36,13 +36,10 @@ function FillMarks() {
     }, [filters.classId]);
 
 
-    useEffect(() => {
-        const loadClasses = async () => {
-            const classData = await fetchClasses();
-            setClasses(classData);
-        };
-        loadClasses()
-    }, [])
+    const {
+        data: classes = [], isPending: isClassesLoading, error: classError
+    } = useClasses();
+
 
     async function fetchSubjectsAndExamsForClass(classId) {
         setSubjectFetchingError("");
@@ -156,6 +153,7 @@ function FillMarks() {
             <Header />
             <ControlPannel
                 classes={classes} exams={exams} subjects={subjects}
+                isClassesLoading={isClassesLoading} classError={classError}
                 filters={filters} setFilters={setFilters}
                 submitFilters={submitFilters}
                 SubjectFetchingError={SubjectFetchingError}

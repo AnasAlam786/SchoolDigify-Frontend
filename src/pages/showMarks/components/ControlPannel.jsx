@@ -1,7 +1,8 @@
 import React from 'react'
 
 function ControlPannel({ 
-  searchQuery, onSearchChange, selectedClass, onClassChange, classes
+  searchQuery, onSearchChange, selectedClass, onClassChange, classes,
+  isClassesLoading, classError,
 }) {
 
 
@@ -28,12 +29,13 @@ function ControlPannel({
           <select
             id="classView"
             name="selectClass"
-            value={selectedClass}
+            value={isClassesLoading || classError ? '' : selectedClass}
             onChange={(e) => onClassChange(e.target.value)}
+            disabled={isClassesLoading || !!classError}
             className="w-full appearance-none bg-transparent px-5 py-4 pr-12 text-gray-200 text-sm md:text-base focus:outline-none cursor-pointer"
           >
             <option value="" disabled hidden style={{ background: '#111111', color: '#e5e7eb' }}>
-              Select Class
+              {isClassesLoading ? 'Loading classes...' : classError ? (classError.message || 'Unable to load classes') : 'Select Class'}
             </option>
             {classes && classes.length > 0 ? (
               classes.map((cls) => (

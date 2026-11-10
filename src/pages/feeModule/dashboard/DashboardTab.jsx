@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react';
 import { ArrowUpRight, BarChart3, CalendarRange, CircleDollarSign, RefreshCw, School, TrendingUp, WalletCards } from 'lucide-react';
 import CollectionTrend from './components/CollectionTrend';
 
@@ -57,28 +56,18 @@ function getSummaryCards(summary = {}) {
   ];
 }
 
-export default function DashboardTab({ data, loading, error, onRetry, students = [] }) {
-  const summaryCards = useMemo(() => getSummaryCards(data?.summary || {}), [data?.summary]);
-
-  const classAnalysis = useMemo(() => {
-    const rows = Array.isArray(data?.class_analysis) ? data.class_analysis : [];
-    return [...rows].sort((a, b) => (b.collected || 0) - (a.collected || 0));
-  }, [data?.class_analysis]);
-
-  const classOutstanding = useMemo(() => {
-    const rows = Array.isArray(data?.class_analysis) ? data.class_analysis : [];
-    return [...rows].sort((a, b) => (b.outstanding || 0) - (a.outstanding || 0));
-  }, [data?.class_analysis]);
-
-  const totalOutstanding = useMemo(
-    () => classAnalysis.reduce((sum, item) => sum + Number(item.outstanding || 0), 0),
-    [classAnalysis]
+export default function DashboardTab({ data, loading, error, onRetry }) {
+  const summaryCards = getSummaryCards(data?.summary || {});
+  const classRows = Array.isArray(data?.class_analysis) ? data.class_analysis : [];
+  const classAnalysis = [...classRows].sort(
+    (a, b) => (b.collected || 0) - (a.collected || 0)
+  );
+  const classOutstanding = [...classRows].sort(
+    (a, b) => (b.outstanding || 0) - (a.outstanding || 0)
   );
 
-  const totalCollected = useMemo(
-    () => classAnalysis.reduce((sum, item) => sum + Number(item.collected || 0), 0),
-    [classAnalysis]
-  );
+  const totalOutstanding = Number(data?.summary?.outstanding || 0);
+  const totalCollected = Number(data?.summary?.total || 0);
 
   if (loading) {
     return (

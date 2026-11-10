@@ -2,31 +2,19 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { CalendarDays, ClipboardCheck } from 'lucide-react'
-import { fetchClasses } from '../utils/fetchClasses'
+import { useClasses } from '../../hooks/useClasses';
 import DailyAttendance from './dailyAttendance/DailyAttendance'
 import OverallAttendance from './overallAttendance/OverallAttendance'
 
 function Attendance() {
-    const [classes, setClasses] = useState([])
-    const [classesLoading, setClassesLoading] = useState(true)
+
     const location = useLocation()
     const navigate = useNavigate()
     const isOverall = location.pathname === '/overall_attendance'
 
-    useEffect(() => {
-        let active = true
-
-        fetchClasses().then(classData => {
-            if (active) {
-                setClasses(classData || [])
-                setClassesLoading(false)
-            }
-        })
-
-        return () => {
-            active = false
-        }
-    }, [])
+    const { 
+        data: classes = [], isPending: classesLoading, error: classError 
+    } = useClasses();
 
     return (
         <main className="mx-auto w-full max-w-7xl">

@@ -1,9 +1,11 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../../../auth/authProvider";
 
 function LoginCard() {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const { refreshSessionData } = useContext(AuthContext);
 
     const [showPassword, setShowPassword] = useState(false);
@@ -46,6 +48,7 @@ function LoginCard() {
                 return;
             }
 
+            queryClient.clear();
             await refreshSessionData();
             navigate("/idcard", { replace: true });
         } catch (err) {

@@ -71,8 +71,9 @@ function ControlPannel({
           <div>
             <select
               id="classSelect"
-              value={selectedClass}
+              value={isClassesLoading || classError ? '' : selectedClass}
               onChange={(event) => setSelectedClass(event.target.value)}
+              disabled={isClassesLoading || !!classError}
               className={`w-full rounded-lg bg-gray-800/50 text-white py-3 px-4 shadow-sm focus:outline-none transition-all duration-200 backdrop-blur-sm 
                 ${classError
                   ? 'border border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/30'
@@ -80,7 +81,7 @@ function ControlPannel({
                 }`}
             >
               <option value="" hidden className="bg-[#1b1a1b] text-gray-400">
-                {isClassesLoading ? 'Loading classes...' : 'Select Class'}
+                {isClassesLoading ? 'Loading classes...' : classError ? (classError.message || 'Unable to load classes') : 'Select Class'}
               </option>
 
               {classes.map((item) => (
@@ -100,9 +101,7 @@ function ControlPannel({
                 : "text-gray-400"
               }`}
           >
-            {classError
-              ? classError
-              : 'Select a class and click "Generate Preview"'}
+            {classError ? '' : 'Select a class and click "Generate Preview"'}
           </p>
         </div>
 

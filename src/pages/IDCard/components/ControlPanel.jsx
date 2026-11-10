@@ -7,7 +7,9 @@ function ControlPanel({
     selectedClass,
     setSelectedClass,
     handlePrint,
-    design
+    design,
+    isClassesLoading,
+    classError,
 }) {
 
     const { search, setSearch, showOnlyImages, setshowOnlyImages } = filters;
@@ -41,8 +43,7 @@ function ControlPanel({
                     </label>
 
                     <div className="relative group">
-                        <input onChange={(e) => setSearch(e.target.value)}
-                            type="text"
+                    <input onChange={(e) => setSearch(e.target.value)}
                             id="search"
                             placeholder="e.g., John Doe"
                             className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-xl text-white placeholder-gray-500 
@@ -52,7 +53,6 @@ function ControlPanel({
                     </div>
                 </div>
 
-                {/* Class Filter */}
                 <div className="space-y-3">
                     <label
                         htmlFor="class-filter"
@@ -65,8 +65,9 @@ function ControlPanel({
                     <div className="relative group">
                         <select
                             id="class-filter"
-                            value={selectedClass}
+                            value={isClassesLoading || classError ? "" : selectedClass}
                             onChange={(e) => setSelectedClass(e.target.value)}
+                            disabled={isClassesLoading || !!classError}
                             className="w-full px-5 py-4 bg-black/40 border border-white/10 rounded-xl text-white focus:outline-none 
                                 focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 appearance-none cursor-pointer
                                 transition-all duration-200 group-hover:border-white/20 text-base"
@@ -76,7 +77,7 @@ function ControlPanel({
                                 disabled
                                 className="bg-[#1A1A1A] text-gray-300"
                             >
-                                Select class
+                                {isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select class"}
                             </option>
                             <option
                                 value="all"

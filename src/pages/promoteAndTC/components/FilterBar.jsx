@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { fetchClasses } from '../../utils/fetchClasses';
+import { useClasses } from '../../../hooks/useClasses';
 
 export default function FilterBar(
     { searchTerm, setSearchTerm, fetchStudentsByClass, activeFilter, setActiveFilter, studentsStatusStats }
 ) {
-    const [classes, setClasses] = useState([]);
     const [selectedClass, setSelectedClass] = useState('');
 
-    useEffect(() => {
-        const loadClasses = async () => {
-            const classData = await fetchClasses();
-            setClasses(classData);
-        };
-        loadClasses()
-    }, [])
+    const {
+        data: classes = [], isPending: isClassesLoading, error: classError
+    } = useClasses();
 
     const handleClassChange = async (classId) => {
         setSelectedClass(classId);
@@ -25,17 +20,18 @@ export default function FilterBar(
         <div className="space-y-4">
             <div className="relative">
                 <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
-                <input onChange={e => setSearchTerm(e.target.value)}  value={searchTerm}
-                placeholder="Search by name, father name, roll no or PEN number..." 
-                className="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none" />
+                <input onChange={e => setSearchTerm(e.target.value)} value={searchTerm}
+                    placeholder="Search by name, father name, roll no or PEN number..."
+                    className="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl py-3.5 pl-12 pr-12 text-white placeholder-gray-500 focus:outline-none" />
             </div>
 
             <div className="relative">
                 <i className="fas fa-layer-group absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 z-10"></i>
-                <select value={selectedClass}
+                <select value={isClassesLoading || classError ? '' : selectedClass}
+                    disabled={isClassesLoading || !!classError}
                     className="w-full bg-[#1e1e1e] border border-gray-800 rounded-xl py-3.5 pl-12 pr-10 text-white appearance-none"
                     onChange={(e) => handleClassChange(e.target.value)}>
-                    <option value="" disabled>Select a class</option>
+                    <option value="" disabled>{isClassesLoading ? 'Loading classes...' : classError ? (classError.message || 'Unable to load classes') : 'Select a class'}</option>
                     {classes.map(c => <option key={c.id} value={c.id}>{c.class_name}</option>)}
                 </select>
                 <i className="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>

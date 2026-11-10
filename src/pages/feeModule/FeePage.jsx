@@ -1,12 +1,19 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { WalletCards, BarChart3 } from 'lucide-react';
 import StudentsTab from './studentsListTab/StudentsTab';
 import DashboardTab from './dashboard/DashboardTab';
 import { apiGet } from '../../api/api';
-import { ErrorState, NoStudentsState } from "../utils/GlobalPageStatus";
-import { SkeletonLoader } from './studentsListTab/components/PageStatus';
-import { NoFeeSessionStatus } from './studentsListTab/components/PageStatus';
 import usePermission from '../../hooks/usePermission'
+
+async function fetchFeeDashboardData(key, signal) {
+  const response = await apiGet(`/api/fee-dashboard/${key}`, { signal });
+  const payload = await response.json();
+  if (!response.ok) {
+    throw new Error(payload?.error || `Failed to load ${key.replace('-', ' ')}.`);
+  }
+  return payload[key.replaceAll('-', '_')];
+}
 
 function FeePage() {
   const { hasPermission, PERMISSIONS } = usePermission()
@@ -17,91 +24,35 @@ function FeePage() {
     canViewFeeData ? 'pay-fees' : 'dashboard'
   );
 
-  const [studentsData, setStudentsData] = useState([]);
-  const [totalDiscountBySchool, setTotalDiscountBySchool] = useState(0);
-  const [dashboardData, setDashboardData] = useState(null);
+  const schoolSummaryQuery = useQuery({
+    queryKey: ['fee-dashboard', 'school-summary'],
+    queryFn: ({ signal }) => fetchFeeDashboardData('summary', signal),
+    enabled: canViewFeeData || canViewAnalytics,
+  });
+  const dailyCollectionsQuery = useQuery({
+    queryKey: ['fee-dashboard', 'daily-collections'],
+    queryFn: ({ signal }) => fetchFeeDashboardData('daily-collections', signal),
+    enabled: canViewAnalytics,
+  });
+  const classAnalysisQuery = useQuery({
+    queryKey: ['fee-dashboard', 'class-analysis'],
+    queryFn: ({ signal }) => fetchFeeDashboardData('class-analysis', signal),
+    enabled: canViewAnalytics,
+  });
 
-  // All Page state and status
-  const [isStudentsDataLoading, setStudentsDataLoading] = useState(false);
-  const [studentsDataError, setStudentsDataError] = useState(null);
-  const [showNoFeeSessionState, setNoFeeSessionState] = useState(false);
-  const [showNoStudentState, setNoStudentState] = useState(false);
-  const [isDashboardLoading, setDashboardLoading] = useState(false);
-  const [dashboardError, setDashboardError] = useState(null);
-
-  const loadStudentFeeData = useCallback(async () => {
-    setStudentsDataLoading(true);
-    setStudentsDataError(null);
-    setNoFeeSessionState(false);
-    setNoStudentState(false);
-
-    try {
-      const response = await apiGet(`/api/get_students_fees`);
-      const payload = await response.json();
-
-      if (!response.ok) {
-        setStudentsDataError(payload.error);
-        if (payload.ERROR_CODE === "NO_SESSION_FEE_SETUP") {
-          setNoFeeSessionState(true);
-        } else if (payload.ERROR_CODE === "NO_STUDENTS") {
-          setNoStudentState(true);
-        }
-
-        throw new Error(payload?.error || 'Failed to fetch student fee data');
-      }
-
-      const studentsFeeData = payload.students_fee_data || [];
-      const totalDiscountBySchool = payload.total_discount_given_by_school || 0;
-
-      setTotalDiscountBySchool(totalDiscountBySchool);
-      setStudentsData(studentsFeeData);
-    } catch (error) {
-      console.error('Failed to fetch fee data:', error);
-    } finally {
-      setStudentsDataLoading(false);
-    }
-  }, []);
-
-  const loadDashboardData = useCallback(async () => {
-    setDashboardLoading(true);
-    setDashboardError(null);
-
-    try {
-      const endpoints = [
-        ['/api/fee-dashboard/summary', 'summary'],
-        ['/api/fee-dashboard/daily-collections', 'daily_collections'],
-        ['/api/fee-dashboard/class-analysis', 'class_analysis'],
-      ];
-      const responses = await Promise.all(
-        endpoints.map(async ([url, key]) => {
-          const response = await apiGet(url);
-          const payload = await response.json();
-          if (!response.ok) {
-            throw new Error(payload?.error || `Failed to load ${key.replace('_', ' ')}`);
-          }
-          return [key, payload[key]];
-        })
-      );
-
-      setDashboardData(Object.fromEntries(responses));
-    } catch (error) {
-      console.error('Failed to fetch fee dashboard data:', error);
-      setDashboardError(error.message || 'Unable to load dashboard data.');
-    } finally {
-      setDashboardLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    Promise.allSettled([
-      canViewFeeData
-        ? Promise.resolve().then(loadStudentFeeData)
-        : Promise.resolve(),
-      canViewAnalytics
-        ? Promise.resolve().then(loadDashboardData)
-        : Promise.resolve(),
-    ]);
-  }, [canViewFeeData, canViewAnalytics, loadStudentFeeData, loadDashboardData]);
+  const dashboardData = {
+    summary: schoolSummaryQuery.data,
+    daily_collections: dailyCollectionsQuery.data,
+    class_analysis: classAnalysisQuery.data,
+  };
+  const isDashboardLoading =
+    schoolSummaryQuery.isLoading || dailyCollectionsQuery.isLoading || classAnalysisQuery.isLoading;
+  const dashboardError =
+    schoolSummaryQuery.error?.message || dailyCollectionsQuery.error?.message || classAnalysisQuery.error?.message;
+  const retryDashboard = () => Promise.all([
+    dailyCollectionsQuery.refetch(),
+    classAnalysisQuery.refetch(),
+  ]);
 
   const tabOptions = [
     canViewFeeData && { value: 'pay-fees', label: 'Pay Fees', icon: WalletCards },
@@ -147,27 +98,16 @@ function FeePage() {
       </header>
 
       {selectedTab === 'pay-fees' ? (
-        isStudentsDataLoading ? (
-          <SkeletonLoader />
-        ) : showNoFeeSessionState ? (
-          <NoFeeSessionStatus onFeeSessionCreated={loadStudentFeeData} />
-        ) : showNoStudentState ? (
-          <NoStudentsState message={studentsDataError} />
-        ) : studentsDataError ? (
-          <ErrorState message={studentsDataError} />
-        ) : (
-          <StudentsTab
-            students={studentsData}
-            totalDiscountBySchool={totalDiscountBySchool}
-          />
-        )
+        <StudentsTab
+          schoolSummary={dashboardData?.summary}
+          isSchoolSummaryLoading={schoolSummaryQuery.isLoading}
+        />
       ) : selectedTab === 'dashboard' ? (
         <DashboardTab
           data={dashboardData}
           loading={isDashboardLoading}
           error={dashboardError}
-          onRetry={loadDashboardData}
-          students={studentsData}
+          onRetry={retryDashboard}
         />
       ) : null}
     </div>

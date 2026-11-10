@@ -9,6 +9,8 @@ export default function StudentFilters({
     totalStudentsCount,
     activeTags,
     classes,
+    isClassesLoading,
+    classError,
 }) {
 
     let hasActiveTags = activeTags.length > 0
@@ -77,8 +79,9 @@ export default function StudentFilters({
 
                                 <div className="relative">
                                     <select
-                                        value={studentFilters.classView}
+                                        value={isClassesLoading || classError ? "" : studentFilters.classView}
                                         onChange={(e) => updateFilter("classView", e.target.value)}
+                                        disabled={isClassesLoading || !!classError}
                                         className="h-full bg-gray-900/80 backdrop-blur-sm border border-gray-700/50 rounded-xl pl-4 pr-10 py-4 text-base focus:outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-200 cursor-pointer text-white appearance-none min-w-[180px]"
                                         style={{
                                             backgroundImage:
@@ -88,6 +91,7 @@ export default function StudentFilters({
                                             backgroundSize: ".65rem auto",
                                         }}
                                     >
+                                        <option value="" disabled>{isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select a class"}</option>
                                         <option value="All">All Classes</option>
                                         {classes.map(cls => (
                                             <option key={cls.id} value={cls.id}>
@@ -397,10 +401,12 @@ export default function StudentFilters({
                                     Class Filter
                                 </label>
                                 <select
-                                    value={studentFilters.classView}
+                                    value={isClassesLoading || classError ? "" : studentFilters.classView}
                                     onChange={(e) => updateFilter("classView", e.target.value)}
+                                    disabled={isClassesLoading || !!classError}
                                     className="w-full appearance-none bg-transparent pt-0.5 pb-1 pr-6 text-sm font-medium text-gray-100 focus:outline-none cursor-pointer"
                                 >
+                                    <option value="" disabled className="bg-gray-900 text-gray-300 py-2.5 px-3">{isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select a class"}</option>
                                     <option value="All" className="bg-gray-900 text-gray-300 py-2.5 px-3">All Classes</option>
                                     {classes.map(cls => (
                                         <option key={cls.id} value={cls.id} className="bg-gray-900 text-gray-100 py-2.5 px-3">

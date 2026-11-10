@@ -1,11 +1,16 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import { apiGet } from "../../../api/api";
 import StudentFeeCard from "./components/StudentFeeCard";
 import StudentDetailsModal from "../../utils/StudentsDetailsModal.jsx/StudentDetailsModal";
 import FeeDrawer from "../../utils/feeDrawer/FeeDrawer";
 import TransactionModal from "../../utils/feeTransactionsModal/TransactionModal";
-import { fetchClasses } from "../../utils/fetchClasses";
-import { filterAndSortStudents } from "./components/filter";
+import { useClasses } from '../../../hooks/useClasses';
 import usePermission from "../../../hooks/usePermission";
+import { ErrorState, NoStudentsState } from "../../utils/GlobalPageStatus";
+import { SkeletonLoader } from "./components/PageStatus";
+import { NoFeeSessionStatus } from "./components/PageStatus";
 
 const sortOptions = [
   { value: "class-roll", label: "Class / Roll number" },
@@ -23,12 +28,13 @@ const initialFilters = {
 };
 
 export default function StudentsTab({
-  students = [],
-  totalDiscountBySchool = 0,
+  schoolSummary = null,
+  isSchoolSummaryLoading = false,
 }) {
   const { hasPermission, PERMISSIONS } = usePermission();
 
   const [filters, setFilters] = useState(initialFilters);
+  const [debouncedSearch, setDebouncedSearch] = useState(filters.search.trim());
 
   const [isFeeDrawerOpen, setFeeDrawerOpen] = useState(false);
   const [feeDrawerStudent, setFeeDrawerStudent] = useState(null);
@@ -38,50 +44,109 @@ export default function StudentsTab({
 
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  const [classes, setClasses] = useState([]);
 
   /*
    * Fetch classes
    */
-  useEffect(() => {
-    fetchClasses().then(setClasses);
-  }, []);
+  const {
+    data: classes = [], isPending: isClassesLoading, error: classError
+  } = useClasses();
 
-  /*
-   * Filter + sort students
-   *
-   * classes is included because classFilter depends on it.
-   */
-  const filteredStudents = useMemo(() => {
-    return filterAndSortStudents(students, filters, classes);
-  }, [students, filters, classes]);
+  useEffect(() => {
+    const timeoutId = setTimeout(() => setDebouncedSearch(filters.search.trim()), 500);
+    return () => clearTimeout(timeoutId);
+  }, [filters.search]);
+
+  const feeStudentsQuery = useInfiniteQuery({
+    queryKey: [
+      "fee-students",
+      debouncedSearch,
+      filters.classFilter,
+      filters.sortBy,
+      filters.sortDir,
+    ],
+    enabled: debouncedSearch === filters.search.trim(),
+    initialPageParam: 1,
+    queryFn: async ({ pageParam, signal }) => {
+      const params = new URLSearchParams({
+        page: String(pageParam),
+        search: debouncedSearch,
+        class_id: filters.classFilter,
+        sort_by: filters.sortBy,
+        sort_dir: filters.sortDir,
+      });
+      const response = await apiGet(`/api/get_students_fees?${params}`, { signal });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw Object.assign(new Error(payload?.error || "Failed to load student fee data."), {
+          errorCode: payload.ERROR_CODE,
+        });
+      }
+      return payload;
+    },
+    getNextPageParam: (lastPage) =>
+      lastPage.has_more ? lastPage.page + 1 : undefined,
+    retry: (failureCount, error) => !error.errorCode && failureCount < 2,
+  });
+
+  const students = feeStudentsQuery.data?.pages.flatMap(
+    (page) => page.students_fee_data
+  ) ?? [];
+  const filteredStudentCount = feeStudentsQuery.data?.pages[0]?.students_count ?? 0;
+  const noFeeSession = feeStudentsQuery.error?.errorCode === "NO_SESSION_FEE_SETUP";
+  const noStudents = feeStudentsQuery.error?.errorCode === "NO_STUDENTS";
+  const { ref: loadMoreRef, inView } = useInView({ threshold: 0 });
+  const hasNextPage = feeStudentsQuery.hasNextPage;
+  const isFetchingStudents = feeStudentsQuery.isFetching;
+  const isNextPageError = feeStudentsQuery.isFetchNextPageError;
+  const fetchNextPage = feeStudentsQuery.fetchNextPage;
+
+  useEffect(() => {
+    if (
+      inView && hasNextPage && !isFetchingStudents && !isNextPageError
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    inView, hasNextPage, isFetchingStudents, isNextPageError, fetchNextPage,
+  ]);
+
+  const isSchoolWideSummary =
+    filters.classFilter === "All" && !filters.search.trim();
+  const filteredSummaryQuery = useQuery({
+    queryKey: [
+      "fee-dashboard",
+      "filtered-summary",
+      filters.classFilter,
+      debouncedSearch,
+    ],
+    enabled: !isSchoolWideSummary && debouncedSearch === filters.search.trim(),
+    staleTime: 0,
+    refetchOnMount: "always",
+    queryFn: async ({ signal }) => {
+      const params = new URLSearchParams();
+      if (filters.classFilter !== "All") params.set("class_ids", filters.classFilter);
+      if (debouncedSearch) params.set("search_query", debouncedSearch);
+
+      const response = await apiGet(
+        `/api/fee-dashboard/summary?${params.toString()}`,
+        { signal },
+      );
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.error || "Unable to load fee summary.");
+      }
+      return payload.summary;
+    },
+  });
+  const feeSummary = isSchoolWideSummary ? schoolSummary : filteredSummaryQuery.data;
+  const isFeeSummaryLoading = isSchoolWideSummary
+    ? isSchoolSummaryLoading
+    : filters.search.trim() !== debouncedSearch || filteredSummaryQuery.isFetching;
 
   /*
    * Summary
    */
-  const summary = useMemo(() => {
-    const totalStudents = filteredStudents.length;
-
-    const totalSettledAmount = filteredStudents.reduce(
-      (sum, student) => sum + Number(student.totalSettledAmount || 0),
-      0,
-    );
-
-    const totalOutstanding = filteredStudents.reduce(
-      (sum, student) => sum + Number(student.dueAmount || 0),
-      0,
-    );
-
-    const totalDiscount = Number(totalDiscountBySchool || 0);
-
-    return {
-      totalStudents,
-      totalSettledAmount,
-      totalOutstanding,
-      totalDiscount,
-    };
-  }, [filteredStudents, totalDiscountBySchool]);
-
   /*
    * Student actions
    */
@@ -143,6 +208,16 @@ export default function StudentsTab({
   const selectedSortLabel =
     sortOptions.find((option) => option.value === filters.sortBy)?.label ||
     "Class / Roll number";
+  const isInitialStudentsLoading = feeStudentsQuery.isPending && !feeStudentsQuery.data;
+  if (noFeeSession) {
+    return <NoFeeSessionStatus onFeeSessionCreated={feeStudentsQuery.refetch} />;
+  }
+  if (noStudents) {
+    return <NoStudentsState message={feeStudentsQuery.error.message} />;
+  }
+  if (feeStudentsQuery.error && !feeStudentsQuery.data) {
+    return <ErrorState message={feeStudentsQuery.error.message} />;
+  }
 
   return (
     <>
@@ -233,13 +308,15 @@ export default function StudentsTab({
                   <div className="text-center">
                     <div className="flex items-baseline justify-center gap-1.5">
                       <span className="text-lg font-bold text-white">
-                        {filteredStudents.length}
+                        {isFeeSummaryLoading
+                          ? "..."
+                          : feeSummary?.total_student_count || 0}
                       </span>
 
                       <span className="text-xs text-gray-600">/</span>
 
                       <span className="text-sm font-medium text-gray-400">
-                        {students.length}
+                        {isInitialStudentsLoading ? "..." : filteredStudentCount}
                       </span>
                     </div>
 
@@ -284,24 +361,30 @@ export default function StudentsTab({
                     </div>
 
                     <div className="text-[12px] font-medium text-gray-200">
-                      {filters.classFilter === "All"
-                        ? "All Classes"
-                        : classes.find(
-                            (cls) =>
-                              String(cls.id) === String(filters.classFilter),
-                          )?.class_name || "Selected class"}
+                      {isClassesLoading
+                        ? "Loading classes..."
+                        : classError
+                          ? (classError.message || "Unable to load classes")
+                          : filters.classFilter === "All"
+                            ? "All Classes"
+                            : classes.find(
+                              (cls) =>
+                                String(cls.id) === String(filters.classFilter),
+                            )?.class_name || "Selected class"}
                     </div>
                   </div>
 
                   <select
-                    value={filters.classFilter}
+                    value={isClassesLoading || classError ? "" : filters.classFilter}
                     onChange={(e) =>
                       updateFilter("classFilter", e.target.value)
                     }
+                    disabled={isClassesLoading || !!classError}
                     aria-label="Filter by class"
                     className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                     "
                   >
+                    <option value="" disabled>{isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select a class"}</option>
                     <option value="All">All Classes</option>
 
                     {classes.map((cls) => (
@@ -527,22 +610,28 @@ export default function StudentsTab({
                   </div>
 
                   <div className="truncate pr-5 text-[12px] font-medium text-gray-200">
-                    {filters.classFilter === "All"
-                      ? "All Classes"
-                      : classes.find(
-                          (cls) =>
-                            String(cls.id) === String(filters.classFilter),
-                        )?.class_name || "Selected class"}
+                    {isClassesLoading
+                      ? "Loading classes..."
+                      : classError
+                        ? (classError.message || "Unable to load classes")
+                        : filters.classFilter === "All"
+                          ? "All Classes"
+                          : classes.find(
+                            (cls) =>
+                              String(cls.id) === String(filters.classFilter),
+                          )?.class_name || "Selected class"}
                   </div>
                 </div>
 
                 <select
-                  value={filters.classFilter}
+                  value={isClassesLoading || classError ? "" : filters.classFilter}
                   onChange={(e) => updateFilter("classFilter", e.target.value)}
+                  disabled={isClassesLoading || !!classError}
                   aria-label="Filter by class"
                   className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
                   "
                 >
+                  <option value="" disabled>{isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select a class"}</option>
                   <option value="All">All Classes</option>
 
                   {classes.map((cls) => (
@@ -658,7 +747,7 @@ export default function StudentsTab({
               </div>
 
               <div className="mt-1 text-lg font-bold text-white">
-                {filteredStudents.length}
+                {isInitialStudentsLoading ? "..." : filteredStudentCount}
               </div>
             </div>
 
@@ -668,7 +757,9 @@ export default function StudentsTab({
               </div>
 
               <div className="mt-1 text-lg font-bold text-gray-400">
-                {students.length}
+                {isFeeSummaryLoading
+                  ? "..."
+                  : feeSummary?.total_student_count || 0}
               </div>
             </div>
           </div>
@@ -683,11 +774,41 @@ export default function StudentsTab({
         <section className="mt-5 grid gap-3 px-0 sm:grid-cols-2 xl:grid-cols-4">
           <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
             <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
-              Total Collected
+              Today Collected
             </p>
 
             <p className="mt-2 text-2xl font-bold text-emerald-300">
-              ₹{summary.totalSettledAmount.toLocaleString("en-IN")}
+              {isFeeSummaryLoading
+                ? "Loading..."
+                : feeSummary?.today == null
+                  ? "—"
+                  : `₹${Number(feeSummary?.today || 0).toLocaleString("en-IN")}`}
+            </p>
+          </div>
+
+
+
+          <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+              THIS MONTH
+            </p>
+
+            <p className="mt-2 text-2xl font-bold text-gray-200">
+              {isFeeSummaryLoading
+                ? "Loading..."
+                : `₹${Number(feeSummary?.this_month || 0).toLocaleString("en-IN")}`}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
+              Total Collected
+            </p>
+
+            <p className="mt-2 text-2xl font-bold text-white">
+              {isFeeSummaryLoading
+                ? "Loading..."
+                : `₹${Number(feeSummary?.this_year || 0).toLocaleString("en-IN")}`}
             </p>
           </div>
 
@@ -697,27 +818,11 @@ export default function StudentsTab({
             </p>
 
             <p className="mt-2 text-2xl font-bold text-red-300">
-              ₹{summary.totalOutstanding.toLocaleString("en-IN")}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
-              Discount Given
-            </p>
-
-            <p className="mt-2 text-2xl font-bold text-gray-200">
-              ₹{summary.totalDiscount.toLocaleString("en-IN")}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4">
-            <p className="text-[11px] uppercase tracking-[0.18em] text-gray-400">
-              Total Students
-            </p>
-
-            <p className="mt-2 text-2xl font-bold text-white">
-              {summary.totalStudents}
+              {isFeeSummaryLoading
+                ? "Loading..."
+                : feeSummary?.outstanding == null
+                  ? "—"
+                  : `₹${Number(feeSummary?.outstanding).toLocaleString("en-IN")}`}
             </p>
           </div>
         </section>
@@ -728,7 +833,9 @@ export default function StudentsTab({
       ========================================================= */}
 
       <section className="mt-6 pb-5">
-        {filteredStudents.length === 0 ? (
+        {isInitialStudentsLoading ? (
+          <SkeletonLoader />
+        ) : students.length === 0 ? (
           <div
             className="
               rounded-3xl border border-dashed border-[#3A3A3A] bg-[#1A1A1A] px-6 py-16 text-center
@@ -778,7 +885,7 @@ export default function StudentsTab({
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {filteredStudents.map((student) => (
+            {students.map((student) => (
               <StudentFeeCard
                 key={student.id}
                 student={student}
@@ -787,6 +894,17 @@ export default function StudentsTab({
                 onViewTransactions={openTransactionModal}
               />
             ))}
+          </div>
+        )}
+        {students.length > 0 && (
+          <div className="mt-5 text-center text-sm text-gray-500" ref={loadMoreRef}>
+            {feeStudentsQuery.isFetchingNextPage
+              ? "Loading more students..."
+              : feeStudentsQuery.isFetchNextPageError
+                ? <button type="button" onClick={() => feeStudentsQuery.fetchNextPage()} className="text-gray-300 hover:text-white">Retry loading students</button>
+                : feeStudentsQuery.hasNextPage
+                  ? `Showing ${feeSummary?.total_student_count || 0} of ${filteredStudentCount} students`
+                  : `Showing all ${filteredStudentCount} students`}
           </div>
         )}
       </section>

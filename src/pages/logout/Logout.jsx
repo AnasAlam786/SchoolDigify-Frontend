@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { AuthContext } from "../../auth/authProvider.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -7,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 export default function Logout() {
     const { refreshSessionData } = useContext(AuthContext);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const [error, setError] = useState(null);
 
     const hasRun = useRef(false);
@@ -30,6 +32,7 @@ export default function Logout() {
                     );
                 }
 
+                queryClient.clear();
                 await refreshSessionData();
 
                 navigate("/login", { replace: true });
@@ -39,7 +42,7 @@ export default function Logout() {
         };
 
         performLogout();
-    }, [navigate, refreshSessionData]);
+    }, [navigate, queryClient, refreshSessionData]);
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white">

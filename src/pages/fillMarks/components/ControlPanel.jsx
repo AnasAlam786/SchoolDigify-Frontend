@@ -5,6 +5,7 @@ function ControlPanel({
   subjects = [], filters, setFilters,
   submitFilters, SubjectFetchingError,
   ExamFetchingError, isStudentDataloading,
+  isClassesLoading, classError,
 }) {
 
   const {hasPermission, PERMISSIONS} = usePermission()
@@ -25,7 +26,8 @@ function ControlPanel({
               className="w-full bg-[#1A1A1A] border border-white/10 text-gray-100 text-base p-3 pl-4 rounded-lg focus:ring-2 
               focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
 
-              value={filters.classId}
+              value={isClassesLoading || classError ? "" : filters.classId}
+              disabled={isClassesLoading || !!classError}
               onChange={(e) => {
                 const classId = e.target.value;
                 setFilters(prev => ({
@@ -37,7 +39,7 @@ function ControlPanel({
               }}
             >
               <option value="" disabled>
-                Select Class
+                {isClassesLoading ? "Loading classes..." : classError ? (classError.message || "Unable to load classes") : "Select Class"}
               </option>
 
               {classes.map((cls) => (

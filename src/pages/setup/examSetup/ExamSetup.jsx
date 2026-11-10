@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertCircle, CalendarDays, CheckCircle2, ChevronDown, Edit3, GraduationCap, LockKeyhole, RefreshCw, Search, SlidersHorizontal } from 'lucide-react';
 import { apiGet } from '../../../api/api.js';
-import { fetchClasses } from '../../utils/fetchClasses.js';
+import { useClasses } from '../../../hooks/useClasses';
 import ExamFormModal from './ExamFormModal.jsx';
 
 function ExamRow({ exam, isOpen, onToggle, onEdit }) {
@@ -61,7 +61,6 @@ function ExamRow({ exam, isOpen, onToggle, onEdit }) {
 
 function ExamSetup() {
   const [exams, setExams] = useState([]);
-  const [classes, setClasses] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -84,10 +83,13 @@ function ExamSetup() {
     }
   }, []);
 
+  const {
+    data: classes = [], isPending: isClassesLoading, error: classError
+  } = useClasses();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       loadExams();
-      fetchClasses().then(setClasses);
     }, 0);
     return () => clearTimeout(timer);
   }, [loadExams]);
@@ -120,7 +122,7 @@ function ExamSetup() {
           <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">Exams</h2>
         </div>
       </div>
-      
+
       <div className="mb-4 flex flex-wrap items-center gap-3 rounded-2xl border border-white/10 bg-[#181818] p-2.5">
         <div className="relative min-w-[200px] flex-1">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
