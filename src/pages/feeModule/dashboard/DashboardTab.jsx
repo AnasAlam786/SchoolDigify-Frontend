@@ -1,5 +1,6 @@
 import { ArrowUpRight, BarChart3, CalendarRange, CircleDollarSign, RefreshCw, School, TrendingUp, WalletCards } from 'lucide-react';
 import CollectionTrend from './components/CollectionTrend';
+import TransactionsList from './components/TransactionsList';
 
 
 function formatCurrency(value) {
@@ -156,6 +157,8 @@ export default function DashboardTab({ data, loading, error, onRetry }) {
         <CollectionTrend data={data.daily_collections} />
       </section>
 
+      <TransactionsList />
+
       <section className="grid gap-5 xl:grid-cols-2">
         <div className="rounded-2xl border border-[#2A2A2A] bg-[#1A1A1A] p-4 sm:p-5">
           <div className="mb-4 flex items-center justify-between gap-2">
@@ -245,6 +248,8 @@ export default function DashboardTab({ data, loading, error, onRetry }) {
           </div>
         </div>
       </section>
+
+      
     </div>
   );
 }

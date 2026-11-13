@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+import { FileText } from "lucide-react";
 import { apiGet } from "../../../api/api";
 import StudentFeeCard from "./components/StudentFeeCard";
+import FeeReportModal from "./components/FeeReportModal";
 import StudentDetailsModal from "../../utils/StudentsDetailsModal.jsx/StudentDetailsModal";
 import FeeDrawer from "../../utils/feeDrawer/FeeDrawer";
 import TransactionModal from "../../utils/feeTransactionsModal/TransactionModal";
@@ -22,10 +24,17 @@ const sortOptions = [
 
 const initialFilters = {
   search: "",
-  classFilter: "All",
+  classFilter: ["All"],
   sortBy: "class-roll",
   sortDir: "asc",
 };
+
+function getSelectedClassIds(classFilter) {
+  const classIds = Array.isArray(classFilter) ? classFilter : [classFilter];
+  return classIds
+    .filter((classId) => classId && classId !== "All")
+    .map(String);
+}
 
 export default function StudentsTab({
   schoolSummary = null,
@@ -43,6 +52,7 @@ export default function StudentsTab({
   const [transactionModalStudent, setTransactionModalStudent] = useState(null);
 
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [isFeeReportOpen, setFeeReportOpen] = useState(false);
 
 
   /*
@@ -51,6 +61,7 @@ export default function StudentsTab({
   const {
     data: classes = [], isPending: isClassesLoading, error: classError
   } = useClasses();
+  const selectedClassIds = getSelectedClassIds(filters.classFilter);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => setDebouncedSearch(filters.search.trim()), 500);
@@ -61,7 +72,7 @@ export default function StudentsTab({
     queryKey: [
       "fee-students",
       debouncedSearch,
-      filters.classFilter,
+      selectedClassIds,
       filters.sortBy,
       filters.sortDir,
     ],
@@ -71,10 +82,10 @@ export default function StudentsTab({
       const params = new URLSearchParams({
         page: String(pageParam),
         search: debouncedSearch,
-        class_id: filters.classFilter,
         sort_by: filters.sortBy,
         sort_dir: filters.sortDir,
       });
+      selectedClassIds.forEach((classId) => params.append("class_ids", classId));
       const response = await apiGet(`/api/get_students_fees?${params}`, { signal });
       const payload = await response.json();
       if (!response.ok) {
@@ -82,6 +93,7 @@ export default function StudentsTab({
           errorCode: payload.ERROR_CODE,
         });
       }
+      console.log(payload)
       return payload;
     },
     getNextPageParam: (lastPage) =>
@@ -112,12 +124,12 @@ export default function StudentsTab({
   ]);
 
   const isSchoolWideSummary =
-    filters.classFilter === "All" && !filters.search.trim();
+    selectedClassIds.length === 0 && !filters.search.trim();
   const filteredSummaryQuery = useQuery({
     queryKey: [
       "fee-dashboard",
       "filtered-summary",
-      filters.classFilter,
+      selectedClassIds,
       debouncedSearch,
     ],
     enabled: !isSchoolWideSummary && debouncedSearch === filters.search.trim(),
@@ -125,7 +137,7 @@ export default function StudentsTab({
     refetchOnMount: "always",
     queryFn: async ({ signal }) => {
       const params = new URLSearchParams();
-      if (filters.classFilter !== "All") params.set("class_ids", filters.classFilter);
+      selectedClassIds.forEach((classId) => params.append("class_ids", classId));
       if (debouncedSearch) params.set("search_query", debouncedSearch);
 
       const response = await apiGet(
@@ -201,7 +213,7 @@ export default function StudentsTab({
 
   const hasActiveFilters =
     filters.search.trim() !== "" ||
-    filters.classFilter !== "All" ||
+    selectedClassIds.length > 0 ||
     filters.sortBy !== "class-roll" ||
     filters.sortDir !== "asc";
 
@@ -221,6 +233,17 @@ export default function StudentsTab({
 
   return (
     <>
+      <div className="flex justify-end px-4 pt-4 lg:px-6">
+        <button
+          type="button"
+          onClick={() => setFeeReportOpen(true)}
+          className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 text-sm font-semibold text-emerald-200 transition hover:border-emerald-400/50 hover:bg-emerald-500/15"
+        >
+          <FileText size={16} aria-hidden="true" />
+          Get Report
+        </button>
+      </div>
+
       {/* =========================================================
           DESKTOP FILTER / SEARCH
       ========================================================= */}
@@ -365,19 +388,20 @@ export default function StudentsTab({
                         ? "Loading classes..."
                         : classError
                           ? (classError.message || "Unable to load classes")
-                          : filters.classFilter === "All"
+                          : selectedClassIds.length === 0
                             ? "All Classes"
-                            : classes.find(
-                              (cls) =>
-                                String(cls.id) === String(filters.classFilter),
-                            )?.class_name || "Selected class"}
+                            : selectedClassIds.length > 1
+                              ? `${selectedClassIds.length} Classes`
+                              : classes.find(
+                                (cls) => String(cls.id) === selectedClassIds[0],
+                              )?.class_name || "Selected class"}
                     </div>
                   </div>
 
                   <select
-                    value={isClassesLoading || classError ? "" : filters.classFilter}
+                    value={isClassesLoading || classError ? "" : selectedClassIds[0] || "All"}
                     onChange={(e) =>
-                      updateFilter("classFilter", e.target.value)
+                      updateFilter("classFilter", [e.target.value])
                     }
                     disabled={isClassesLoading || !!classError}
                     aria-label="Filter by class"
@@ -614,18 +638,19 @@ export default function StudentsTab({
                       ? "Loading classes..."
                       : classError
                         ? (classError.message || "Unable to load classes")
-                        : filters.classFilter === "All"
+                          : selectedClassIds.length === 0
                           ? "All Classes"
-                          : classes.find(
-                            (cls) =>
-                              String(cls.id) === String(filters.classFilter),
-                          )?.class_name || "Selected class"}
+                            : selectedClassIds.length > 1
+                              ? `${selectedClassIds.length} Classes`
+                              : classes.find(
+                                (cls) => String(cls.id) === selectedClassIds[0],
+                              )?.class_name || "Selected class"}
                   </div>
                 </div>
 
                 <select
-                  value={isClassesLoading || classError ? "" : filters.classFilter}
-                  onChange={(e) => updateFilter("classFilter", e.target.value)}
+                  value={isClassesLoading || classError ? "" : selectedClassIds[0] || "All"}
+                  onChange={(e) => updateFilter("classFilter", [e.target.value])}
                   disabled={isClassesLoading || !!classError}
                   aria-label="Filter by class"
                   className="dark-select absolute inset-0 h-full w-full cursor-pointer appearance-none opacity-0
@@ -948,6 +973,13 @@ export default function StudentsTab({
         <TransactionModal
           transactionModalStudent={transactionModalStudent}
           onClose={() => setTransactionModalOpen(false)}
+        />
+      )}
+
+      {isFeeReportOpen && (
+        <FeeReportModal
+          classes={classes}
+          onClose={() => setFeeReportOpen(false)}
         />
       )}
     </>

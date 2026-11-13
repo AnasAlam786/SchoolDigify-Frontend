@@ -11,6 +11,7 @@ export default function FeeDrawerHeader({
     currentStudentData,
     readOnly = false,
 }) {
+
     const { sessionData } = useContext(AuthContext);
 
     let pendingMonths = 0;
@@ -19,32 +20,53 @@ export default function FeeDrawerHeader({
     }
 
     function getStudentDueAmount(student) {
-        return Number(student?.total_due_amount || 0);
+        if(student?.isRTE) {
+            return 0;
+        }else{
+            return Number(student?.total_due_amount || 0);
+        }
     }
 
-    const grandTotalDueAmountOfAllStudents =
-        students.reduce((sum, student) => sum + getStudentDueAmount(student), 0);
+    function getStudentPaidAmount(student) {
+        if(student?.isRTE) {
+            return "Paid via RTE";
+        }else{
+            return Number(student?.total_paid_amount || 0);
+        }
+    }
+
+    function getStudentUpcomingAmount(student) {
+        if(student?.isRTE) {
+            return 0;
+        }else{
+            return Number(student?.total_upcoming_amount || 0);
+        }
+    }
 
     const summaryCards = [
         {
             label: 'Paid Amount',
-            amount: currentStudentData?.total_paid_amount,
+            amount: getStudentPaidAmount(currentStudentData),
             icon: BadgeCheck,
             styles: 'border-emerald-500/25 bg-emerald-950/20 text-emerald-300',
         },
         {
             label: 'Due Amount',
-            amount: currentStudentData?.total_due_amount,
+            amount: getStudentDueAmount(currentStudentData),
             icon: AlertCircle,
             styles: 'border-rose-500/25 bg-rose-950/20 text-rose-300',
         },
         {
             label: 'Upcoming Amount',
-            amount: currentStudentData?.total_upcoming_amount,
+            amount: getStudentUpcomingAmount(currentStudentData),
             icon: CalendarClock,
             styles: 'border-gray-500/25 bg-gray-800/40 text-gray-300',
         },
     ];
+
+    const grandTotalDueAmountOfAllStudents =
+        students.reduce((sum, student) => sum + getStudentDueAmount(student), 0);
+
 
 
     async function handleWhatsAppReminder(students) {
@@ -106,30 +128,30 @@ export default function FeeDrawerHeader({
                 </div>
             </div>
 
-<div className="grid grid-cols-3 gap-2 px-4 pt-3 sm:gap-3 sm:px-6">
-    {summaryCards.map((card) => {
-        const Icon = card.icon;
+            <div className="grid grid-cols-3 gap-2 px-4 pt-3 sm:gap-3 sm:px-6">
+                {summaryCards.map((card) => {
+                    const Icon = card.icon;
 
-        return (
-            <div
-                key={card.label}
-                className={`min-w-0 rounded-xl border px-2.5 py-3 sm:px-4 sm:py-3.5 ${card.styles}`}
-            >
-                <p className="truncate text-[9px] font-semibold uppercase tracking-wider opacity-75 sm:text-[10px]">
-                    {card.label}
-                </p>
+                    return (
+                        <div
+                            key={card.label}
+                            className={`min-w-0 rounded-xl border px-2.5 py-3 sm:px-4 sm:py-3.5 ${card.styles}`}
+                        >
+                            <p className="truncate text-[9px] font-semibold uppercase tracking-wider opacity-75 sm:text-[10px]">
+                                {card.label}
+                            </p>
 
-                <div className="mt-2 flex items-center justify-between gap-1.5">
-                    <p className="min-w-0 truncate text-sm font-bold tracking-tight tabular-nums sm:text-lg">
-                        ₹{Number(card.amount || 0).toLocaleString('en-IN')}
-                    </p>
+                            <div className="mt-2 flex items-center justify-between gap-1.5">
+                                <p className="min-w-0 truncate text-sm font-bold tracking-tight tabular-nums sm:text-lg">
+                                    ₹{Number(card.amount || 0).toLocaleString('en-IN')}
+                                </p>
 
-                    <Icon size={17} strokeWidth={2} className="shrink-0 opacity-80 sm:size-[19px]" />
-                </div>
+                                <Icon size={17} strokeWidth={2} className="shrink-0 opacity-80 sm:size-[19px]" />
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-        );
-    })}
-</div>
 
             {/* Current Student Card */}
             <div className="relative mt-4 overflow-hidden rounded-2xl bg-gradient-to-r from-gray-800 to-gray-700 p-5 shadow-xl ring-1 ring-white/10 transition-all duration-300 hover:ring-white/20 m-4">
